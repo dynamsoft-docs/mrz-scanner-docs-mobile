@@ -13,10 +13,10 @@ noTitleIndex: false
 
 - [View in Google Play Store](https://play.google.com/store/apps/details?id=com.dynamsoft.mrzscanner){:target="_blank"}
 
-## QuickStartMRZScanner Sample
+## ScanMRZ Sample
 
-Scan the MRZ code from a passport or ID card and extract the information using the ready-to-use `MRZScannerActivity` UI.
+Scan the MRZ code from a passport or ID card and extract the information using the ready-to-use component(`MRZScannerActivity`)
 
 Check code on GitHub
 
-- [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/Samples/QuickStartMRZScanner)
+- [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ)

@@ -13,10 +13,10 @@ noTitleIndex: false
 
 - [View in Apple Store](https://apps.apple.com/us/app/dynamsoft-mrz-scanner/id6736854735){:target="_blank"}
 
-## QuickStartMRZScanner Sample
+## ScanMRZ Sample
 
-Scan the MRZ code from a passport or ID card and extract the information using the ready-to-use `MRZScannerViewController` UI.
+Scan the MRZ code from a passport or ID card and extract the information using the ready-to-use component(`MRZScannerViewController`).
 
 Check code on GitHub
 
-- [Swift](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/Samples/QuickStartMRZScanner){:target="_blank"}
+- [Swift](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ){:target="_blank"}
