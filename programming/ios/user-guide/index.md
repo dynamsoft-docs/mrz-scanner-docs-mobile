@@ -12,7 +12,7 @@ enableLanguageSelection: true
 
 # iOS User Guide for MRZ Scanning
 
-This user guide will walk through the [QuickStartMRZScanner](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/Samples/QuickStartMRZScanner/) sample app. When creating your own project, please use this sample as a reference. This guide uses RTU (Ready to Use) APIs which aim to elevate the UI creation process with less code and offer a more pleasant and intuitive UI for your app.
+This user guide will walk through the [ScanMRZ](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ/) sample app. When creating your own project, please use this sample as a reference. This guide uses RTU (Ready to Use) APIs which aim to elevate the UI creation process with less code and offer a more pleasant and intuitive UI for your app.
 
 ## Supported Machine-Readable Travel Document Types
 
@@ -20,7 +20,7 @@ The Machine Readable Travel Documents (MRTD) standard specified by the Internati
 
 Currently, the SDK supports three types of MRTD:
 
-> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact support@dynamsoft.com.
+> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ### ID (TD1 Size)
 
@@ -74,7 +74,7 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
    target 'TargetName' do
       use_frameworks!
 
-   pod 'DynamsoftMRZScanner','2.0.0'
+   pod 'DynamsoftMRZScannerBundle','2.0.0'
 
    end
    ```
@@ -119,8 +119,8 @@ Add the SDK to your new project. Please read [Add the SDK](#add-the-sdk) section
    ```objc
    #import "ViewController.h"
    #import <DynamsoftLicense/DynamsoftLicense.h>
-   #import <DynamsoftMRZScanner/DynamsoftMRZScanner.h>
-   #import <DynamsoftMRZScanner/DynamsoftMRZScanner-Swift.h>
+   #import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle.h>
+   #import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle-Swift.h>
    @interface ViewController ()
    @property (nonatomic, strong) UIButton *button;
    @property (nonatomic, strong) UILabel *label;
@@ -171,7 +171,7 @@ Add the SDK to your new project. Please read [Add the SDK](#add-the-sdk) section
    ```swift
    import UIKit
    import DynamsoftLicense
-   import DynamsoftMRZScanner
+   import DynamsoftMRZScannerBundle
    class ViewController: UIViewController {
       let button = UIButton()
       let label = UILabel()
@@ -180,40 +180,38 @@ Add the SDK to your new project. Please read [Add the SDK](#add-the-sdk) section
              setup()
       }
       @objc func buttonTapped() {
-              let vc = MRZScannerViewController()
-              let config = MRZScannerConfig()
-              config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-              vc.config = config
+             let vc = MRZScannerViewController()
+             let config = MRZScannerConfig()
+             config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+             vc.config = config
       }
-      class ViewController: UIViewController {
       /* CONTINUATION OF CODE FROM STEP 3 AND 4 */
-             func setup() {
-                button.backgroundColor = .black
-                button.setTitle("Scan MRZ", for: .normal)
-                button.setTitleColor(.white, for: .normal)
-                button.layer.cornerRadius = 8
-                button.clipsToBounds = true
-                button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-                button.translatesAutoresizingMaskIntoConstraints = false
-                view.addSubview(button)
-                label.numberOfLines = 0
-                label.textColor = .black
-                label.textAlignment = .center
-                label.font = UIFont.systemFont(ofSize: 20)
-                label.translatesAutoresizingMaskIntoConstraints = false
-                view.addSubview(label)
-                let safeArea = view.safeAreaLayoutGuide
-                NSLayoutConstraint.activate([
-                   button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                   button.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 50),
-                   button.heightAnchor.constraint(equalToConstant: 50),
-                   button.widthAnchor.constraint(equalToConstant: 150),
-                   label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-                   label.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
-                   label.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 30),
-                   label.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -30)
-                ])
-             }
+      func setup() {
+             button.backgroundColor = .black
+             button.setTitle("Scan MRZ", for: .normal)
+             button.setTitleColor(.white, for: .normal)
+             button.layer.cornerRadius = 8
+             button.clipsToBounds = true
+             button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+             button.translatesAutoresizingMaskIntoConstraints = false
+             view.addSubview(button)
+             label.numberOfLines = 0
+             label.textColor = .black
+             label.textAlignment = .center
+             label.font = UIFont.systemFont(ofSize: 20)
+             label.translatesAutoresizingMaskIntoConstraints = false
+             view.addSubview(label)
+             let safeArea = view.safeAreaLayoutGuide
+             NSLayoutConstraint.activate([
+                button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                button.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 50),
+                button.heightAnchor.constraint(equalToConstant: 50),
+                button.widthAnchor.constraint(equalToConstant: 150),
+                label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
+                label.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 30),
+                label.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -30)
+             ])
       }
    }
    ```
