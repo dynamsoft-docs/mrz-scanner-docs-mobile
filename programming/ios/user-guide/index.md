@@ -12,7 +12,7 @@ enableLanguageSelection: true
 
 # iOS User Guide for MRZ Scanning
 
-This user guide will walk through the [QuickStartMRZScanner](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/Samples/QuickStartMRZScanner/) sample app. When creating your own project, please use this sample as a reference. This guide uses RTU (Ready to Use) APIs which aim to elevate the UI creation process with less code and offer a more pleasant and intuitive UI for your app.
+This user guide will walk through the [ScanMRZ](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ/) sample app. When creating your own project, please use this sample as a reference. This guide uses RTU (Ready to Use) APIs which aim to elevate the UI creation process with less code and offer a more pleasant and intuitive UI for your app.
 
 ## Supported Machine-Readable Travel Document Types
 
@@ -20,7 +20,7 @@ The Machine Readable Travel Documents (MRTD) standard specified by the Internati
 
 Currently, the SDK supports three types of MRTD:
 
-> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact support@dynamsoft.com.
+> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ### ID (TD1 Size)
 
