@@ -1,1 +1,1 @@
-# mrz-scanner-docs-mobile
+# MRZ Scanner Mobile

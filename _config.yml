@@ -1,0 +1,71 @@
+repositoryUrl: https://github.com/dynamsoft-docs/mrz-scanner-docs-mobile/blob/main
+repository: dynamsoft-docs/mrz-scanner-docs-mobile
+docFullPath: https://www.dynamsoft.com/mrz-scanner/docs/mobile/
+firstLevelUrl: /mrz-scanner/docs/mobile
+docHomePage: /mrz-scanner/docs/mobile
+
+useVersionTree: true
+
+ios: /mrz-scanner/docs/mobile/programming/ios/
+ios_api: /mrz-scanner/docs/mobile/programming/ios/api-reference/
+ios_release_notes: /mrz-scanner/docs/mobile/programming/ios/release-notes/
+ios_faq: /mrz-scanner/docs/mobile/programming/ios/faq/
+
+android: /mrz-scanner/docs/mobile/programming/android/
+android_api: /mrz-scanner/docs/mobile/programming/android/api-reference/
+android_release_notes: /mrz-scanner/docs/mobile/programming/android/release-notes/
+android_faq: /mrz-scanner/docs/mobile/programming/android/faq/
+
+dcvb_android_api: /capture-vision/docs/mobile/programming/android/api-reference/
+dcvb_ios_api: /capture-vision/docs/mobile/programming/ios/api-reference/
+
+dcvb_enumerations: /capture-vision/docs/core/enums/
+dcvb_parameters_reference: /capture-vision/docs/core/parameters/reference/
+dcvb_introduction: /capture-vision/docs/core/introduction/
+dcvb_architecture: /capture-vision/docs/core/architecture/
+dcvb_parameters: /capture-vision/docs/core/parameters/
+
+assets: /mrz-scanner/docs/mobile/assets/
+edit_icon: /mrz-scanner/docs/mobile/assets/img-icon/edit-icon.png
+smile_icon: /mrz-scanner/docs/mobile/assets/img-icon/icon-smile.png
+sad_icon: /mrz-scanner/docs/mobile/assets/img-icon/icon-sad.png
+# dbr_icon: /mrz-scanner/docs/mobile/assets/img-icon/icon-dbr.svg
+# dwt_icon: /mrz-scanner/docs/mobile/assets/img-icon/icon-dwt.svg
+# dnt_icon: /mrz-scanner/docs/mobile/assets/img-icon/icon-dnt.svg
+
+baseurl: "/mrz-scanner/docs/mobile"
+plugins:
+  - jemoji
+  - jekyll-webp
+  - jekyll-relative-links
+  - jekyll-redirect-from
+  - jekyll-readme-index
+  - jekyll-seo-tag
+
+edition: mobile
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      category: "original-repo"
+      edition: "algorithm"
+  - scope:
+      path: "programming/android"
+    values:
+      docRootName: "MRZ Scanner Android Edition" 
+      docHomePage: "/mrz-scanner/docs/mobile/programming/android/"
+  - scope:
+      path: "programming/ios"
+    values:
+      docRootName: "MRZ Scanner iOS Edition" 
+      docHomePage: "/mrz-scanner/docs/mobile/programming/ios/"
+  - scope:
+      path: ""
+    values:
+      layout: "default-layout"
+      noTitleIndex: true
+      needAutoGenerateSidebar: true
+      needGenerateH3Content: true
+
+url: "https://www.dynamsoft.com" # sitemap root
