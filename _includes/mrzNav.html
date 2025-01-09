@@ -1,0 +1,58 @@
+<style>
+    #cp-header .action-buttons { display: none; }
+    #mdHeader { border-bottom: 0!important; }
+    #sideBarCnt.sidebar-fixed { position: fixed; top: 88px; max-height: unset; }
+    .rightSideMenu.rsm-fixed { position: fixed; top: 100px; }
+    #docHead { top: 151px; }
+    .productMenu .downloadBtn:hover { color: #ffffff!important; }
+    @media (max-width: 1679px){
+      #docHead {
+        top: 145px;
+      }
+    }
+  </style>
+  
+  {%- assign docHomePage = site.docHomePage -%}
+  {%- if page.docHomePage -%}
+      {%- assign docHomePage = page.docHomePage -%}
+  {%- endif -%}
+  
+  <div id="CaptureVision" class="main">
+      <div id="CaptureVisionMenu" class="productMenu">
+          <div class="container pcProductMenu">
+              <div class="row">
+                  <div class="col-xs-12">
+                      <ul class="menuList">
+                          <li class="title"><a class="orangeLink" href="/mrz-scanner/docs/mobile/">Dynamsoft MRZ Scanner</a></li>
+                          <li class="item overview">
+                              <a class="textUpperCase" href="{{docHomePage}}">Documentation</a>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <div class="container mobileProductMenu">
+              <div class="row">
+                  <div class="col-xs-12">
+                      <div class="productLogo"><i class="dcv-logo"></i> <i class="icon-orange-angle"></i></div>
+                      <div id="dcvCurrentPage" class="fontOswald fr currentPage">Resource Base</div>
+                  </div>
+              </div>
+          </div>
+          <div class="mobileProductDetailMenu">
+              <div class="container">
+                  <div class="row">
+                      <div class="col-xs-12">
+                          <ul class="menuList">
+                              <li class="title"><a class="orangeLink" href="/mrz-scanner/docs/mobile/">Dynamsoft MRZ Scanner</a></li>
+                              <li class="item overview">
+                                  <a class="textUpperCase" href="{{docHomePage}}">Documentation</a>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  
