@@ -219,7 +219,40 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-## Step 5: Configure the MRZ Scanner (optional)
+## Step 5: Configure your layout file
+
+Open your **activity_main.xml** and replace it with the following code:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Empty list"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_navigate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="START SCANNING" />
+</RelativeLayout>
+```
+
+## Step 6: Configure the MRZ Scanner (optional)
 
 This next step, although optional, is highly recommended to help achieve a more smooth-looking and intuitive UI. In this setup we will configure the visibility of the torch button as well as the close button. To do this, we are going back to the `MRZScannerConfig` object we used to define the license, and will make use of some of the other parameters available in the `MRZScannerConfig` class.
 
@@ -274,7 +307,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-## Step 6: Run the Project
+## Step 7: Run the Project
 
 Now that the code has been written and the project complete, it's time to run the project. During setup, all of the gradle settings should have already been configured for you, so pretty much all you need to do now is to connect a physical Android device, select the proper configuration, and click Run.
 
