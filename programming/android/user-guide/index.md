@@ -16,15 +16,15 @@ This user guide will walk through the [ScanMRZ](https://github.com/Dynamsoft/mrz
 
 ## Supported Machine-Readable Travel Document Types
 
-The Machine Readable Travel Document (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
+The Machine Readable Travel Documents (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
 
 Currently, the SDK supports three types of MRTD:
 
-> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) if you have such a request.
+> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ### ID (TD1 Size)
 
-The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines with 30 characters in each line.
+The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines, each containing 30 characters.
 
 <div>
    <img src="../../assets/td1-id.png" alt="Example of MRZ in TD1 format" width="60%" />
@@ -32,7 +32,7 @@ The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines with 30 charac
 
 ### ID (TD2 Size)
 
-The MRZ (Machine Readable Zone) in TD2 format consists of 2 lines with 36 characters in each line.
+The MRZ (Machine Readable Zone) in TD2 format  consists of 2 lines, with each line containing 36 characters.
 
 <div>
    <img src="../../assets/td2-id.png" alt="Example of MRZ in TD2 format" width="72%" />
@@ -40,7 +40,7 @@ The MRZ (Machine Readable Zone) in TD2 format consists of 2 lines with 36 charac
 
 ### Passport (TD3 Size)
 
-The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 characters in each line.
+The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each line containing 44 characters.
 
 <div>
    <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
@@ -92,13 +92,13 @@ The first thing that we are going to do is to create a fresh new project. Here a
 
 ## Step 2: Include the Library
 
-Please read [Add the SDK](#add-the-sdk) section for instructions on how to add the SDK to your Android project.
+Add the SDK to your new project. Please read [Add the SDK](#add-the-sdk) section for more details.
 
 ## Step 3: Initialize the License
 
 The first step in code configuration is to include a valid license in the `MRZScannerConfig` object, which is used when launching the scanner.
 
-We first start with the package imports and then start implementing the MainActivity class, which starts with some simple Android UI configuration including a `LinearLayout` to display the parsed results and a `TextView` to display the error message should something go wrong during the capture process. followed by defining the license via the `setLicense` method of `MRZScannerConfig`.
+We first start with the package imports and then start implementing the MainActivity class, which starts with some simple Android UI configuration and creating the TextView that will display the results, followed by defining the license via the `setLicense` method of `MRZScannerConfig`.
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -108,72 +108,47 @@ We first start with the package imports and then start implementing the MainActi
 ```java
 package com.dynamsoft.scanmrz;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-
-import com.dynamsoft.mrzscannerbundle.ui.MRZData;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-
+import com.dynamsoft.mrzscanner.ui.MRZScanResult;
+import com.dynamsoft.mrzscanner.ui.MRZScannerActivity;
+import com.dynamsoft.mrzscanner.ui.MRZScannerConfig;
+import com.dynamsoft.core.basic_structures.DSRect;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 public class MainActivity extends AppCompatActivity {
    private ActivityResultLauncher<MRZScannerConfig> launcher;
-   private LinearLayout content;
-	private TextView tvEmpty;
-
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_main);
-      content = findViewById(R.id.ll_content);
-      tvEmpty = findViewById(R.id.tv_empty);
-
-      MRZScannerConfig config = new MRZScannerConfig();
-      config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
+          super.onCreate(savedInstanceState);
+          setContentView(R.layout.activity_main);
+          TextView textView = findViewById(R.id.tv_result);
+          MRZScannerConfig config = new MRZScannerConfig();
+          config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
    }
 }
 ```
 2. 
 ```kotlin
-package com.dynamsoft.scanmrz;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import com.dynamsoft.mrzscannerbundle.ui.MRZData;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
+package com.dynamsoft.scanmrz
+import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.appcompat.app.AppCompatActivity
+import com.dynamsoft.mrzscanner.ui.MRZScanResult
+import com.dynamsoft.mrzscanner.ui.MRZScannerActivity
+import com.dynamsoft.mrzscanner.ui.MRZScannerConfig
+import com.dynamsoft.core.basic_structures.DSRect
 class MainActivity : AppCompatActivity() {
    private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
-   private lateinit var content: LinearLayout
-   private lateinit var tvEmpty: TextView
-
    override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      setContentView(R.layout.activity_main)
-      content = findViewById(R.id.ll_content)
-      tvEmpty = findViewById(R.id.tv_empty)
-
-      val config = MRZScannerConfig()
-      config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+          super.onCreate(savedInstanceState)
+          setContentView(R.layout.activity_main)
+          val textView = findViewById<TextView>(R.id.tv_result)
+          val config = MRZScannerConfig().apply {
+             license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+          }
    }
 }
 ```
@@ -199,39 +174,22 @@ Once a MRZ is found, the content of the extracted information from the MRZ is ou
 ```java
 public class MainActivity extends AppCompatActivity {
    private ActivityResultLauncher<MRZScannerConfig> launcher;
-      @Override
-      protected void onCreate(@Nullable Bundle savedInstanceState) {
-      /* CONTINUATION OF THE CODE FROM STEP 3 */
-      launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
-			tvEmpty.setVisibility(View.GONE);
-			if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_FINISHED) {
-				if (result.getData() != null) {
-					MRZData data = result.getData();
-					content.removeAllViews();
-					content.addView(childView("Name:", data.getFirstName() + " " + data.getLastName()));
-					content.addView(childView("Sex:", data.getSex() == null ? ""
-							: data.getSex().substring(0, 1).toUpperCase() + data.getSex().substring(1)));
-					content.addView(childView("Age:", data.getAge() + ""));
-					content.addView(childView("Document Type:", data.getDocumentType()));
-					content.addView(childView("Document Number:", data.getDocumentNumber()));
-					content.addView(childView("Issuing State:", data.getIssuingState()));
-					content.addView(childView("Nationality:", data.getNationality()));
-					content.addView(childView("Date of Birth(YYYY-MM-DD):", data.getDateOfBirth()));
-					content.addView(childView("Date of Expiry(YYYY-MM-DD):", data.getDateOfExpire()));
-				}
-			} else if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
-				content.removeAllViews();
-				content.addView(childView("Scan canceled.", ""));
-			}
-			if (result.getErrorString() != null && !result.getErrorString().isEmpty()) {
-				content.removeAllViews();
-				content.addView(childView("Error:", result.getErrorString()));
-			}
-		});
-
-		findViewById(R.id.btn_nav).setOnClickListener(v -> {
-			launcher.launch(config);
-		});
+          @Override
+          protected void onCreate(@Nullable Bundle savedInstanceState) {
+          /* <CONTINUATION OF THE CODE FROM STEP 3> */
+          launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
+             if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_FINISHED && result.getData() != null) {
+                String content = "Result: document type: " + result.getData().getDocumentType() + "\n" + "document number: "
+                   + result.getData().getDocumentNumber();
+                textView.setText(content);
+             } else if(result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED ){
+                textView.setText("Scan canceled.");
+             }
+             if (result.getErrorString() != null && !result.getErrorString().isEmpty()) {
+                textView.setText(result.getErrorString());
+             }
+          });
+          findViewById(R.id.btn_navigate).setOnClickListener(v -> launcher.launch(config));
    }
 }
 ```
@@ -239,48 +197,62 @@ public class MainActivity extends AppCompatActivity {
 ```kotlin
 class MainActivity : AppCompatActivity() {
    private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
-   private lateinit var content: LinearLayout
-   private lateinit var tvEmpty: TextView
-
    override fun onCreate(savedInstanceState: Bundle?) {
-      /* CONTINUATION OF CODE FROM STEP 3*/
-
-      val launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
-         tvEmpty.visibility = View.GONE
-         when (result.resultStatus) {
-            MRZScanResult.EnumResultStatus.RS_FINISHED -> {
-                  result.data?.let { data ->
-                     content.removeAllViews()
-                     content.addView(childView("Name:", "${data.firstName} ${data.lastName}"))
-                     content.addView(childView("Sex:", data.sex?.let { it.substring(0, 1).toUpperCase() + it.substring(1) } ?: ""))
-                     content.addView(childView("Age:", data.age.toString()))
-                     content.addView(childView("Document Type:", data.documentType))
-                     content.addView(childView("Document Number:", data.documentNumber))
-                     content.addView(childView("Issuing State:", data.issuingState))
-                     content.addView(childView("Nationality:", data.nationality))
-                     content.addView(childView("Date of Birth(YYYY-MM-DD):", data.dateOfBirth))
-                     content.addView(childView("Date of Expiry(YYYY-MM-DD):", data.dateOfExpire))
-                  }
-            }
-            MRZScanResult.EnumResultStatus.RS_CANCELED -> {
-                  content.removeAllViews()
-                  content.addView(childView("Scan canceled.", ""))
-            }
-         }
-         result.errorString?.takeIf { it.isNotEmpty() }?.let { error ->
-            content.removeAllViews()
-            content.addView(childView("Error:", error))
-         }
-      }
-
-      findViewById<Button>(R.id.btn_nav).setOnClickListener {
-         launcher.launch(config)
-      }
+          launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
+             if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_FINISHED && result.data != null) {
+                val content = """
+                Result: document type: ${result.data.documentType}
+                document number: ${result.data.documentNumber}
+                """.trimIndent()
+                textView.text = content
+             } else if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
+                textView.text = "Scan canceled."
+             }
+             if (result.errorString != null && result.errorString.isNotEmpty()) {
+                textView.text = result.errorString
+             }
+          }
+          findViewById<View>(R.id.btn_navigate).setOnClickListener {
+             launcher.launch(config)
+          }
    }
 }
 ```
 
-## Step 5: Configure the MRZ Scanner (optional)
+## Step 5: Configure your layout file
+
+Open your **activity_main.xml** and replace it with the following code:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Empty list"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_navigate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="START SCANNING" />
+</RelativeLayout>
+```
+
+## Step 6: Configure the MRZ Scanner (optional)
 
 This next step, although optional, is highly recommended to help achieve a more smooth-looking and intuitive UI. In this setup we will configure the visibility of the torch button as well as the close button. To do this, we are going back to the `MRZScannerConfig` object we used to define the license, and will make use of some of the other parameters available in the `MRZScannerConfig` class.
 
@@ -307,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
           config.setTorchButtonVisible(true);
           // The following code controls whether to display a close button.
           config.setCloseButtonVisible(true);
-          
           /* CONTINUATION OF THE CODE FROM STEP 4 */
    }
 }
@@ -336,7 +307,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-## Step 6: Run the Project
+## Step 7: Run the Project
 
 Now that the code has been written and the project complete, it's time to run the project. During setup, all of the gradle settings should have already been configured for you, so pretty much all you need to do now is to connect a physical Android device, select the proper configuration, and click Run.
 

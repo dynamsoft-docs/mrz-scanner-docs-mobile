@@ -16,15 +16,15 @@ This user guide will walk through the [ScanMRZ](https://github.com/Dynamsoft/mrz
 
 ## Supported Machine-Readable Travel Document Types
 
-The Machine Readable Travel Document (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
+The Machine Readable Travel Documents (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
 
 Currently, the SDK supports three types of MRTD:
 
-> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) if you have such a request.
+> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ### ID (TD1 Size)
 
-The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines with 30 characters in each line.
+The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines, each containing 30 characters.
 
 <div>
    <img src="../../assets/td1-id.png" alt="Example of MRZ in TD1 format" width="60%" />
@@ -32,7 +32,7 @@ The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines with 30 charac
 
 ### ID (TD2 Size)
 
-The MRZ (Machine Readable Zone) in TD2 format consists of 2 lines with 36 characters in each line.
+The MRZ (Machine Readable Zone) in TD2 format  consists of 2 lines, with each line containing 36 characters.
 
 <div>
    <img src="../../assets/td2-id.png" alt="Example of MRZ in TD2 format" width="72%" />
@@ -40,7 +40,7 @@ The MRZ (Machine Readable Zone) in TD2 format consists of 2 lines with 36 charac
 
 ### Passport (TD3 Size)
 
-The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 characters in each line.
+The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each line containing 44 characters.
 
 <div>
    <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
@@ -50,7 +50,7 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
 
 - Supported OS: **iOS 11** or higher (**iOS 13** and higher recommended).
 - Supported ABI: **arm64** and **x86_64**.
-- Development Environment: **Xcode 13** and above (**Xcode 14.1+** recommended).
+- Development Environment: **Xcode 13** and above (Xcode 14.1+ recommended).
 
 ## Add the SDK
 
@@ -64,7 +64,7 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
 
 3. Select `mrz-scanner-spm`, choose `Exact version`, enter **2.0.0**, then click **Add Package**.
 
-4. Check all the **xcframeworks** and add them.
+4. Check all the **xcframeworks** and add.
 
 ### Option 2: Add the Frameworks via CocoaPods
 
@@ -101,13 +101,13 @@ The first thing that we are going to do is to create a fresh new project. Here a
 
 ## Step 2: Include the Library
 
-Please read [Add the SDK](#add-the-sdk) section for instructions on how to add the SDK to your iOS application.
+Add the SDK to your new project. Please read [Add the SDK](#add-the-sdk) section for more details.
 
 ## Step 3: Initialize the License
 
-The first major step in code configuration is to include a valid license in the `MRZScannerConfig`, which is used when launching the scanner. Let's break it down into two smaller steps:
+1. Add your code for initializing the license
 
-1. In the *ViewController* code, there will be a single button that will start the operation, a table view where the parsed MRZ information will be displayed, and a label where the error message will be displayed should something go wrong during the capture process. In order to store the parsed MRZ information, we will also create a data struct with the necessary fields as show in the below code snippet.
+   In the *ViewController* code, there will be a single button that will start the operation as well as a label where the parsed MRZ information will be displayed as they are being scanned.
 
    The first step in code configuration is to include a valid license in the `MRZScannerConfig` object, which is used when launching the scanner.
 
@@ -121,182 +121,97 @@ The first major step in code configuration is to include a valid license in the 
    #import <DynamsoftLicense/DynamsoftLicense.h>
    #import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle.h>
    #import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle-Swift.h>
-
-   @interface ViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
-
-   @property (nonatomic, strong) UITableView *tableView;
+   @interface ViewController ()
    @property (nonatomic, strong) UIButton *button;
    @property (nonatomic, strong) UILabel *label;
-   @property (nonatomic, strong) NSArray<NSArray<NSString*>*> *data;
-
    @end
-
    @implementation ViewController
-
    - (void)viewDidLoad {
       [super viewDidLoad];
-      self.navigationController.navigationBar.hidden = YES;
-      self.view.backgroundColor = [UIColor whiteColor];
       [self setup];
    }
-
    - (void)buttonTapped {
-      MRZScannerViewController *vc = [[MRZScannerViewController alloc] init];
-      MRZScannerConfig *config = [[MRZScannerConfig alloc] init];
+      DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
+      DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
       config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
       vc.config = config;
    }
-
    - (void)setup {
       self.button = [UIButton buttonWithType:UIButtonTypeSystem];
       self.button.backgroundColor = [UIColor blackColor];
-      [self.button setTitle:@"Scan an MRZ" forState:UIControlStateNormal];
+      [self.button setTitle:@"Scan MRZ" forState:UIControlStateNormal];
       [self.button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
       self.button.layer.cornerRadius = 8;
       self.button.clipsToBounds = YES;
       [self.button addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
       self.button.translatesAutoresizingMaskIntoConstraints = NO;
       [self.view addSubview:self.button];
-      
-      self.tableView = [[UITableView alloc] init];
-      self.tableView.delegate = self;
-      self.tableView.dataSource = self;
-      [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
-      self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-      self.tableView.hidden = YES;
-      [self.view addSubview:self.tableView];
-      
       self.label = [[UILabel alloc] init];
       self.label.numberOfLines = 0;
       self.label.textColor = [UIColor blackColor];
       self.label.textAlignment = NSTextAlignmentCenter;
       self.label.font = [UIFont systemFontOfSize:20];
       self.label.translatesAutoresizingMaskIntoConstraints = NO;
-      self.label.text = @"Empty list";
       [self.view addSubview:self.label];
-      
       UILayoutGuide *safeArea = self.view.safeAreaLayoutGuide;
       [NSLayoutConstraint activateConstraints:@[
-         [self.button.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-         [self.button.bottomAnchor constraintEqualToAnchor:safeArea.bottomAnchor constant:-10],
-         [self.button.heightAnchor constraintEqualToConstant:50],
-         [self.button.widthAnchor constraintEqualToConstant:150],
-         
-         [self.tableView.topAnchor constraintEqualToAnchor:safeArea.topAnchor constant:10],
-         [self.tableView.leadingAnchor constraintEqualToAnchor:safeArea.leadingAnchor],
-         [self.tableView.bottomAnchor constraintEqualToAnchor:self.button.topAnchor constant:-10],
-         [self.tableView.trailingAnchor constraintEqualToAnchor:safeArea.trailingAnchor],
-         
-         [self.label.centerXAnchor constraintEqualToAnchor:safeArea.centerXAnchor],
-         [self.label.centerYAnchor constraintEqualToAnchor:safeArea.centerYAnchor],
-         [self.label.leadingAnchor constraintEqualToAnchor:safeArea.leadingAnchor constant:30],
-         [self.label.trailingAnchor constraintEqualToAnchor:safeArea.trailingAnchor constant:-30]
+             [self.button.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+             [self.button.topAnchor constraintEqualToAnchor:safeArea.topAnchor constant:50],
+             [self.button.heightAnchor constraintEqualToConstant:50],
+             [self.button.widthAnchor constraintEqualToConstant:150],
+             [self.label.centerXAnchor constraintEqualToAnchor:safeArea.centerXAnchor],
+             [self.label.centerYAnchor constraintEqualToAnchor:safeArea.centerYAnchor],
+             [self.label.leadingAnchor constraintEqualToAnchor:safeArea.leadingAnchor constant:30],
+             [self.label.trailingAnchor constraintEqualToAnchor:safeArea.trailingAnchor constant:-30]
       ]];
-      
-      self.data = @[
-         @[@"Name", @""],
-         @[@"Sex", @""],
-         @[@"Age", @""],
-         @[@"Document Type", @""],
-         @[@"Document Number", @""],
-         @[@"Issuing State", @""],
-         @[@"Nationality", @""],
-         @[@"Date Of Birth(YYYY-MM-DD)", @""],
-         @[@"Date Of Expire(YYYY-MM-DD)", @""]
-      ];
    }
-
-   #pragma mark - UITableViewDataSource
-
-   - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-      return self.data.count;
-   }
-
-   - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-      UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-      cell.textLabel.text = self.data[indexPath.row][0];
-      return cell;
-   }
-
    @end
    ```
-   2. 
+   1. 
    ```swift
    import UIKit
    import DynamsoftLicense
    import DynamsoftMRZScannerBundle
-   class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
-      let tableView = UITableView()
+   class ViewController: UIViewController {
       let button = UIButton()
       let label = UILabel()
-      var data: [(String, String)] = [
-        ("Name", ""),
-        ("Sex", ""),
-        ("Age", ""),
-        ("Document Type", ""),
-        ("Document Number", ""),
-        ("Issuing State", ""),
-        ("Nationality", ""),
-        ("Date Of Birth(YYYY-MM-DD)", ""),
-        ("Date Of Expire(YYYY-MM-DD)", ""),
-      ]
-
       override func viewDidLoad() {
-         super.viewDidLoad()
-         self.navigationController?.navigationBar.isHidden = true
-         view.backgroundColor = .white
-         setup()
+             super.viewDidLoad()
+             setup()
       }
       @objc func buttonTapped() {
-         let vc = MRZScannerViewController()
-         let config = MRZScannerConfig()
-         config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-         vc.config = config
+             let vc = MRZScannerViewController()
+             let config = MRZScannerConfig()
+             config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+             vc.config = config
       }
-
+      /* CONTINUATION OF CODE FROM STEP 3 AND 4 */
       func setup() {
-        button.backgroundColor = .black
-        button.setTitle("Scan an MRZ", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8
-        button.clipsToBounds = true
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.isHidden = true
-        view.addSubview(tableView)
-        
-        label.numberOfLines = 0
-        label.textColor = .black
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Empty list"
-        view.addSubview(label)
-        
-        let safeArea = view.safeAreaLayoutGuide
-        NSLayoutConstraint.activate([
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10),
-            button.heightAnchor.constraint(equalToConstant: 50),
-            button.widthAnchor.constraint(equalToConstant: 150),
-            
-            tableView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 10),
-            tableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -10),
-            tableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            
-            label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 30),
-            label.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -30)
-        ])
+             button.backgroundColor = .black
+             button.setTitle("Scan MRZ", for: .normal)
+             button.setTitleColor(.white, for: .normal)
+             button.layer.cornerRadius = 8
+             button.clipsToBounds = true
+             button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+             button.translatesAutoresizingMaskIntoConstraints = false
+             view.addSubview(button)
+             label.numberOfLines = 0
+             label.textColor = .black
+             label.textAlignment = .center
+             label.font = UIFont.systemFont(ofSize: 20)
+             label.translatesAutoresizingMaskIntoConstraints = false
+             view.addSubview(label)
+             let safeArea = view.safeAreaLayoutGuide
+             NSLayoutConstraint.activate([
+                button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                button.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 50),
+                button.heightAnchor.constraint(equalToConstant: 50),
+                button.widthAnchor.constraint(equalToConstant: 150),
+                label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
+                label.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 30),
+                label.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -30)
+             ])
       }
    }
    ```
@@ -305,216 +220,116 @@ The first major step in code configuration is to include a valid license in the 
    >
    >- The license string here grants a time-limited free trial which requires network connection to work.
    >- You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
-   >- The *setup* method is used to define the properties of the UI elements (label, tableView) via the code instead of configuring them via the storyboard. It is called in `viewDidLoad` to ensure that these settings are applied once the app is opened.
 
 2. Configure *NavigationController*
 
-   We will only have one *ViewController*, where most of the code will be written including the license initialization, along with an associated *NavigationController* to allow the user to navigate back and forth from the home page to the main *ViewController* where the MRZ Scanner will operate.
+   The license is initialized in another view. As a result, we must first define a couple of essential elements of the storyboard and the associated views that are required. We will only have one *ViewController*, with an associated *NavigationController* to allow the user to navigate back and forth from the home page to the main *ViewController* where the MRZ Scanner will operate.
 
 ## Step 4: Implementing the MRZ Scanner
 
-Now that the license is configured and the license has been set, it is time to implement the actions to take when an MRZ is scanned via the `onScannedResult` callback function. The callback function is triggered whenever an MRZ is scanned, so we must implement the code that will display the parsed MRZ information in the *label* that we previously defined.
+Now that the license is configured and the license has been set, it is time to implement the actions to take when an MRZ is scanned via the `onScannedResult` callback function. The callback function is triggered whenever an MRZ is scanned successfully, so we must implement the code that will display the parsed MRZ information in the *label* that we previously defined.
 
 Each result comes with a `DSResultStatus` that can be one of *finished*, *canceled*, or *exception*. The first, *finished*, indicates that the result has been parsed and is available - while *canceled* indicates that the operation has been halted. If *exception* is the result status, then that means that an error has occurred during the MRZ scanning process. So let us now continue the code of the `buttonTapped` method from step 3:
 
-   <div class="sample-code-prefix"></div>
-   >- Objective-C
-   >- Swift
-   >
-   >1. 
-   ```objc
-   @implementation ViewController
-
-   /* THE REST OF THE CODE FROM STEP 3 */
-
-   - (void)buttonTapped {
-      
-      /* CONTINUATION OF THE CODE FROM STEP 3 */
-      
-      __weak typeof(self) weakSelf = self;
-      vc.onScannedResult = ^(MRZScanResult *result) {
-         __strong typeof(weakSelf) strongSelf = weakSelf;
-         if (!strongSelf) return;
-         
-         switch (result.resultStatus) {
-               case MRZScanResultStatusFinished: {
-                  if (result.data) {
-                     strongSelf.data = @[
-                           @[@"Name", [NSString stringWithFormat:@"%@ %@", result.data.firstName, result.data.lastName]],
-                           @[@"Sex", [result.data.sex capitalizedString]],
-                           @[@"Age", [NSString stringWithFormat:@"%ld", (long)result.data.age]],
-                           @[@"Document Type", result.data.documentType],
-                           @[@"Document Number", result.data.documentNumber],
-                           @[@"Issuing State", result.data.issuingState],
-                           @[@"Nationality", result.data.nationality],
-                           @[@"Date Of Birth(YYYY-MM-DD)", result.data.dateOfBirth],
-                           @[@"Date Of Expire(YYYY-MM-DD)", result.data.dateOfExpire]
-                     ];
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                           strongSelf.label.hidden = YES;
-                           strongSelf.tableView.hidden = NO;
-                           [strongSelf.tableView reloadData];
-                     });
-                  }
-                  break;
-               }
-               case MRZScanResultStatusCanceled: {
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                     strongSelf.label.hidden = NO;
-                     strongSelf.tableView.hidden = YES;
-                     strongSelf.label.text = @"Scan canceled";
-                  });
-                  break;
-               }
-               case MRZScanResultStatusException: {
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                     strongSelf.label.hidden = NO;
-                     strongSelf.tableView.hidden = YES;
-                     strongSelf.label.text = result.errorString;
-                  });
-                  break;
-               }
-               default:
-                  break;
-         }
-         dispatch_async(dispatch_get_main_queue(), ^{
-               [strongSelf.navigationController popViewControllerAnimated:YES];
-         });
-      };
-      
-      dispatch_async(dispatch_get_main_queue(), ^{
-         [self.navigationController pushViewController:vc animated:YES];
-      });
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+/* CONTINUATION OF CODE FROM STEP 3 */
+- (void)buttonTapped {
+   DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
+   DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
+   config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
+   // some other settings
+   vc.config = config;
+   __weak typeof(self) weakSelf = self;
+   vc.onScannedResult = ^(DSMRZScanResult *result) {
+          switch (result.resultStatus) {
+             case DSResultStatusFinished: {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   NSString *documentType = result.data.documentType ?: @"";
+                   NSString *documentNumber = result.data.documentNumber ?: @"";
+                   weakSelf.label.text = [NSString stringWithFormat:@"Result:\nDocumentType: %@\nDocumentNumber: %@", documentType, documentNumber];
+                });
+                break;
+             }
+             case DSResultStatusCanceled: {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   weakSelf.label.text = @"Scan canceled";
+                });
+                break;
+             }
+             case DSResultStatusException: {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    weakSelf.label.text = result.errorString;
+                });
+                break;
+             }
+             default:
+                break;
+          }
+          dispatch_async(dispatch_get_main_queue(), ^{
+             [weakSelf.navigationController popViewControllerAnimated:YES];
+          });
+   };
+   dispatch_async(dispatch_get_main_queue(), ^{
+          weakSelf.navigationController.navigationBar.hidden = YES;
+          [weakSelf.navigationController pushViewController:vc animated:YES];
+   });
+}
+```
+1. 
+```swift
+class ViewController: UIViewController {
+   /* CONTINUATION OF CODE FROM STEP 3 */
+   @objc func buttonTapped() {
+          let vc = MRZScannerViewController()
+          let config = MRZScannerConfig()
+          config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+          // some other settings
+          vc.config = config
+          vc.onScannedResult = { [weak self] result in
+             guard let self = self else { return }
+             switch result.resultStatus {
+             /* if the result is valid, display it in the label */
+             case .finished:
+                DispatchQueue.main.async {
+                   let documentType = result.data?.documentType ?? ""
+                   let documentNumber = result.data?.documentNumber ?? ""
+                   self.label.text = "Result:\nDocumentType: " + (documentType) + "\n" + "DocumentNumber: " + (documentNumber)
+                }
+             /* if the scan operation is canceled by the user */
+             case .canceled:
+                DispatchQueue.main.async {
+                   self.label.text = "Scan canceled"
+                }
+             /* if an error occurs during capture, display the error string in the label */
+             case .exception:
+                DispatchQueue.main.async {
+                   self.label.text = result.errorString
+                }
+             @unknown default:
+                break
+             }
+             /* return back to the home page to display the result/cancel message/error string */
+             DispatchQueue.main.async {
+                self.navigationController?.popViewController(animated: true)
+             }
+          }
+          /* when the button is clicked, hide the navigation bar and push the newly created MRZScannerViewController to the main view */
+          DispatchQueue.main.async {
+             self.navigationController?.navigationBar.isHidden = true
+             self.navigationController?.pushViewController(vc, animated: true)
+          }
    }
-
-   /* THE SETUP FUNCTION FROM STEP 3 GOES HERE */
-
-   // MARK: - UITableViewDataSource
-   - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-      return self.data.count * 2;
-   }
-
-   - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-      UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-      
-      NSInteger index = indexPath.row / 2;
-      BOOL isLabel = indexPath.row % 2 == 0;
-      NSArray *item = self.data[index];
-      NSString *label = item[0];
-      NSString *value = item[1];
-      
-      if (isLabel) {
-         cell.textLabel.text = label;
-         cell.textLabel.font = [UIFont boldSystemFontOfSize:16];
-         cell.textLabel.textColor = [UIColor blackColor];
-      } else {
-         cell.textLabel.text = value;
-         cell.textLabel.font = [UIFont systemFontOfSize:16];
-         cell.textLabel.textColor = [UIColor grayColor];
-      }
-      return cell;
-   }
-
-   // MARK: - UITableViewDelegate
-   - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-      return tableView.frame.size.height / (self.data.count * 2.0);
-   }
-
-   @end
-   ```
-   2. 
-   ```swift
-   class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
-      /* THE REST OF THE CODE FROM STEP 3 */
-
-      @objc func buttonTapped() {
-
-         /* CONTINUATION OF THE CODE FROM STEP 3 */
-         
-         vc.onScannedResult = { [weak self] result in
-            guard let self = self else { return }
-            switch result.resultStatus {
-            case .finished:
-                  if let data = result.data {
-                     self.data = [
-                        ("Name", data.firstName + " " + data.lastName),
-                        ("Sex", data.sex.capitalized),
-                        ("Age", String(data.age)),
-                        ("Document Type", data.documentType),
-                        ("Document Number", data.documentNumber),
-                        ("Issuing State", data.issuingState),
-                        ("Nationality", data.nationality),
-                        ("Date Of Birth(YYYY-MM-DD)", data.dateOfBirth),
-                        ("Date Of Expire(YYYY-MM-DD)", data.dateOfExpire),
-                     ]
-                     DispatchQueue.main.async {
-                        self.label.isHidden = true
-                        self.tableView.isHidden = false
-                        self.tableView.reloadData()
-                     }
-                  }
-            case .canceled:
-                  DispatchQueue.main.async {
-                     self.label.isHidden = false
-                     self.tableView.isHidden = true
-                     self.label.text = "Scan canceled"
-                  }
-            case .exception:
-                  DispatchQueue.main.async {
-                     self.label.isHidden = false
-                     self.tableView.isHidden = true
-                     self.label.text = result.errorString
-                  }
-            default:
-                  break
-            }
-            DispatchQueue.main.async {
-               self.navigationController?.popViewController(animated: true)
-            }
-         }
-         DispatchQueue.main.async {
-            self.navigationController?.pushViewController(vc, animated: true)
-         }
-      }
-
-      /* THE SETUP FUNCTION FROM STEP 3 GOES HERE */
-
-      // MARK: - UITableViewDataSource
-      func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-         return data.count * 2
-      }
-      
-      func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-         
-         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-         
-         let index = indexPath.row / 2
-         let isLabel = indexPath.row % 2 == 0
-         let (label, value) = data[index]
-         
-         if isLabel {
-               cell.textLabel?.text = label
-               cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-               cell.textLabel?.textColor = .black
-         } else {
-               cell.textLabel?.text = value
-               cell.textLabel?.font = UIFont.systemFont(ofSize: 16)
-               cell.textLabel?.textColor = .gray
-         }
-         return cell
-      }
-      
-      // MARK: - UITableViewDelegate
-      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-         return tableView.frame.height / (CGFloat(data.count) * 2.0)
-      }
-   }
-   ```
+}
+```
 
 ## Step 5: Configure the MRZ Scanner (optional)
 
-This next step, although optional, is highly recommended to help you achieve a smooth-looking UI. In this step, we will configure the `MRZScannerConfig` object to utilize some of the other properties that are available in the class. In step 3, `MRZScannerConfig` was initially used to configure the license. Now, let's use some of the other settings which include the document type, the visibility of the torch button, and whether a beep should be played after a successful recognition.
+This next step, although optional, is highly recommended to help you achieve a smooth-looking UI. In this step, we will configure the `setup` method that was called in `viewDidLoad`. In `setup` we will define the styles of different UI elements including the main "Scan MRZ" button as well as the results label. Please note that this UI setup can also be done directly in the *Main.storyboard* but in this guide we opted to have the entire configuration done via the code.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -548,9 +363,6 @@ config.isTorchButtonVisible = false
 // Add the following line if you don't want to display the close button.
 config.isCloseButtonVisible = false
 ```
-
->Note:
->The code above only shows the configuration of the MRZScannerConfig object, which takes place right at the beginning of the `buttonTapped` function in steps 3 and 4.
 
 ## Step 6: Run the Project
 
