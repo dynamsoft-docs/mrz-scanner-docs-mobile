@@ -10,7 +10,7 @@ breadcrumbText: DSMRZScanResult
 
 # DSMRZScanResult
 
-`DSMRZScanResult` is a result class that contains the parsed MRZ information from one scan and the additional information.
+`DSMRZScanResult` is a result class that contains the parsed MRZ information and the corresponding additional information.
 
 ## Definition
 
@@ -40,7 +40,7 @@ class MRZScanResult : NSObject
 
 ### data
 
-The parsed MRZ information.
+The parsed MRZ information as a [`MRZData`](mrz-data.md) object.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -57,7 +57,7 @@ var data: MRZData {get}
 
 ### resultStatus
 
-The status of the result, which can be finished, canceled or exception.
+The status of the result represented as an [`EnumResultStatus`](result-status.md).
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -76,9 +76,9 @@ var resultStatus: ResultStatus {get}
 
 The status of the result, which can be finished, canceled or exception.
 
-- `RS_FINISHED`: The MRZ scanning is finished.
-- `RS_CANCELED`: The MRZ scanning activity is closed before the process is finished.
-- `RS_EXCEPTION`: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
+- `DSResultStatusFinished`: The MRZ scanning is finished.
+- `DSResultStatusCanceled`: The MRZ scanning activity is closed before the process is finished.
+- `DSResultStatusException`: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
 
 ### errorCode
 
@@ -96,10 +96,6 @@ The error code should something go wrong during the MRZ scanning process.
 ```swift
 var errorCode: Int { get }
 ```
-
-**Return Value**
-
-An integer representing a `DSErrorCode`.
 
 ### errorString
 

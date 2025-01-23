@@ -26,20 +26,20 @@ final class MRZScannerConfig
 
 | Method | Description |
 | ------ | ----------- |
-| [`setLicense`](#setlicense) | Set the license. |
-| [`setTemplateFilePath`](#settemplatefilepath) | Set a path for the SDK to load template file. |
-| [`setTorchButtonVisible`](#settorchbuttonvisible) | Set whether to display the torch button when scanning. Uses can click the torch button to turn on/off the torch. |
-| [`setBeepEnabled`](#setbeepenabled) | Set whether to trigger a beep sound when MRZ is scanned. |
-| [`setCloseButtonVisible`](#setclosebuttonvisible) | Set whether to display a button for uses to close the scanner page. |
-| [`setDocumentType`](#setdocumenttype) | Specifies the type of document to scan, such as ID cards or passports. |
+| [`setLicense`](#setlicense) | Sets the license string. |
+| [`setTemplateFilePath`](#settemplatefilepath) | Sets the local file path for the JSON parameters template file. |
+| [`setTorchButtonVisible`](#settorchbuttonvisible) | Sets whether to display the torch button when scanning. |
+| [`setBeepEnabled`](#setbeepenabled) | Sets whether the beep sound is triggered or not when a MRZ is scanned. |
+| [`setCloseButtonVisible`](#setclosebuttonvisible) | Sets the visibility status of the close button for users to close the scanner page. |
+| [`setDocumentType`](#setdocumenttype) | Sets the type of document to scan, such as ID cards or passports. |
 | [`getLicense`](#getlicense) | Returns the license string. |
-| [`getTemplateFilePath`](#gettemplatefilepath) | Get the file path of the template file. |
-| [`isTorchButtonVisible`](#istorchbuttonvisible) | Returns whether the torch button is visible. |
-| [`isBeepEnabled`](#isbeepenabled) | Returns whether the beep sound is enabled. |
-| [`isCloseButtonVisible`](#isclosebuttonvisible) | Returns whether the close button is visible. |
+| [`getTemplateFilePath`](#gettemplatefilepath) | Returns the local path of the settings template file. |
+| [`isTorchButtonVisible`](#istorchbuttonvisible) | Returns the visibility status of the torch button. |
+| [`isBeepEnabled`](#isbeepenabled) | Returns the play status of the beep sound when a MRZ is scanned. |
+| [`isCloseButtonVisible`](#isclosebuttonvisible) | Returns the visibility status of the close button. |
 | [`getDocumentType`](#getdocumenttype) | Returns the type of document to scan, such as ID cards or passports. |
-| [`isGuideFrameVisible`](#isguideframevisible) | Returns whether the guide frame is visible. |
-| [`setGuideFrameVisible`](#setguideframevisible) | Set whether to display the guide frame. |
+| [`isGuideFrameVisible`](#isguideframevisible) | Returns the visibility status of the guide frame on the display. |
+| [`setGuideFrameVisible`](#setguideframevisible) | Sets the visibility of the guide frame on the display. |
 
 ### setLicense
 
@@ -67,7 +67,7 @@ void setTemplateFilePath(String templateFilePath);
 
 ### setTorchButtonVisible
 
-Set whether to display the torch button when scanning. Uses can click the torch button to turn on/off the torch.
+Sets whether to display the torch button when scanning. Users can click the torch button to turn on/off the torch.
 
 ```java
 void setTorchButtonVisible(boolean torchButtonVisible);
@@ -79,7 +79,7 @@ void setTorchButtonVisible(boolean torchButtonVisible);
 
 ### setBeepEnabled
 
-Set whether to trigger a beep sound when a MRZ is scanned.
+Sets whether the beep sound is triggered or not when a MRZ is scanned.
 
 ```java
 void setBeepEnabled(boolean beepEnabled);
@@ -91,7 +91,7 @@ void setBeepEnabled(boolean beepEnabled);
 
 ### setCloseButtonVisible
 
-Set whether to display a button for uses to close the scanner page.
+Sets the visibility status of the close button for users to close the scanner page.
 
 ```java
 void setCloseButtonVisible(boolean closeButtonVisible);
@@ -103,7 +103,7 @@ void setCloseButtonVisible(boolean closeButtonVisible);
 
 ### setDocumentType
 
-Specifies the type of document to scan, such as ID cards or passports.
+Sets the type of document to scan, such as ID cards or passports.
 
 ```java
 void setDocumentType(EnumDocumentType type);
@@ -127,7 +127,7 @@ The license key to be used for initialization.
 
 ### getTemplateFilePath
 
-Get the file path of the template file.
+Returns the local path of the settings template file.
 
 ```java
 String getTemplateFilePath();
@@ -187,7 +187,7 @@ The type of document to scan, such as ID cards or passports.
 
 ### isGuideFrameVisible
 
-Returns whether the guide frame is visible.
+Returns the visibility status of the guide frame on the display.
 
 ```java
 boolean isGuideFrameVisible();

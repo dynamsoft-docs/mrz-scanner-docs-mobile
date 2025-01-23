@@ -16,15 +16,15 @@ This user guide will walk through the [ScanMRZ](https://github.com/Dynamsoft/mrz
 
 ## Supported Machine-Readable Travel Document Types
 
-The Machine Readable Travel Documents (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
+The Machine Readable Travel Document (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
 
 Currently, the SDK supports three types of MRTD:
 
-> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
+> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) if you have such a request.
 
 ### ID (TD1 Size)
 
-The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines, each containing 30 characters.
+The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines with 30 characters in each line.
 
 <div>
    <img src="../../assets/td1-id.png" alt="Example of MRZ in TD1 format" width="60%" />
@@ -32,7 +32,7 @@ The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines, each containi
 
 ### ID (TD2 Size)
 
-The MRZ (Machine Readable Zone) in TD2 format  consists of 2 lines, with each line containing 36 characters.
+The MRZ (Machine Readable Zone) in TD2 format consists of 2 lines with 36 characters in each line.
 
 <div>
    <img src="../../assets/td2-id.png" alt="Example of MRZ in TD2 format" width="72%" />
@@ -40,7 +40,7 @@ The MRZ (Machine Readable Zone) in TD2 format  consists of 2 lines, with each li
 
 ### Passport (TD3 Size)
 
-The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each line containing 44 characters.
+The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 characters in each line.
 
 <div>
    <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
@@ -92,13 +92,13 @@ The first thing that we are going to do is to create a fresh new project. Here a
 
 ## Step 2: Include the Library
 
-Add the SDK to your new project. Please read [Add the SDK](#add-the-sdk) section for more details.
+Please read [Add the SDK](#add-the-sdk) section for instructions on how to add the SDK to your Android project.
 
 ## Step 3: Initialize the License
 
 The first step in code configuration is to include a valid license in the `MRZScannerConfig` object, which is used when launching the scanner.
 
-We first start with the package imports and then start implementing the MainActivity class, which starts with some simple Android UI configuration and creating the TextView that will display the results, followed by defining the license via the `setLicense` method of `MRZScannerConfig`.
+We first start with the package imports and then proceed to implementing the MainActivity class. That begins with configuring the `TextView` to display the MRZ document info once it is recognized, followed by defining the license via the `setLicense` method of `MRZScannerConfig`.
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -174,47 +174,46 @@ Once a MRZ is found, the content of the extracted information from the MRZ is ou
 ```java
 public class MainActivity extends AppCompatActivity {
    private ActivityResultLauncher<MRZScannerConfig> launcher;
-          @Override
-          protected void onCreate(@Nullable Bundle savedInstanceState) {
-          /* <CONTINUATION OF THE CODE FROM STEP 3> */
+   @Override
+   protected void onCreate(@Nullable Bundle savedInstanceState) {
+          /* CONTINUATION OF THE CODE FROM STEP 3 */
           launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
              if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_FINISHED && result.getData() != null) {
-                String content = "Result: document type: " + result.getData().getDocumentType() + "\n" + "document number: "
-                   + result.getData().getDocumentNumber();
-                textView.setText(content);
+                    String content = "Result: document type: " + result.getData().getDocumentType() + "\n" + "document number: " + result.getData().getDocumentNumber();
+                    textView.setText(content);
              } else if(result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED ){
-                textView.setText("Scan canceled.");
+                    textView.setText("Scan canceled.");
              }
              if (result.getErrorString() != null && !result.getErrorString().isEmpty()) {
-                textView.setText(result.getErrorString());
+                    textView.setText(result.getErrorString());
              }
           });
-          findViewById(R.id.btn_navigate).setOnClickListener(v -> launcher.launch(config));
+         findViewById(R.id.btn_navigate).setOnClickListener(v -> launcher.launch(config));
    }
 }
 ```
-1. 
+2. 
 ```kotlin
 class MainActivity : AppCompatActivity() {
    private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
    override fun onCreate(savedInstanceState: Bundle?) {
-          launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
-             if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_FINISHED && result.data != null) {
-                val content = """
-                Result: document type: ${result.data.documentType}
-                document number: ${result.data.documentNumber}
-                """.trimIndent()
-                textView.text = content
-             } else if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
-                textView.text = "Scan canceled."
-             }
-             if (result.errorString != null && result.errorString.isNotEmpty()) {
-                textView.text = result.errorString
-             }
+       launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
+          if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_FINISHED && result.data != null) {
+                 val content = """
+                 Result: document type: ${result.data.documentType}
+                 document number: ${result.data.documentNumber}
+                 """.trimIndent()
+                 textView.text = content
+          } else if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
+                 textView.text = "Scan canceled."
           }
-          findViewById<View>(R.id.btn_navigate).setOnClickListener {
-             launcher.launch(config)
+          if (result.errorString != null && result.errorString.isNotEmpty()) {
+                 textView.text = result.errorString
           }
+       }
+       findViewById<View>(R.id.btn_navigate).setOnClickListener {
+          launcher.launch(config)
+       }
    }
 }
 ```
@@ -283,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
    }
 }
 ```
-1. 
+2. 
 ```kotlin
 class MainActivity : AppCompatActivity() {
    private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>

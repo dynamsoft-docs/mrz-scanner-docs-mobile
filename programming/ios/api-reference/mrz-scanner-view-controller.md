@@ -10,7 +10,7 @@ breadcrumbText: MRZScannerViewController
 
 # Class MRZScannerViewController
 
-`MRZScannerViewController` is an activity class that implements MRZ scanning features.
+`MRZScannerViewController` is an extension of the `ViewController` class that implements MRZ scanning features.
 
 ## Definition
 
@@ -27,6 +27,40 @@ breadcrumbText: MRZScannerViewController
 2. 
 ```swift
 class MRZScannerViewController: UIViewController
+```
+
+## config
+
+Sets the [`MRZScannerConfig`](mrz-scanner-config.md) object of the `MRZScannerViewController` to configure the license and the MRZ scanner settings.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+@property(nonatomic, assign) DSDocumentType documentType;
+```
+2. 
+```swift
+var documentType: DocumentType { get set }
+```
+
+## onScannedResult
+
+Sets the result callback of the `MRZScannerViewController` object, which determines what needs to be done with the MRZ results once they are received.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+@property(nonatomic, assign) DSDocumentType documentType;
+```
+2. 
+```swift
+var documentType: DocumentType { get set }
 ```
 
 ## How to Use
