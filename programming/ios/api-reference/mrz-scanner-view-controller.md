@@ -10,7 +10,7 @@ breadcrumbText: MRZScannerViewController
 
 # Class MRZScannerViewController
 
-`MRZScannerViewController` is an activity class that implements MRZ scanning features.
+`MRZScannerViewController` is an extension of the `ViewController` class that implements MRZ scanning features.
 
 ## Definition
 
@@ -27,6 +27,47 @@ breadcrumbText: MRZScannerViewController
 2. 
 ```swift
 class MRZScannerViewController: UIViewController
+```
+
+## Properties
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+| [`config`](#config) | *DSMRZScannerConfig \** | Sets or returns the MRZ scanner configurations. |
+| [`onScannedResult`](#onscannedresult) | *void (^)(DSMRZScanResult *)* | A property that holds a Block. The block is a callback that takes a single parameter of type `DSMRZScanResult` and returns no value. |
+
+## config
+
+Sets or returns the MRZ scanner configurations of type [`DSMRZScannerConfig`](mrz-scanner-config.md).
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+@property (nonatomic, strong, readwrite) DSMRZScannerConfig * config
+```
+2. 
+```swift
+var config: MRZScannerConfig = .init()
+```
+
+## onScannedResult
+
+A property that holds a Block. The block is a callback that takes a single parameter of type [`DSMRZScanResult`](mrz-scan-result.md) and returns no value.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+@property (nonatomic, copy, readwrite) void (^)(DSMRZScanResult *) onScannedResult
+```
+2. 
+```swift
+var onScannedResult: ((MRZScanResult) -> Void)?
 ```
 
 ## How to Use

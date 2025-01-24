@@ -10,7 +10,7 @@ breadcrumbText: MRZScanResult
 
 # MRZScanResult
 
-`MRZScanResult` is a result class that contains the parsed MRZ information from one scan and the additional information.
+`MRZScanResult` is a result class that contains the parsed MRZ information and the corresponding additional information.
 
 ## Definition
 
@@ -26,14 +26,14 @@ class MRZScanResult
 
 | Method | Description |
 | ------ | ----------- |
-| [`getData`](#getdata) | Returns the parsed [`MRZ data`](mrz-data.md). |
-| [`getResultStatus`](#getresultstatus) | Get the status of the result, which can be finished, canceled or exception. |
+| [`getData`](#getdata) | Returns the parsed MRZ data. |
+| [`getResultStatus`](#getresultstatus) | Returns the result status, which can be finished, canceled or exception. |
 | [`getErrorCode`](#geterrorcode) | Returns the error code should something go wrong during the MRZ scanning process. |
 | [`getErrorString`](#geterrorstring) | Returns the error message associated with the error code should something go wrong during the MRZ scanning process. |
 
 ### getData
 
-Returns the parsed [`MRZ data`](mrz-data.md).
+Returns the parsed MRZ information as a [`MRZData`](mrz-data.md) object.
 
 ```java
 MRZData getData();
@@ -45,7 +45,7 @@ A [`MRZData`](mrz-data.md) object that contains the parsed MRZ data.
 
 ### getResultStatus
 
-Get the status of the result, which can be finished, canceled or exception.
+Returns the status of the result, which can be finished, canceled or exception.
 
 ```java
 @EnumResultStatus

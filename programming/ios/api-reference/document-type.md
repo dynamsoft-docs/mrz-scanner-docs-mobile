@@ -10,7 +10,7 @@ breadcrumbText: DSDocumentType
 
 # DSDocumentType
 
-`DSDocumentType` is a enumeration class that defines the type of document to scan, such as ID cards or passports.
+`DSDocumentType` is an enumeration class that defines the type of document to scan, such as ID cards or passports.
 
 ## Definition
 

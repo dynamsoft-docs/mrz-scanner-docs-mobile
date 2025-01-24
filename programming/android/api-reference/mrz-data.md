@@ -26,21 +26,21 @@ class MRZData
 
 | Method | Description |
 | ------ | ----------- |
-| [`getFirstName`](#getfirstname) | Returns the first name. |
-| [`getLastName`](#getlastname) | Returns the last name. |
-| [`getSex`](#getsex) | Returns the sex. |
-| [`getIssuingState`](#getissuingstate) | Returns the issuing state. |
-| [`getNationality`](#getnationality) | Returns the nationality. |
-| [`getDateOfBirth`](#getdateofbirth) | Returns the date of birth. |
-| [`getDateOfExpire`](#getdateofexpire) | Returns the date of expire. |
-| [`getDocumentType`](#getdocumenttype) | Returns the type of document. |
-| [`getDocumentNumber`](#getdocumentnumber) | Returns the document number. |
-| [`getAge`](#getage) | Returns the age. |
-| [`getMrzText`](#getmrztext) | Returns the raw text of MRZ. |
+| [`getFirstName`](#getfirstname) | Returns the first name of the user of the MRZ document. |
+| [`getLastName`](#getlastname) | Returns the last name of the user of the MRZ document. |
+| [`getSex`](#getsex) | Returns the sex of the user of the MRZ document. |
+| [`getIssuingState`](#getissuingstate) | Returns the issuing state of the MRZ document. |
+| [`getNationality`](#getnationality) | Returns the nationality of the user of the MRZ document. |
+| [`getDateOfBirth`](#getdateofbirth) | Returns the date of birth of the user of the MRZ document. |
+| [`getDateOfExpire`](#getdateofexpire) | Returns the expiry date of the MRZ document. |
+| [`getDocumentType`](#getdocumenttype) | Returns the type of MRZ document. |
+| [`getDocumentNumber`](#getdocumentnumber) | Returns the MRZ document number. |
+| [`getAge`](#getage) | Returns the age of the user of the MRZ document. |
+| [`getMrzText`](#getmrztext) | Returns the raw text of the MRZ. |
 
 ### getFirstName
 
-Returns the first name.
+Returns the first name of the user of the MRZ document.
 
 ```java
 String getFirstName();
@@ -52,7 +52,7 @@ The first name.
 
 ### getLastName
 
-Returns the last name.
+Returns the last name of the user of the MRZ document.
 
 ```java
 String getLastName();
@@ -64,7 +64,7 @@ The last name.
 
 ### getSex
 
-Returns the sex.
+Returns the sex of the user of the MRZ document.
 
 ```java
 String getSex();
@@ -76,7 +76,7 @@ The sex.
 
 ### getIssuingState
 
-Returns the issuing state.
+Returns the issuing state of the MRZ document.
 
 ```java
 String getIssuingState();
@@ -88,7 +88,7 @@ The issuing state.
 
 ### getNationality
 
-Returns the nationality.
+Returns the nationality of the user of the MRZ document.
 
 ```java
 String getNationality();
@@ -100,7 +100,7 @@ The nationality.
 
 ### getDateOfBirth
 
-Returns the date of birth.
+Returns the date of birth of the user of the MRZ document.
 
 ```java
 String getDateOfBirth();
@@ -112,7 +112,7 @@ The date of birth.
 
 ### getDateOfExpire
 
-Returns the date of expire.
+Returns the expiry date of the MRZ document.
 
 ```java
 String getDateOfExpire();
@@ -120,11 +120,11 @@ String getDateOfExpire();
 
 **Return Value**
 
-The date of expire.
+The date of expiry.
 
 ### getDocumentType
 
-Returns the type of document.
+Returns the type of MRZ document.
 
 ```java
 String getDocumentType();
@@ -136,7 +136,7 @@ The type of document, such as ID cards or passports.
 
 ### getDocumentNumber
 
-Returns the document number.
+Returns the MRZ document number.
 
 ```java
 String getDocumentNumber();
@@ -148,7 +148,7 @@ The document number.
 
 ### getAge
 
-Returns the age.
+Returns the age of the user of the MRZ document.
 
 ```java
 int getAge();
@@ -160,7 +160,7 @@ The age.
 
 ### getMrzText
 
-Returns the raw text of MRZ.
+Returns the raw text of the MRZ.
 
 ```java
 String getMrzText();
@@ -168,4 +168,4 @@ String getMrzText();
 
 **Return Value**
 
-The raw text of MRZ.
+The raw text of the MRZ.

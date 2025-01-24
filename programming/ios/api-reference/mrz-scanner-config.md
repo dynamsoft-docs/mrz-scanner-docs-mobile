@@ -10,7 +10,7 @@ breadcrumbText: MRZScannerConfig
 
 # MRZScannerConfig
 
-`MRZScannerConfig` is the class that defines the configurations for MRZ scanning. It is set via the input value of `MRZScannerActivity.ResultContract`
+`MRZScannerConfig` is the class that defines the configurations for MRZ scanning. It is set via the `MRZScannerViewController`.
 
 ## Definition
 
@@ -33,17 +33,17 @@ class MRZScannerConfig : NSObject
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-| [`license`](#license) | *NSString* | Sets/Gets the license string. |
-| [`templateFilePath`](#templatefilepath) | *NSString* | Sets/Gets a path for the SDK to load template file. |
-| [`documentType`](#documenttype) | *NSString* | Sets/Gets the document type to scan. |
-| [`isTorchButtonVisible`](#istorchbuttonvisible) | *BOOL* | Sets/Gets the visibility of the torch button. |
-| [`isBeepEnabled`](#isbeepenabled) | *BOOL* | Sets/Gets whether to trigger a beep sound when a MRZ is scanned. |
-| [`isCloseButtonVisible`](#isclosebuttonvisible) | *BOOL* | Sets/Gets the visibility of the close button. |
-| [`isGuideFrameVisible`](#isguideframevisible) | *BOOL* | Sets/Gets the visibility of the guide frame. |
+| [`license`](#license) | *NSString* | Sets/Returns the license string. |
+| [`templateFilePath`](#templatefilepath) | *NSString* | Sets/Returns the local file path for the JSON parameters template file. |
+| [`documentType`](#documenttype) | *NSString* | Sets/Returns the document type to scan, such as ID cards or passports. |
+| [`isTorchButtonVisible`](#istorchbuttonvisible) | *BOOL* | Sets/Returns the visibility of the torch button. |
+| [`isBeepEnabled`](#isbeepenabled) | *BOOL* | Sets/Returns whether the beep sound is enabled when a MRZ is scanned. |
+| [`isCloseButtonVisible`](#isclosebuttonvisible) | *BOOL* | Sets/Returns the visibility of the close button. |
+| [`isGuideFrameVisible`](#isguideframevisible) | *BOOL* | Sets/Returns the visibility of the guide frame on the display. |
 
 ### license
 
-Sets or gets the license string.
+Sets or returns the license string.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -60,7 +60,7 @@ var license: String { get set }
 
 ### templateFilePath
 
-Sets or gets a path for the SDK to load template file.
+Sets or returns the local file path for the JSON parameters template file.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -77,7 +77,7 @@ var templateFilePath: String { get set }
 
 ### documentType
 
-Sets or gets the document type to scan.
+Sets or returns the document type to scan, such as ID cards or passports.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -94,7 +94,7 @@ var documentType: DocumentType { get set }
 
 ### isTorchButtonVisible
 
-Sets or gets the visibility of the torch button.
+Sets or returns the visibility of the torch button. Users can click the torch button to turn on/off the torch.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -111,7 +111,7 @@ var isTorchButtonVisible: Bool { get set }
 
 ### isBeepEnabled
 
-Sets or gets the status of the beep sound setting.
+Sets or returns whether the beep sound is enabled when a MRZ is scanned.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -128,7 +128,7 @@ var isBeepEnabled: Bool { get set }
 
 ### isCloseButtonVisible
 
-Sets or gets the visibility of the close button.
+Sets or returns the visibility of the close button.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -145,7 +145,7 @@ var isCloseButtonVisible: Bool { get set }
 
 ### isGuideFrameVisible
 
-Sets or gets the visibility of the guide frame.
+Sets or returns the visibility of the guide frame on the display.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C

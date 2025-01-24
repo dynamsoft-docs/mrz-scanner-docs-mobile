@@ -33,21 +33,21 @@ class MRZData : NSObject
 
 | Property | Type | Description |
 | -------- | ------ | ----------- |
-| [`firstName`](#firstname) | String | The first name. |
-| [`lastName`](#lastname) | String | The last name. |
-| [`sex`](#sex) | String | The sex. |
-| [`issuingState`](#issuingstate) | String | The issuing state. |
-| [`nationality`](#nationality) | String | The nationality. |
-| [`dateOfBirth`](#dateofbirth) | String | The date of birth. |
-| [`dateOfExpire`](#dateofexpire) | String | The date of expire. |
-| [`documentType`](#documenttype) | String | The type of document. |
-| [`documentNumber`](#documentnumber) | String | The document number. |
-| [`age`](#age) | Int | The age. |
-| [`mrzText`](#mrztext) | String | The raw text of MRZ. |
+| [`firstName`](#firstname) | String | The first name of the user of the MRZ document. |
+| [`lastName`](#lastname) | String | The last name of the user of the MRZ document. |
+| [`sex`](#sex) | String | The sex of the user of the MRZ document. |
+| [`issuingState`](#issuingstate) | String | The issuing state of the MRZ document. |
+| [`nationality`](#nationality) | String | The nationality of the user of the MRZ document. |
+| [`dateOfBirth`](#dateofbirth) | String | The date of birth of the user of the MRZ document. |
+| [`dateOfExpire`](#dateofexpire) | String | The expiry date of the MRZ document. |
+| [`documentType`](#documenttype) | String | The type of MRZ document. |
+| [`documentNumber`](#documentnumber) | String | The MRZ document number. |
+| [`age`](#age) | Int | The age of the user of the MRZ document. |
+| [`mrzText`](#mrztext) | String | The raw text of the MRZ. |
 
 ### firstName
 
-The first name.
+The first name of the user of the MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -64,7 +64,7 @@ let firstName: String
 
 ### lastName
 
-The last name.
+The last name of the user of the MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -81,7 +81,7 @@ let lastName: String
 
 ### sex
 
-The sex.
+The sex of the user of the MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -98,7 +98,7 @@ let sex: String
 
 ### issuingState
 
-The issuing state.
+The issuing state of the MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -115,7 +115,7 @@ let issuingState: String
 
 ### nationality
 
-The nationality.
+The nationality of the user of the MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -132,7 +132,7 @@ let nationality: String
 
 ### dateOfBirth
 
-The date of birth.
+The date of birth of the user of the MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -149,7 +149,7 @@ let dateOfBirth: String
 
 ### dateOfExpire
 
-The date of expire.
+The expiry date of the MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -166,7 +166,7 @@ let dateOfExpire: String
 
 ### documentType
 
-The type of document.
+The type of MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -183,7 +183,7 @@ let documentType: String
 
 ### documentNumber
 
-The document number.
+The MRZ document number.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -200,7 +200,7 @@ let documentNumber: String
 
 ### age
 
-The age.
+The age of the user of the MRZ document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -217,7 +217,7 @@ let age: Int
 
 ### mrzText
 
-The raw text of MRZ.
+The raw text of the MRZ.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C

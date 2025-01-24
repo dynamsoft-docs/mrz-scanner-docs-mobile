@@ -10,7 +10,7 @@ breadcrumbText: EnumDocumentType
 
 # EnumDocumentType
 
-`EnumDocumentType` is a enumeration class that defines the type of document to scan, such as ID cards or passports.
+`EnumDocumentType` is an enumeration class that defines the type of document to scan, such as ID cards or passports.
 
 ## Definition
 
