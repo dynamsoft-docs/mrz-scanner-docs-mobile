@@ -94,7 +94,43 @@ The first thing that we are going to do is to create a fresh new project. Here a
 
 Please read [Add the SDK](#add-the-sdk) section for instructions on how to add the SDK to your Android project.
 
-## Step 3: Initialize the License
+## Step 3: Get Prepare for the Layout File
+
+Open your **activity_main.xml** and replace it with the following code. In the layout file, we prepared 2 UI elements:
+
+- A `TextView` for displaying the MRZ scanning result.
+- A "START SCANNING" button for opening the scanner view.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Empty list"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_navigate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="START SCANNING" />
+</RelativeLayout>
+```
+
+## Step 4: Initialize the License
 
 The first step in code configuration is to include a valid license in the `MRZScannerConfig` object, which is used when launching the scanner.
 
@@ -158,7 +194,7 @@ class MainActivity : AppCompatActivity() {
 >- The license string here grants a time-limited free trial which requires network connection to work.
 >- You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
 
-## Step 4: Implementing the MRZ Scanner
+## Step 5: Implementing the MRZ Scanner
 
 Now that the MRZ Scanner is configured and the license has been set, it is time to implement the actions (via the `launcher`) to take when a MRZ is scanned. Once the launcher is called, the MRZ Scanner opens the camera and begins the scanning process.
 
@@ -179,13 +215,13 @@ public class MainActivity extends AppCompatActivity {
           /* CONTINUATION OF THE CODE FROM STEP 3 */
           launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
              if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_FINISHED && result.getData() != null) {
-                    String content = "Result: document type: " + result.getData().getDocumentType() + "\n" + "document number: " + result.getData().getDocumentNumber();
-                    textView.setText(content);
+                String content = "Result: document type: " + result.getData().getDocumentType() + "\n" + "document number: " + result.getData().getDocumentNumber();
+                textView.setText(content);
              } else if(result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED ){
-                    textView.setText("Scan canceled.");
+                textView.setText("Scan canceled.");
              }
              if (result.getErrorString() != null && !result.getErrorString().isEmpty()) {
-                    textView.setText(result.getErrorString());
+                textView.setText(result.getErrorString());
              }
           });
          findViewById(R.id.btn_navigate).setOnClickListener(v -> launcher.launch(config));
@@ -199,16 +235,16 @@ class MainActivity : AppCompatActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
        launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
           if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_FINISHED && result.data != null) {
-                 val content = """
-                 Result: document type: ${result.data.documentType}
-                 document number: ${result.data.documentNumber}
-                 """.trimIndent()
-                 textView.text = content
+             val content = """
+             Result: document type: ${result.data.documentType}
+             document number: ${result.data.documentNumber}
+             """.trimIndent()
+             textView.text = content
           } else if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
-                 textView.text = "Scan canceled."
+             textView.text = "Scan canceled."
           }
           if (result.errorString != null && result.errorString.isNotEmpty()) {
-                 textView.text = result.errorString
+             textView.text = result.errorString
           }
        }
        findViewById<View>(R.id.btn_navigate).setOnClickListener {
@@ -216,39 +252,6 @@ class MainActivity : AppCompatActivity() {
        }
    }
 }
-```
-
-## Step 5: Configure your layout file
-
-Open your **activity_main.xml** and replace it with the following code:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/tv_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Empty list"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btn_navigate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:text="START SCANNING" />
-</RelativeLayout>
 ```
 
 ## Step 6: Configure the MRZ Scanner (optional)

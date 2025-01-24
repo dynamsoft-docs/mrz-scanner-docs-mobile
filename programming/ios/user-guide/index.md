@@ -248,27 +248,27 @@ Each result comes with a `DSResultStatus` that can be one of *finished*, *cancel
    vc.onScannedResult = ^(DSMRZScanResult *result) {
           switch (result.resultStatus) {
              case DSResultStatusFinished: {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                       NSString *documentType = result.data.documentType ?: @"";
-                       NSString *documentNumber = result.data.documentNumber ?: @"";
-                       weakSelf.label.text = [NSString stringWithFormat:@"Result:\nDocumentType: %@\nDocumentNumber: %@", documentType, documentNumber];
-                    });
-                    break;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   NSString *documentType = result.data.documentType ?: @"";
+                   NSString *documentNumber = result.data.documentNumber ?: @"";
+                   weakSelf.label.text = [NSString stringWithFormat:@"Result:\nDocumentType: %@\nDocumentNumber: %@", documentType, documentNumber];
+                });
+                break;
              }
              case DSResultStatusCanceled: {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                       weakSelf.label.text = @"Scan canceled";
-                    });
-                    break;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   weakSelf.label.text = @"Scan canceled";
+                });
+                break;
              }
              case DSResultStatusException: {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                       weakSelf.label.text = result.errorString;
-                    });
-                    break;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   weakSelf.label.text = result.errorString;
+                });
+                break;
              }
              default:
-                    break;
+                break;
           }
           dispatch_async(dispatch_get_main_queue(), ^{
              [weakSelf.navigationController popViewControllerAnimated:YES];
@@ -295,19 +295,19 @@ Each result comes with a `DSResultStatus` that can be one of *finished*, *cancel
           /* if the result is valid, display it in the label */
           case .finished:
              DispatchQueue.main.async {
-                    let documentType = result.data?.documentType ?? ""
-                    let documentNumber = result.data?.documentNumber ?? ""
-                    self.label.text = "Result:\nDocumentType: " + (documentType) + "\n" + "DocumentNumber: " + (documentNumber)
+                let documentType = result.data?.documentType ?? ""
+                let documentNumber = result.data?.documentNumber ?? ""
+                self.label.text = "Result:\nDocumentType: " + (documentType) + "\n" + "DocumentNumber: " + (documentNumber)
              }
           /* if the scan operation is canceled by the user */
           case .canceled:
              DispatchQueue.main.async {
-                    self.label.text = "Scan canceled"
+                self.label.text = "Scan canceled"
              }
           /* if an error occurs during capture, display the error string in the label */
           case .exception:
              DispatchQueue.main.async {
-                    self.label.text = result.errorString
+                self.label.text = result.errorString
              }
           @unknown default:
              break

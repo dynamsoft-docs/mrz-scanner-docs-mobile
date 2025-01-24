@@ -29,9 +29,16 @@ breadcrumbText: MRZScannerViewController
 class MRZScannerViewController: UIViewController
 ```
 
+## Properties
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+| [`config`](#config) | *DSMRZScannerConfig \** | Sets or returns the MRZ scanner configurations. |
+| [`onScannedResult`](#onscannedresult) | *void (^)(DSMRZScanResult *)* | A property that holds a Block. The block is a callback that takes a single parameter of type `DSMRZScanResult` and returns no value. |
+
 ## config
 
-Sets the [`MRZScannerConfig`](mrz-scanner-config.md) object of the `MRZScannerViewController` to configure the license and the MRZ scanner settings.
+Sets or returns the MRZ scanner configurations of type [`DSMRZScannerConfig`](mrz-scanner-config.md).
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -39,16 +46,16 @@ Sets the [`MRZScannerConfig`](mrz-scanner-config.md) object of the `MRZScannerVi
 >
 >1. 
 ```objc
-@property(nonatomic, assign) DSDocumentType documentType;
+@property (nonatomic, strong, readwrite) DSMRZScannerConfig * config
 ```
 2. 
 ```swift
-var documentType: DocumentType { get set }
+var config: MRZScannerConfig = .init()
 ```
 
 ## onScannedResult
 
-Sets the result callback of the `MRZScannerViewController` object, which determines what needs to be done with the MRZ results once they are received.
+A property that holds a Block. The block is a callback that takes a single parameter of type [`DSMRZScanResult`](mrz-scan-result.md) and returns no value.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -56,11 +63,11 @@ Sets the result callback of the `MRZScannerViewController` object, which determi
 >
 >1. 
 ```objc
-@property(nonatomic, assign) DSDocumentType documentType;
+@property (nonatomic, copy, readwrite) void (^)(DSMRZScanResult *) onScannedResult
 ```
 2. 
 ```swift
-var documentType: DocumentType { get set }
+var onScannedResult: ((MRZScanResult) -> Void)?
 ```
 
 ## How to Use
