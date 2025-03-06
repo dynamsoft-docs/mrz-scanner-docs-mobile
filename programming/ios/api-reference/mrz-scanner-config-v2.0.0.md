@@ -34,18 +34,12 @@ class MRZScannerConfig : NSObject
 | Property | Type | Description |
 | -------- | ---- | ----------- |
 | [`license`](#license) | *NSString* | Sets/Returns the license string. |
-| [`templateFile`](#templatefile) | *NSString \** | Sets or returns the template with a file path or a JSON string. |
+| [`templateFilePath`](#templatefilepath) | *NSString* | Sets/Returns the local file path for the JSON parameters template file. |
 | [`documentType`](#documenttype) | *NSString* | Sets/Returns the document type to scan, such as ID cards or passports. |
 | [`isTorchButtonVisible`](#istorchbuttonvisible) | *BOOL* | Sets/Returns the visibility of the torch button. |
 | [`isBeepEnabled`](#isbeepenabled) | *BOOL* | Sets/Returns whether the beep sound is enabled when a MRZ is scanned. |
 | [`isCloseButtonVisible`](#isclosebuttonvisible) | *BOOL* | Sets/Returns the visibility of the close button. |
 | [`isGuideFrameVisible`](#isguideframevisible) | *BOOL* | Sets/Returns the visibility of the guide frame on the display. |
-
-The following property is deprecated:
-
-| Property | Type | Description |
-| -------- | ---- | ----------- |
-| [`templateFilePath`](#templatefilepath) | *NSString* | Sets/Returns the local file path for the JSON parameters template file. |
 
 ### license
 
@@ -64,9 +58,9 @@ Sets or returns the license string.
 var license: String { get set }
 ```
 
-### templateFile
+### templateFilePath
 
-Sets or returns the template with a file path or a JSON string.
+Sets or returns the local file path for the JSON parameters template file.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -74,11 +68,11 @@ Sets or returns the template with a file path or a JSON string.
 >
 >1. 
 ```objc
-@property(nonatomic, assign) NSString* templateFile;
+@property(nonatomic, assign) NSString* templateFilePath;
 ```
 2. 
 ```swift
-var templateFile: String { get set }
+var templateFilePath: String { get set }
 ```
 
 ### documentType
@@ -164,21 +158,4 @@ Sets or returns the visibility of the guide frame on the display.
 2. 
 ```swift
 var isGuideFrameVisible: Bool { get set }
-```
-
-### templateFilePath
-
-Sets or returns the local file path for the JSON parameters template file.
-
-<div class="sample-code-prefix"></div>
->- Objective-C
->- Swift
->
->1. 
-```objc
-@property(nonatomic, assign) NSString* templateFilePath;
-```
-2. 
-```swift
-var templateFilePath: String { get set }
 ```

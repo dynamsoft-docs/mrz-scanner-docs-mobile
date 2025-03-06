@@ -10,6 +10,20 @@ noTitleIndex: true
 
 # Release Notes for iOS SDK - 2.x
 
+## 2.0.1 (03/06/2025)
+
+### New
+
+- Added a new property [`templateFile`](../api-reference/mrz-scanner-config.md#templatefile) to the class [`DSMRZScannerConfig`](../api-reference/mrz-scanner-config.md#isguideframevisible). You can use this property to set the template file via either a file path or a JSON string.
+
+### Fixed
+
+- Fixed a camera adaptation bug when using the iPad device.
+
+### Deprecated
+
+- The property `templateFilePath` is deprecated. Please use [`templateFile`](../api-reference/mrz-scanner-config.md#templatefile) instead.
+
 ## 2.0.0 (01/09/2025)
 
 ### New
