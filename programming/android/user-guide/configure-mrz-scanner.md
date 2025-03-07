@@ -41,7 +41,7 @@ A template file is a JSON file that includes a series of algorithm parameter set
 
 1. Add a **Templates** folder to the assets folder of your project at **src\main\assets\Templates**. Put your JSON file in the **Templates** folder.
 
-2. Specify the template file via setTemplateFilePath
+2. Specify the template file via setTemplateFile
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -50,19 +50,21 @@ A template file is a JSON file that includes a series of algorithm parameter set
 >1. 
 ```java
 MRZScannerConfig config = new MRZScannerConfig();
-config.setTemplateFilePath("CustomizedTemplate.json");
+config.setTemplateFile("CustomizedTemplate.json");
 ```
 2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
-   templateFilePath = "CustomizedTemplate.json"
+   templateFile = "CustomizedTemplate.json"
 }
 ```
+
+> Note: You can also use a JSON string as the template file.
 
 **Related APIs**
 
 - [`setDocumentType`]({{ site.android_api }}mrz-scanner-config.html#setdocumenttype)
-- [`setTemplateFilePath`]({{ site.android_api }}mrz-scanner-config.html#settemplatefilepath)
+- [`setTemplateFile`]({{ site.android_api }}mrz-scanner-config.html#settemplatefile)
 
 ## Configure the UI Elements
 

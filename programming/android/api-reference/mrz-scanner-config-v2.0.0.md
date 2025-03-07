@@ -27,26 +27,19 @@ final class MRZScannerConfig
 | Method | Description |
 | ------ | ----------- |
 | [`setLicense`](#setlicense) | Sets the license string. |
-| [`setTemplateFile`](#settemplatefile) | Sets the template with a file path or a JSON string. |
+| [`setTemplateFilePath`](#settemplatefilepath) | Sets the local file path for the JSON parameters template file. |
 | [`setTorchButtonVisible`](#settorchbuttonvisible) | Sets whether to display the torch button when scanning. |
 | [`setBeepEnabled`](#setbeepenabled) | Sets whether the beep sound is triggered or not when a MRZ is scanned. |
 | [`setCloseButtonVisible`](#setclosebuttonvisible) | Sets the visibility status of the close button for users to close the scanner page. |
 | [`setDocumentType`](#setdocumenttype) | Sets the type of document to scan, such as ID cards or passports. |
 | [`getLicense`](#getlicense) | Returns the license string. |
-| [`getTemplateFile`](#gettemplatefile) | Returns the template with a file path or a JSON string. |
+| [`getTemplateFilePath`](#gettemplatefilepath) | Returns the local path of the settings template file. |
 | [`isTorchButtonVisible`](#istorchbuttonvisible) | Returns the visibility status of the torch button. |
 | [`isBeepEnabled`](#isbeepenabled) | Returns the play status of the beep sound when a MRZ is scanned. |
 | [`isCloseButtonVisible`](#isclosebuttonvisible) | Returns the visibility status of the close button. |
 | [`getDocumentType`](#getdocumenttype) | Returns the type of document to scan, such as ID cards or passports. |
 | [`isGuideFrameVisible`](#isguideframevisible) | Returns the visibility status of the guide frame on the display. |
 | [`setGuideFrameVisible`](#setguideframevisible) | Sets the visibility of the guide frame on the display. |
-
-The following methods are deprecated:
-
-| Method | Description |
-| ------ | ----------- |
-| [`setTemplateFilePath`](#settemplatefilepath) | Sets the local file path for the JSON parameters template file. |
-| [`getTemplateFilePath`](#gettemplatefilepath) | Returns the local path of the settings template file. |
 
 ### setLicense
 
@@ -60,17 +53,17 @@ void setLicense(String license);
 
 `license`: The license key to be used for initialization.
 
-### setTemplateFile
+### setTemplateFilePath
 
-Sets the template with a file path or a JSON string.
+Set a path for the SDK to load template file.
 
 ```java
-void setTemplateFile(String templateFile);
+void setTemplateFilePath(String templateFilePath);
 ```
 
 **Parameter(s)**
 
-`templateFile`: The file path or a JSON string.
+`templateFilePath`: The path of the JSON template file.
 
 ### setTorchButtonVisible
 
@@ -132,17 +125,17 @@ String getLicense();
 
 The license key to be used for initialization.
 
-### getTemplateFile
+### getTemplateFilePath
 
-Returns the template with a file path or a JSON string.
+Returns the local path of the settings template file.
 
 ```java
-String getTemplateFile();
+String getTemplateFilePath();
 ```
 
 **Return Value**
 
-A file path or a JSON string.
+The path of the JSON template file.
 
 ### isTorchButtonVisible
 
@@ -215,27 +208,3 @@ void setGuideFrameVisible(boolean guideFrameVisible);
 **Parameter(s)**
 
 `guideFrameVisible`: A boolean value that determines whether to display the guide frame.
-
-### setTemplateFilePath
-
-Set a path for the SDK to load template file.
-
-```java
-void setTemplateFilePath(String templateFilePath);
-```
-
-**Parameter(s)**
-
-`templateFilePath`: The path of the JSON template file.
-
-### getTemplateFilePath
-
-Returns the local path of the settings template file.
-
-```java
-String getTemplateFilePath();
-```
-
-**Return Value**
-
-The path of the JSON template file.
