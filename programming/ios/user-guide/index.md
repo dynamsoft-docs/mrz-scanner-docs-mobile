@@ -338,8 +338,8 @@ This next step, although optional, is highly recommended to help you achieve a s
 DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
 // You can use the following code to specify the document type.
 config.documentType = DSDocumentTypePassport;
-// If you have a customized template file, please put it under "DynamsoftResources.bundle\Templates\" and call the following code.
-config.templateFilePath = @"CustomizedTemplate.json";
+// If you have a customized template file, please put it under "DynamsoftResources.bundle\Templates\" and call the following code. You can also use a JSON string as the `templateFile`.
+config.templateFile = @"CustomizedTemplate.json";
 // Add the following line to enable the beep sound when an MRZ is scanned successfully.
 config.isBeepEnabled = true;
 // Add the following line if you don't want to display the torch button.
@@ -352,8 +352,8 @@ config.isCloseButtonVisible = false;
 let config = MRZScannerConfig()
 // You can use the following code to specify the document type.
 config.documentType = .passport
-// If you have a customized template file, please put it under "DynamsoftResources.bundle\Templates\" and call the following code.
-config.templateFilePath = "CustomizedTemplate.json"
+// If you have a customized template file, please put it under "DynamsoftResources.bundle\Templates\" and call the following code. You can also use a JSON string as the `templateFile`.
+config.templateFile = "CustomizedTemplate.json"
 // Add the following line to enable the beep sound when an MRZ is scanned successfully.
 config.isBeepEnabled = true
 // Add the following line if you don't want to display the torch button.

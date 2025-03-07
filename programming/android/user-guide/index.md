@@ -273,8 +273,8 @@ public class MainActivity extends AppCompatActivity {
           config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
           // You can use the following code to specify the document type to scan.
           config.setDocumentType(EnumDocumentType.DT_PASSPORT);
-          // If you have a customized template file, please put it under "src\main\assets\Templates\" and call the following code.
-          config.setTemplateFilePath("CustomizedTemplate.json");
+          // If you have a customized template file, please put it under "src\main\assets\Templates\" and call the following code. You can also use a JSON string as the `templateFile`.
+          config.setTemplateFile("CustomizedTemplate.json");
           // The following code enables the beep sound when an MRZ is scanned.
           config.setBeepEnabled = true
           // The following code controls whether to display a torch button.
@@ -295,8 +295,8 @@ class MainActivity : AppCompatActivity() {
              license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
              // You can use the following code to specify the document type to scan.
              documentType = EnumDocumentType.DT_PASSPORT
-             // If you have a customized template file, please put it under "src\main\assets\Templates\" and call the following code.
-             templateFilePath = "CustomizedTemplate.json"
+             // If you have a customized template file, please put it under "src\main\assets\Templates\" and call the following code. You can also use a JSON string as the `templateFile`.
+             templateFile = "CustomizedTemplate.json"
              // Add the following line to disable the beep sound.
              isBeepEnabled = false
              // Add the following line if you don't want to display the torch button.

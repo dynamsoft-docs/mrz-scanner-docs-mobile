@@ -44,7 +44,7 @@ A template file is a JSON file that includes a series of algorithm parameter set
 
 3. Rename the `DynamsoftResources` folder's extension name to .bundle and drag the `DynamsoftResources.bundle` into your project on Xcode. Select Create groups for the Added folders option.
 
-4. Specify the template file via `templateFilePath` property
+4. Specify the template file via `templateFile` property
 
    <div class="sample-code-prefix"></div>
    >- Objective-C
@@ -53,18 +53,20 @@ A template file is a JSON file that includes a series of algorithm parameter set
    >1. 
    ```objc
    DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
-   config.templateFilePath = @"CustomizedTemplate.json";
+   config.templateFile = @"CustomizedTemplate.json";
    ```
    1. 
    ```swift
    let config = MRZScannerConfig()
-   config.templateFilePath = "CustomizedTemplate.json"
+   config.templateFile = "CustomizedTemplate.json"
    ```
+
+> Note: You can also use a JSON string as the template file.
 
 **Related APIs**
 
 - [`documentType`]({{ site.ios_api }}mrz-scanner-config.html#documenttype)
-- [`templateFilePath`]({{ site.ios_api }}mrz-scanner-config.html#templatefilepath)
+- [`templateFile`]({{ site.ios_api }}mrz-scanner-config.html#templatefile)
 
 ## Configure the UI Elements
 
