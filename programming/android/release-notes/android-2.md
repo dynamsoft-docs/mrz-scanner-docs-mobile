@@ -10,6 +10,12 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 2.x
 
+## 2.0.2 (04/17/2025)
+
+### Improved
+
+- Improved the accuracy of MRZ text recognition.
+
 ## 2.0.1 (03/07/2025)
 
 ### New
