@@ -3,6 +3,8 @@ repository: dynamsoft-docs/mrz-scanner-docs-mobile
 docFullPath: https://www.dynamsoft.com/mrz-scanner/docs/mobile/
 firstLevelUrl: /mrz-scanner/docs/mobile
 docHomePage: /mrz-scanner/docs/mobile
+searchIndexName: Crawler-MRZ-Docs
+searchNeedFilter: true
 
 useVersionTree: true
 

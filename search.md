@@ -1,7 +1,8 @@
 ---
-layout: search-page
-title: Dynamsoft MRZ Scanner SDK Documentation Search
-keywords: Dynamsoft MRZ Scanner SDK Documentation Search
+layout: search-layout
+title: MRZ Scanner Mobile Edition Documentation Search
+keywords: MRZ Scanner Mobile Edition Documentation Search
+h1: MRZ Scanner Mobile Edition Documentation Search
 breadcrumbText: HomePage
-cx: 32039cdf85bc7ae2b
+indexName: Crawler-MRZ-Docs
 ---
