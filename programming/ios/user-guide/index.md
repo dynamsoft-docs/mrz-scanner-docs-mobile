@@ -105,7 +105,11 @@ Please read [Add the SDK](#add-the-sdk) section for instructions on how to add t
 
 ## Step 3: Initialize the License
 
-The first major step in code configuration is to include a valid license in the `MRZScannerConfig`, which is used when launching the scanner. Let's break it down into two smaller steps:
+The first major step in code configuration is to include a valid license in the `MRZScannerConfig`, which is used when launching the scanner. If you are just getting started with the MRZ Scanner from Dynamsoft, we recommend getting your own 30-day trial license through the following modal:
+
+{% include trialLicense.html %}
+
+Let's break it down into two smaller steps:
 
 1. In the *ViewController* code, there will be a single button that will start the operation and a label where the error message will be displayed should something go wrong during the capture process. In order to store the parsed MRZ information, we will also create a data struct with the necessary fields as show in the below code snippet.
 
