@@ -132,7 +132,9 @@ Open your **activity_main.xml** and replace it with the following code. In the l
 
 ## Step 4: Initialize the License
 
-The first step in code configuration is to include a valid license in the `MRZScannerConfig` object, which is used when launching the scanner.
+The first step in code configuration is to include a valid license in the `MRZScannerConfig` object, which is used when launching the scanner. If you are just getting started with the MRZ Scanner from Dynamsoft, we recommend getting your own 30-day trial license through the following modal:
+
+{% include trialLicense.html %}
 
 We first start with the package imports and then proceed to implementing the MainActivity class. That begins with configuring the `TextView` to display the MRZ document info once it is recognized, followed by defining the license via the `setLicense` method of `MRZScannerConfig`.
 
