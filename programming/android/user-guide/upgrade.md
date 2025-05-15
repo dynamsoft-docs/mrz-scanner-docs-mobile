@@ -56,16 +56,16 @@ noTitleIndex: true
    >1. 
    ```groovy
    dependencies {
-      implementation 'com.dynamsoft:MRZScannerbundle:{version-number}'
+      implementation 'com.dynamsoft:mrzscannerbundle:{version-number}'
    }
    ```
    2. 
    ```kotlin
    dependencies {
-      implementation("com.dynamsoft:MRZScannerbundle:{version-number}")
+      implementation("com.dynamsoft:mrzscannerbundle:{version-number}")
    }
    ```
 
-   > Note: Please view [user guide](user-guide.md#option-1-add-the-library-via-maven) for the correct version number.
+   > Note: Please view [user guide](index.md#add-the-sdk) for the correct version number.
 
 3. Click **Sync Now**. After the synchronization is complete, the SDK is added to the project.

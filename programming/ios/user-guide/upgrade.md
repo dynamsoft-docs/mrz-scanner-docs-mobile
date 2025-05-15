@@ -1,7 +1,7 @@
 ---
 layout: default-layout
-title: How to update - Dynamsoft MRZ Scanner for Android
-description: Follow the upgrade instructions to learn to upgrade MRZ Scanner SDK Android edition from 2 to 3.
+title: How to update - Dynamsoft MRZ Scanner for iOS
+description: Follow the upgrade instructions to learn to upgrade MRZ Scanner SDK iOS edition from 2 to 3.
 keywords: updates guide, android
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
@@ -18,9 +18,9 @@ There are 2 ways in which you can include the `DynamsoftMRZScannerBundle` librar
 
 1. In your Xcode project, go to **File --> AddPackages**.
 
-2. In the top-right section of the window, search "https://github.com/Dynamsoft/barcode-reader-spm"
+2. In the top-right section of the window, search "https://github.com/Dynamsoft/mrz-scanner-spm"
 
-3. Select `barcode-reader-spm`, choose `Up to Next Major Version`, then click **Add Package**.
+3. Select `mrz-scanner-spm`, choose `Up to Next Major Version`, then click **Add Package**.
 
 4. Check all the **xcframeworks** and add.
 
@@ -37,7 +37,7 @@ There are 2 ways in which you can include the `DynamsoftMRZScannerBundle` librar
    end
    ```
 
-   > Note: Please view [user guide](user-guide.md#option-1-add-the-library-via-maven) for the correct version number.
+   > Note: Please view [user guide](index.md#option-2-add-the-frameworks-via-cocoapods) for the correct version number.
 
 
 2. Execute the pod command to install the frameworks and generate workspace(**[TargetName].xcworkspace**):
