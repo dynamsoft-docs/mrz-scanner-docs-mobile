@@ -16,7 +16,7 @@ Dynamsoft MRZ Scanner SDK iOS Edition is designed to scan the MRZ code from a pa
 
 ### System Requirements
 
-- Supported OS: iOS 11+ (iOS 13+ recommended).
+- Supported OS: iOS 13+.
 - Supported ABI: arm64 and x86_64.
 - Development Environment: Xcode 13+ (Xcode 14.1+ recommended).
 
