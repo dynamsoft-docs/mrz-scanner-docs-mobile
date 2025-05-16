@@ -10,7 +10,7 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
-## 2.0.2 (05/15/2025)
+## 3.0.0 (05/15/2025)
 
 ### Improved
 
