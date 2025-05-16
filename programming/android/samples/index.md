@@ -12,6 +12,7 @@ noTitleIndex: false
 ## MRZScanner Demo
 
 - [View in Google Play Store](https://play.google.com/store/apps/details?id=com.dynamsoft.mrzscanner){:target="_blank"}
+- [Download APK](https://download2.dynamsoft.com/mrzscanner/android/DynamsoftMRZScannerDemoAndroid.apk)
 
 ## ScanMRZ Sample
 
