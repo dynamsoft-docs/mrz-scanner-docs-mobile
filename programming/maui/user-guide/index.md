@@ -125,11 +125,11 @@ You need to add the library via the project file and complete additional steps f
 
 ## Build Your MRZ Scanner App
 
-Now you will learn how to create a SimpleMRZScanner using Dynamsoft Capture Vision MAUI SDK.
+Now you will learn how to create a simple MRZ scanner using Dynamsoft Capture Vision MAUI SDK.
 
 > [!Note]
 >
-> - You can get the similar source code of the SimpleMRZScanner app from the following link
+> - You can get the similar source code of the ScanMRZ app from the following link
 >   - [C#](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/MRZScanner){:target="_blank"}.
 
 ### Set up Development Environment
@@ -142,7 +142,7 @@ If you are a beginner with MAUI, please follow the guide on the <a href="https:/
 
 1. Open the Visual Studio and select **Create a new project**.
 2. Select **.Net MAUI App** and click **Next**.
-3. Name the project **SimpleMRZScanner**. Select a location for the project and click **Next**.
+3. Name the project **ScanMRZ**. Select a location for the project and click **Next**.
 4. Select **.Net 9.0** and click **Create**.
 
 #### Visual Studio for Mac
@@ -150,7 +150,7 @@ If you are a beginner with MAUI, please follow the guide on the <a href="https:/
 1. Open Visual Studio and select **New**.
 2. Select **Multiplatform > App > .Net MAUI App > C#** and click **Continue**.
 3. Select **.Net 9.0** and click **Continue**.
-4. Name the project **SimpleMRZScanner** and select a location, click **Create**.
+4. Name the project **ScanMRZ** and select a location, click **Create**.
 
 ### Include the Library
 
@@ -283,7 +283,7 @@ Open the **Info.plist** file under the **Platforms/iOS/** folder (Open with XML 
 
 Select your device and run the project.
 
-You can get the similar source code of the SimpleMRZScanner app from the following link:
+You can get the similar source code of the ScanMRZ app from the following link:
 
 - [C#](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/MRZScanner){:target="_blank"}.
 
