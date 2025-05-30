@@ -61,7 +61,7 @@ A template file is a JSON file that includes a series of algorithm parameter set
    config.templateFile = "CustomizedTemplate.json"
    ```
 
-> Note: You can also use a JSON string as the template file.
+> [!NOTE] You can also use a JSON string as the template file.
 
 **Related APIs**
 

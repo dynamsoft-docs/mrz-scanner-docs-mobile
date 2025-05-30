@@ -20,7 +20,7 @@ The Machine Readable Travel Document (MRTD) standard specified by the Internatio
 
 Currently, the SDK supports three types of MRTD:
 
-> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) if you have such a request.
+> [!NOTE] If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) if you have such a request.
 
 ### ID (TD1 Size)
 
@@ -86,7 +86,7 @@ The first thing that we are going to do is to create a fresh new project. Here a
 
 3. When prompted, set your app name to *ScanMRZ* and set the **Save** location, **Language**, and **Minimum SDK** (we use 21 here).
 
-> Note:
+> [!NOTE]
 >
 > - With **minSdkVersion** set to 21, your app is compatible with more than 99.6% of devices on the Google Play Store (last update: October 2023).
 
@@ -189,7 +189,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
->Note:
+> [!NOTE]
 >
 >- The license string here grants a time-limited free trial which requires network connection to work.
 >- You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.

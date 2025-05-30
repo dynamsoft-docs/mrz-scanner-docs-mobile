@@ -45,7 +45,7 @@ noTitleIndex: true
    }
    ```
 
-   > Note: If you are using gradle 6.x or older version, the maven dependencies should be configured in  `[App Project Root Path]\app\build.gradle`
+   > [!NOTE] If you are using gradle 6.x or older version, the maven dependencies should be configured in  `[App Project Root Path]\app\build.gradle`
 
 2. Open the file `[App Project Root Path]\app\build.gradle` and add the dependencies:
 
@@ -66,6 +66,6 @@ noTitleIndex: true
    }
    ```
 
-   > Note: Please view [user guide](index.md#add-the-sdk) for the correct version number.
+   > [!NOTE] Please view [user guide](index.md#add-the-sdk) for the correct version number.
 
 3. Click **Sync Now**. After the synchronization is complete, the SDK is added to the project.

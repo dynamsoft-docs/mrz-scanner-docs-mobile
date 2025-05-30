@@ -59,7 +59,7 @@ val config = MRZScannerConfig().apply {
 }
 ```
 
-> Note: You can also use a JSON string as the template file.
+> [!NOTE] You can also use a JSON string as the template file.
 
 **Related APIs**
 
