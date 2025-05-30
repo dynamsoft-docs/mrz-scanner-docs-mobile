@@ -15,9 +15,22 @@ Dynamsoft MRZ Scanner SDK MAUI Edition is designed to scan the MRZ code from a p
 
 ### System Requirements
 
-- Supported OS: MAUI 5.0 (API Level 21) or higher.
+#### .Net
+
+- .NET 8.0 and .NET 9.0.
+
+#### Android
+
+- Supported OS: **Android 5.0** (API Level 21) or higher.
 - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
-- Development Environment: MAUI Studio 2022.2.1 or higher.
+- Development Environment: Visual Studio 2022 recommended.
+- JDK: 1.8+
+
+#### iOS
+
+- Supported OS: **iOS 13.0** or higher.
+- Supported ABI: **arm64** and **x86_64**.
+- Development Environment: Visual Studio 2022 for Mac and Xcode 14.3+ recommended.
 
 ### User Guide
 
