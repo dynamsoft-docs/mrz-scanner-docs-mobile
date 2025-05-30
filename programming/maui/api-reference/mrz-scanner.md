@@ -1,16 +1,16 @@
 ---
 layout: default-layout
-title: MRZScannerActivity Class - Dynamsoft MRZ Scanner MAUI Edition
-description: MRZScannerActivity of DynamsoftMRZScanner MAUI is an activity class that implements MRZ scanning features.
+title: MRZScanner Class - Dynamsoft MRZ Scanner MAUI Edition
+description: MRZScanner of DynamsoftMRZScanner MAUI is an activity class that implements MRZ scanning features.
 keywords: MRZ, scanner, activity
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
-breadcrumbText: MRZScannerActivity
+breadcrumbText: MRZScanner
 ---
 
-# Class MRZScannerActivity
+# Class MRZScanner
 
-`MRZScannerActivity` is an activity class that implements MRZ scanning features.
+`MRZScanner` is an activity class that implements MRZ scanning features.
 
 ## Definition
 
