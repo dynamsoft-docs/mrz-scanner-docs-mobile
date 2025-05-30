@@ -37,7 +37,7 @@ There are 2 ways in which you can include the `DynamsoftMRZScannerBundle` librar
    end
    ```
 
-   > Note: Please view [user guide](index.md#option-2-add-the-frameworks-via-cocoapods) for the correct version number.
+   > [!NOTE] Please view [user guide](index.md#option-2-add-the-frameworks-via-cocoapods) for the correct version number.
 
 
 2. Execute the pod command to install the frameworks and generate workspace(**[TargetName].xcworkspace**):

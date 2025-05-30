@@ -10,6 +10,10 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
+## 3.0.3100 (05/30/2025)
+
+- Fixed a bug where the camera might not be opened.
+
 ## 3.0.0 (05/15/2025)
 
 ### Improved

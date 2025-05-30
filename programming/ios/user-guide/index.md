@@ -20,7 +20,7 @@ The Machine Readable Travel Document (MRTD) standard specified by the Internatio
 
 Currently, the SDK supports three types of MRTD:
 
-> Note: If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) if you have such a request.
+> [!NOTE] If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) if you have such a request.
 
 ### ID (TD1 Size)
 
@@ -219,7 +219,7 @@ class ViewController: UIViewController {
 }
 ```
 
-   >Note:  
+   > [!NOTE]  
    >
    >- The license string here grants a time-limited free trial which requires network connection to work.
    >- You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
@@ -366,7 +366,7 @@ config.isTorchButtonVisible = false
 config.isCloseButtonVisible = false
 ```
 
->Note:
+> [!NOTE]
 >The code above only shows the configuration of the MRZScannerConfig object, which takes place right at the beginning of the `buttonTapped` function in steps 3 and 4.
 
 ## Step 6: Run the Project
@@ -375,7 +375,7 @@ Now that the code has been written, it's time to run the project. The first thin
 
 In order to run the project, you will require a physical iOS device. Once the device is connected, you should see it as an available device in top bar. After selecting the device from the menu, all you need to do is click the Run button. 
 
-> Note: If you try running the project on a simulator, you will encounter errors as this sample uses the device camera which is unavailable when using the simulator.
+> [!NOTE] If you try running the project on a simulator, you will encounter errors as this sample uses the device camera which is unavailable when using the simulator.
 
 ## Conclusion
 

@@ -18,6 +18,11 @@ android_api: /mrz-scanner/docs/mobile/programming/android/api-reference/
 android_release_notes: /mrz-scanner/docs/mobile/programming/android/release-notes/
 android_faq: /mrz-scanner/docs/mobile/programming/android/faq/
 
+maui: /mrz-scanner/docs/mobile/programming/maui/
+maui_api: /mrz-scanner/docs/mobile/programming/maui/api-reference/
+maui_release_notes: /mrz-scanner/docs/mobile/programming/maui/release-notes/
+maui_faq: /mrz-scanner/docs/mobile/programming/maui/faq/
+
 dcvb_android_api: /capture-vision/docs/mobile/programming/android/api-reference/
 dcvb_ios_api: /capture-vision/docs/mobile/programming/ios/api-reference/
 
