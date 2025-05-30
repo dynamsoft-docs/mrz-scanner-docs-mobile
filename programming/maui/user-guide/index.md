@@ -86,7 +86,7 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each lin
 
 ### iOS
 
-- Supported OS: **iOS 11.0** or higher.
+- Supported OS: **iOS 13.0** or higher.
 - Supported ABI: **arm64** and **x86_64**.
 - Development Environment: Visual Studio 2022 for Mac and Xcode 14.3+ recommended.
 
@@ -94,7 +94,7 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each lin
 
 ### Visual Studio for Mac
 
-In the **NuGet Package Manager>Manage Packages for Solution** of your project, search for **Dynamsoft.CaptureVisionBundle.Maui** and **Dynamsoft.MRZ.Maui**. Select it and click **install**.
+In the **NuGet Package Manager>Manage Packages for Solution** of your project, search for **Dynamsoft.MRZScannerBundle.Maui**. Select it and click **install**.
 
 ### Visual Studio for Windows
 
@@ -125,12 +125,12 @@ You need to add the library via the project file and complete additional steps f
 
 ## Build Your MRZ Scanner App
 
-Now you will learn how to create a simple MRZ scanner using Dynamsoft Capture Vision MAUI SDK.
+Now you will learn how to create a simple MRZ scanner using DynamsoftMRZScanner MAUI SDK.
 
 > [!Note]
 >
 > - You can get the similar source code of the ScanMRZ app from the following link
->   - [C#](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/MRZScanner){:target="_blank"}.
+>   - [C#](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ){:target="_blank"}.
 
 ### Set up Development Environment
 
