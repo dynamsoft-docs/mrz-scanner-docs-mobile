@@ -285,7 +285,7 @@ Select your device and run the project.
 
 You can get the similar source code of the ScanMRZ app from the following link:
 
-- [C#](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/MRZScanner){:target="_blank"}.
+- [C#](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ){:target="_blank"}.
 
 > [!Note]
 > If you are running Android only on Visual Studio Windows, please manually exclude iOS and Windows platforms. Otherwise, the Visual Studio will report type or namespace not found errors.
