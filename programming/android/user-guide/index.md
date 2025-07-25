@@ -50,7 +50,10 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
 
 - Supported OS:  **Android 5.0** (API Level 21) or higher.
 - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
-- Development Environment: **Android Studio 2022.2.1** or higher.
+- Development Environment:
+   - IDE: **Android Studio 2024.3.2** suggested.
+   - JDK: **Java 17** or higher.
+   - Gradle: **8.0** or higher.
 
 ## Add the SDK
 
@@ -70,7 +73,7 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
 
    ```groovy
    dependencies {
-      implementation 'com.dynamsoft:mrzscannerbundle:3.0.3100'
+      implementation 'com.dynamsoft:mrzscannerbundle:3.0.5000'
    }
    ```
 
