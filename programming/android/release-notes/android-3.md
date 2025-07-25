@@ -10,6 +10,16 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
+## 3.0.5000 (07/25/2025)
+
+### New
+
+- **Supported 16 KB page sizes**: Updated the `MRZScannerActivity` componment to support 16 KB page sizes.
+
+### Fixed
+
+- Fixed various minor bugs and improved overall stability.
+
 ## 3.0.3100 (05/30/2025)
 
 - Fixed a bug where the camera might not be opened.

@@ -74,7 +74,7 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
    target 'TargetName' do
       use_frameworks!
 
-   pod 'DynamsoftMRZScannerBundle','3.0.0'
+   pod 'DynamsoftMRZScannerBundle','3.0.5000'
 
    end
    ```
