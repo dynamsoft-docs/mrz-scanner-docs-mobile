@@ -30,12 +30,14 @@ final class MRZScannerConfig
 | [`setTemplateFile`](#settemplatefile) | Sets the template with a file path or a JSON string. |
 | [`setTorchButtonVisible`](#settorchbuttonvisible) | Sets whether to display the torch button when scanning. |
 | [`setBeepEnabled`](#setbeepenabled) | Sets whether the beep sound is triggered or not when a MRZ is scanned. |
+| [`setVibrateEnabled`](#setvibrateenabled) | Sets whether the vibration is triggered or not when a MRZ is scanned. |
 | [`setCloseButtonVisible`](#setclosebuttonvisible) | Sets the visibility status of the close button for users to close the scanner page. |
 | [`setDocumentType`](#setdocumenttype) | Sets the type of document to scan, such as ID cards or passports. |
 | [`getLicense`](#getlicense) | Returns the license string. |
 | [`getTemplateFile`](#gettemplatefile) | Returns the template with a file path or a JSON string. |
 | [`isTorchButtonVisible`](#istorchbuttonvisible) | Returns the visibility status of the torch button. |
 | [`isBeepEnabled`](#isbeepenabled) | Returns the play status of the beep sound when a MRZ is scanned. |
+| [`isVibrateEnabled`](#isvibrateenabled) | Returns the play status of the vibration when a MRZ is scanned. |
 | [`isCloseButtonVisible`](#isclosebuttonvisible) | Returns the visibility status of the close button. |
 | [`getDocumentType`](#getdocumenttype) | Returns the type of document to scan, such as ID cards or passports. |
 | [`isGuideFrameVisible`](#isguideframevisible) | Returns the visibility status of the guide frame on the display. |
@@ -95,6 +97,18 @@ void setBeepEnabled(boolean beepEnabled);
 **Parameter(s)**
 
 `beepEnabled`: A boolean value that determines whether to enable the beep sound.
+
+### setVibrateEnabled
+
+Sets whether the vibration is triggered or not when a MRZ is scanned.
+
+```java
+void setVibrateEnabled(boolean vibrateEnabled);
+```
+
+**Parameter(s)**
+
+`vibrateEnabled`: A boolean value that determines whether to enable the vibration.
 
 ### setCloseButtonVisible
 
@@ -167,6 +181,18 @@ boolean isBeepEnabled();
 **Return Value**
 
 A boolean value that determines whether the beep sound is enabled.
+
+### isVibrateEnabled
+
+Returns whether the vibration is enabled.
+
+```java
+boolean isVibrateEnabled();
+```
+
+**Return Value**
+
+A boolean value that determines whether the vibration is enabled.
 
 ### isCloseButtonVisible
 

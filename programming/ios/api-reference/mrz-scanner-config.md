@@ -38,6 +38,7 @@ class MRZScannerConfig : NSObject
 | [`documentType`](#documenttype) | *NSString* | Sets/Returns the document type to scan, such as ID cards or passports. |
 | [`isTorchButtonVisible`](#istorchbuttonvisible) | *BOOL* | Sets/Returns the visibility of the torch button. |
 | [`isBeepEnabled`](#isbeepenabled) | *BOOL* | Sets/Returns whether the beep sound is enabled when a MRZ is scanned. |
+| [`isVibrateEnabled`](#isvibrateenabled) | *BOOL* | Sets/Returns whether the vibration is enabled when a MRZ is scanned. |
 | [`isCloseButtonVisible`](#isclosebuttonvisible) | *BOOL* | Sets/Returns the visibility of the close button. |
 | [`isGuideFrameVisible`](#isguideframevisible) | *BOOL* | Sets/Returns the visibility of the guide frame on the display. |
 
@@ -130,6 +131,23 @@ Sets or returns whether the beep sound is enabled when a MRZ is scanned.
 2. 
 ```swift
 var isBeepEnabled: Bool { get set }
+```
+
+### isVibrateEnabled
+
+Sets or returns whether the vibration is enabled when a MRZ is scanned.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+@property(nonatomic, assign) BOOL isVibrateEnabled;
+```
+2. 
+```swift
+var isVibrateEnabled: Bool { get set }
 ```
 
 ### isCloseButtonVisible
