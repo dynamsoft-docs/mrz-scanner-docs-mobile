@@ -10,6 +10,16 @@ noTitleIndex: true
 
 # Release Notes for iOS SDK - 3.x
 
+## 3.0.5000 (07/29/2025)
+
+### Changed
+
+- **Default Camera Changed**: To address short-distance focusing issues on Pro Max iPhones, the default camera has been switched to `BackDualWideAuto`, enabling automatic switching between the wide and ultra-wide cameras.
+
+### Fixed
+
+- Fixed various minor bugs and improved overall stability.
+
 ## 3.0.0 (05/15/2025)
 
 ### Improved
