@@ -14,7 +14,7 @@ noTitleIndex: true
 
 ### New
 
-- **Supported 16 KB page sizes**: Updated the `MRZScannerActivity` componment to support 16 KB page sizes.
+- **Supported 16 KB page sizes**.
 
 ### Fixed
 
