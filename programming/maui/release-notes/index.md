@@ -9,4 +9,6 @@ breadcrumbText: Release Notes
 
 # Dynamsoft MRZ Scanner MAUI SDK - Release Notes
 
+- [3.0.5200 (08/18/2025)]({{ site.maui_release_notes }}maui-3.html#305200-08182025)
+- [3.0.5100 (08/12/2025)]({{ site.maui_release_notes }}maui-3.html#305100-08122025)
 - [3.0.3100 (05/30/2025)]({{ site.maui_release_notes }}maui-3.html#303000-05302025)
