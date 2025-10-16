@@ -10,6 +10,10 @@ noTitleIndex: true
 
 # Release Notes for iOS SDK - 3.x
 
+## 3.2.1000 (10/16/2025)
+
+- 🚀 **High-Speed and Precise MRZ Region Detection**: Revolutionary neural network `MRZLocalization` model delivers **42.7% faster processing** with enhanced region detection accuracy for passport and ID workflows
+
 ## 3.0.5200 (08/18/2025)
 
 ### Fixed

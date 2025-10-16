@@ -73,7 +73,7 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
 
    ```groovy
    dependencies {
-      implementation 'com.dynamsoft:mrzscannerbundle:3.0.5000'
+      implementation 'com.dynamsoft:mrzscannerbundle:3.2.1000'
    }
    ```
 
