@@ -9,6 +9,7 @@ breadcrumbText: Release Notes
 
 # Dynamsoft MRZ Scanner iOS SDK - Release Notes
 
+- [3.2.1000 (10/16/2025)]({{ site.ios_release_notes }}ios-3.html#321000-10162025)
 - [3.0.5200 (08/18/2025)]({{ site.ios_release_notes }}ios-3.html#305200-08182025)
 - [3.0.5100 (08/05/2025)]({{ site.ios_release_notes }}ios-3.html#305100-08052025)
 - [3.0.5000 (07/29/2025)]({{ site.ios_release_notes }}ios-3.html#305000-07292025)
