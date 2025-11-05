@@ -10,6 +10,13 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
+## 3.2.3000 (11/05/2025)
+
+### Fixed
+
+- Resolved an issue where scanning could take longer than expected.
+- Fixed a potential crash that could occur in certain scenarios.
+
 ## 3.2.1000 (10/16/2025)
 
 - 🚀 **High-Speed and Precise MRZ Region Detection**: Revolutionary neural network `MRZLocalization` model delivers **42.7% faster processing** with enhanced region detection accuracy for passport and ID workflows
