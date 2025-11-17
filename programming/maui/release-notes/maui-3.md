@@ -10,6 +10,17 @@ noTitleIndex: true
 
 # Release Notes for MAUI SDK - 3.x
 
+## 3.2.3000 (11/18/2025)
+
+### ✨ Key Highlights
+
+- 🚀 **High-Speed and Precise MRZ Region Detection**: Revolutionary neural network `MRZLocalization` model delivers **42.7% faster processing** with enhanced region detection accuracy for passport and ID workflows
+
+### Fixed
+
+- Resolved an issue where scanning could take longer than expected.
+- Fixed a potential crash that could occur in certain scenarios.
+
 ## 3.0.5200 (08/18/2025)
 
 ### Fixed
