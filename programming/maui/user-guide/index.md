@@ -107,7 +107,7 @@ You need to add the library via the project file and complete additional steps f
         ...
         <ItemGroup>
             ...
-            <PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.0.5200" />
+            <PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.2.3000" />
         </ItemGroup>
     </Project>
     ```
