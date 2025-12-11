@@ -39,7 +39,7 @@ MRZData? mrzData;
 
 ### status
 
-Represents the status of the result, which can be finished, canceled or exception.
+Represents the status of the result, which can be finished, canceled or exception. The status comes in the form of a [`EnumResultStatus`](result-status.md).
 
 ```dart
 EnumResultStatus status;
@@ -55,7 +55,7 @@ The result status can be one of three things:
 
 ### errorCode
 
-Represents the error code should something go wrong during the MRZ scanning process.
+Returns the error code when an exception occurs. This value is only valid when resultStatus is `exception`.
 
 ```dart
 int? errorCode;
@@ -63,7 +63,7 @@ int? errorCode;
 
 ### errorString
 
-Represents the error message associated with the error code should something go wrong during the MRZ scanning process.
+Returns the error message associated with the error code when an exception occurs. This value is only valid when resultStatus is `exception`.
 
 ```dart
 String? errorMessage;

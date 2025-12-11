@@ -1,23 +1,23 @@
 ---
 layout: default-layout
-title: Main Page - Dynamsoft MRZ Scanner for Flutter
-description: This is the main page of Dynamsoft MRZ Scanner for Flutter SDK.
-keywords: Flutter
+title: Main Page - Dynamsoft MRZ Scanner for React Native
+description: This is the main page of Dynamsoft MRZ Scanner for React Native SDK.
+keywords: React Native
 needAutoGenerateSidebar: false
-breadcrumbText: Flutter
+breadcrumbText: React Native
 ---
 
-# Dynamsoft MRZ Scanner Flutter Edition
+# Dynamsoft MRZ Scanner React Native Edition
 
-Dynamsoft MRZ Scanner SDK Flutter Edition is designed to integrate the ability to scan MRZ documents such as passports, ID cards, and other travel documents.
+Dynamsoft MRZ Scanner SDK React Native Edition is designed to integrate the ability to scan MRZ documents such as passports, ID cards, and other travel documents.
 
 ## Using the SDK
 
 ### System Requirements
 
-#### Flutter
+#### React Native
 
-- Latest Flutter framework (the sample was last tested with Flutter 3.35.7)
+- Supported Version: 0.71.0+ (0.79.0+ recommended)
 
 #### Android
 
@@ -31,6 +31,10 @@ Dynamsoft MRZ Scanner SDK Flutter Edition is designed to integrate the ability t
 - Supported OS: **iOS 13.0** or higher.
 - Supported ABI: **arm64** and **x86_64**.
 - Development Environment: Xcode 14.3+ recommended.
+
+#### Node
+
+- Supported Version: 18+
 
 ### User Guide
 
@@ -53,7 +57,7 @@ Dynamsoft MRZ Scanner SDK Flutter Edition is designed to integrate the ability t
 
 To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key:
 
-- [Request a 30-day free trial license](https://www.dynamsoft.com/customer/license/trialLicense?utm_source=docs&product=mrz&package=flutter){:target="_blank"}
+- [Request a 30-day free trial license](https://www.dynamsoft.com/customer/license/trialLicense?utm_source=docs&product=mrz&package=reactnative){:target="_blank"}
 
 ## Contact Us
 

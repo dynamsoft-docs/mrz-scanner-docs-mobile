@@ -10,7 +10,7 @@ multiProgrammingLanguage: true
 enableLanguageSelection: true
 ---
 
-# MRZ Scanner User Guide
+# MRZ Scanner User Guide (Flutter Edition)
 
 This user guide will explore using the Dynamsoft MRZ Scanner (Flutter Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
 
@@ -79,7 +79,7 @@ flutter pub get
 
 Now that the package is added, it's time to start building the `MRZScanner` Widget using the SDK.
 
-### Import
+### Importing the Library
 
 To use the MRZScanner API, please import `dynamsoft_mrz_scanner_bundle_flutter` in your dart file:
 
@@ -212,34 +212,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
 Once the scan process completes and the MRZ Scanner successfully recognizes a MRZ, a `MRZScanResult` is produced, representing all of the decrypted data contained within the MRZ.
 
-`MRZScanResult` has the following properties:
+[`MRZScanResult`](../api-reference/mrz-scan-result.md) has the following properties:
 
-- **resultStatus**: The status of the MRZ scan result, of type `EnumResultStatus`.
-    - finished: The MRZ scan was successful.
-    - canceled: The MRZ scanning activity is closed before the process is finished.
-    - exception: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
-- **errorCode**: The error code indicates if something went wrong during the MRZ scanning process (0 means no error). Only defined when `resultStatus` is RS_EXCEPTION.
-- **errorString**: The error message associated with the error code if an error occurs during MRZ scanning process. Only defined when `resultStatus` is RS_EXCEPTION.
+- **resultStatus**: The status of the MRZ scan result, of type [`EnumResultStatus`](../api-reference/result-status.md).
+    - *finished*: The MRZ scan was successful.
+    - *canceled*: The MRZ scanning activity is closed before the process is finished.
+    - *exception*: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
+- **errorCode**: The error code indicates if something went wrong during the MRZ scanning process (0 means no error). Only defined when the `resultStatus` is `exception`.
+- **errorString**: The error message associated with the error code if an error occurs during MRZ scanning process. Only defined when the `resultStatus` is `exception`.
 - **data**: The parsed MRZ data as a `MRZData` object.
   
-`MRZData` holds the actual decrypted data of the MRZ result, and it comes with the following fields:
+[`MRZData`](../api-reference/mrz-data.md) holds the actual decrypted data of the MRZ result, and it comes with the following fields:
 
-- **documentType**: The type of document, such as `'ID cards'` or `'passports'`.
-- **firstName**: The first name of the user of the MRZ document.
-- **lastName**: The last name of the user of the MRZ document.
-- **sex**: The sex of the user of the MRZ document.
+- **documentType**: The type of MRZ document, which would either be `EnumDocumentType.passport`, `EnumDocumentType.id`, or `EnumDocumentType.all`. You can check out the [Supported Machine-Readable Travel Document Types](#supported-machine-readable-travel-document-types) to learn more. 
+- **firstName**: The first name of the MRZ document holder.
+- **lastName**: The last name of the MRZ document holder.
+- **sex**: The sex of the MRZ document holder.
 - **issuingState**: The issuing state of the MRZ document.
-- **nationality**: The nationality of the user of the MRZ document.
-- **dateOfBirth**: The date of birth of the user of the MRZ document.
+- **nationality**: The nationality of the MRZ document holder.
+- **dateOfBirth**: The date of birth of the MRZ document holder.
 - **dateOfExpiry**: The expiry date of the MRZ document.
 - **documentNumber**: The MRZ document number.
-- **age**: The age of the user of the MRZ document.
+- **age**: The age of the MRZ document holder.
 - **mrzText**: The raw text of the MRZ.
 
 
 ### Customizing the MRZ Scanner (Optional)
 
-Even though the default settings of the ready-to-use MRZ Scanner is sufficient to cover the majority of MRZ scanning scenarios, the `MRZScannerConfig` class allows you to change the behaviour of the MRZ Scanner to fit your specific scenario. Using this class can help you customize different UI elements and determine the settings of the scanner engine itself.
+Even though the default settings of the ready-to-use MRZ Scanner is sufficient to cover the majority of MRZ scanning scenarios, the [`MRZScannerConfig`](../api-reference/mrz-scanner-config.md) class allows you to change the behaviour of the MRZ Scanner to fit your specific scenario. Using this class can help you customize different UI elements and determine the settings of the scanner engine itself.
 
 ```dart
 var config = MRZScannerConfig(
@@ -254,7 +254,7 @@ var config = MRZScannerConfig(
   ///This property accepts values defined in the EnumDocumentType, such as `EnumDocumentType.all`, `EnumDocumentType.id`, or `EnumDocumentType.passport`.
   ///It helps the scanner to optimize its processing based on the expected document type.
   ///Default is EnumDocumentType.all.
-  documentType: EnumDocumentType.all,
+  documentType: EnumDocumentType.DT_ALL,
 
   ///Specifies if a beep sound should be played when an MRZ is successfully detected.
   ///Set to true to enable the beep sound, or false to disable it. Default is false.
@@ -320,7 +320,7 @@ You can get the IDs of all connected (physical) devices by running the command `
 
 ## Full Sample Code
 
-The full sample code is available [here](./ScanMRZ).
+The full sample code is available [here](https://github.com/Dynamsoft/capture-vision-flutter-samples/tree/main/ScanMRZ).
 
 ## License
 
