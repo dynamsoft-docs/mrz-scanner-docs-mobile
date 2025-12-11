@@ -199,78 +199,7 @@ Once the scan process completes and the MRZ Scanner successfully recognizes a MR
 
 Even though the default settings of the ready-to-use MRZ Scanner is sufficient to cover the majority of MRZ scanning scenarios, the `MRZScanConfig` class allows you to change the behaviour of the MRZ Scanner to fit your specific scenario. Using this class can help you customize different UI elements and determine the settings of the scanner engine itself.
 
-```tsx
-import {MRZScanConfig, EnumDocumentType} from 'dynamsoft-mrz-scanner-bundle-react-native';
-
-const config = {
-  /**
-   * The license key required to initialize the MRZ Scanner.
-   */
-  license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9", //The license string here grants a time-limited free trial which requires network connection to work.
-  
-  /**
-   * Determines whether the torch (flashlight) button is visible in the scanning UI.
-   * Set to true to display the torch button, enabling users to turn the flashlight on/off. Default is true.
-   */
-  isTorchButtonVisible: true,
-
-  /**
-   * Specifies the type of document to be scanned for MRZ.
-   * This property accepts values defined in the EnumDocumentType, such as {@link EnumDocumentType.DT_ALL}, {@link EnumDocumentType.DT_ID}, or {@link EnumDocumentType.DT_PASSPORT}.
-   * It helps the scanner to optimize its processing based on the expected document type.
-   * Default is EnumDocumentType.DT_ALL.
-   */
-  documentType: EnumDocumentType.DT_ALL,
-
-  /**
-   * Specifies if a beep sound should be played when an MRZ is successfully detected.
-   * Set to true to enable the beep sound, or false to disable it. Default is false.
-   */
-  isBeepEnabled: false,
-
-  /**
-   * Determines whether a vibration is triggered upon a successful MRZ scan.
-   * When enabled (true), the scanner will produce a brief vibration to provide visual feedback.
-   * Default is false.
-   */
-  isVibrateEnabled: false,
-
-  /**
-   * Determines whether the close button is visible on the scanner UI.
-   * This button allows users to exit the scanning interface. Default is true.
-   */
-  isCloseButtonVisible: true,
-
-  /**
-   * Specifies whether the camera toggle button is displayed.
-   * This button lets users switch between available cameras (e.g., front and rear). Default is false.
-   */
-  isCameraToggleButtonVisible: false,
-
-  /**
-   * Determines whether a guide frame is visible during scanning.
-   * The guide frame assists users in properly aligning the document for optimal MRZ detection.
-   * When set to true, a visual overlay is displayed on the scanning interface. Default is true.
-   */
-  isGuideFrameVisible: true,
-
-
-  /**
-   * Specifies the template configuration for the MRZ scanner.
-   * This can be either a file path or a JSON string that defines various scanning parameters.
-   * Default is undefined, which means the default template will be used.
-   */
-  templateFile: {/*JSON template string*/},
-
-  /**
-   * Provides a Node.js 'require' function to load the template file when running in a Node environment.
-   * This facilitates importing external template configuration files.
-   * Default is undefined, which means the default template will be used.
-   * Only available when `templateFile` is set to undefined/null or empty string.
-   */
-  templateNodeRequire: require('./settings.json'),
-} as MRZScanConfig;
-```
+To learn of the different ways in which the MRZ scanner can be customized, please refer to the [MRZ Scanner Customization Guide](customize-mrz-scanner.md).
 
 ## Run the Project
 
