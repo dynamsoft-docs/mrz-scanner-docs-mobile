@@ -40,8 +40,6 @@ Next, we go over the different ways that these properties can be used to customi
 
 ## Setting the MRZ Document Type
 
-### Set the document type via APIs
-
 The MRZ Scanner reads all three MRZ formats, but it can optionally restrict the MRZ format that it reads. For example, you may want to configure MRZ scanner to only read **TD1** and passport (**TD3**) document types, while **ignoring TD2** documents. Here is a simple edit to the launchMrzScanner function that we implemented in the [User Guide](index.md) that sets the specific MRZ formats to read using the `documentType` property:
 
 ```dart
