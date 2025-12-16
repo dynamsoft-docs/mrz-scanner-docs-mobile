@@ -10,7 +10,7 @@ multiProgrammingLanguage: true
 enableLanguageSelection: true
 ---
 
-# MRZ Scanner User Guide
+# MRZ Scanner User Guide (React Native Edition)
 
 This user guide will explore using the Dynamsoft MRZ Scanner (React Native Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
 
