@@ -11,6 +11,7 @@ enableLanguageSelection: true
 ---
 
 # MRZ Scanner User Guide (MAUI Edition)
+
 This user guide will explore using the Dynamsoft MRZ Scanner (MAUI Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
 
 `MRZScanner` is the ready-to-use component that allows developers to quickly set up an MRZ scanning app. With the built-in component, it streamlines the integration of MRZ scanning functionality into any application.
