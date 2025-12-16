@@ -10,33 +10,10 @@ multiProgrammingLanguage: true
 enableLanguageSelection: true
 ---
 
-# MAUI User Guide for MRZ Scanner Integration
+# MRZ Scanner User Guide (MAUI Edition)
+This user guide will explore using the Dynamsoft MRZ Scanner (MAUI Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
 
-## Table of Contents
-
-- [MAUI User Guide for MRZ Scanner Integration](#maui-user-guide-for-mrz-scanner-integration)
-  - [Table of Contents](#table-of-contents)
-  - [Supported Machine-Readable Travel Document Types](#supported-machine-readable-travel-document-types)
-    - [ID (TD1 Size)](#id-td1-size)
-    - [ID (TD2 Size)](#id-td2-size)
-    - [Passport (TD3 Size)](#passport-td3-size)
-  - [System Requirements](#system-requirements)
-    - [.Net](#net)
-    - [Android](#android)
-    - [iOS](#ios)
-  - [Installation](#installation)
-    - [Visual Studio for Mac](#visual-studio-for-mac)
-    - [Visual Studio for Windows](#visual-studio-for-windows)
-  - [Build Your MRZ Scanner App](#build-your-mrz-scanner-app)
-    - [Set up Development Environment](#set-up-development-environment)
-    - [Initialize the Project](#initialize-the-project)
-      - [Visual Studio](#visual-studio)
-      - [Visual Studio for Mac](#visual-studio-for-mac-1)
-    - [Include the Library](#include-the-library)
-    - [Add Your Code for MRZ Scanning](#add-your-code-for-mrz-scanning)
-    - [Configure the Camera Permission](#configure-the-camera-permission)
-    - [Run the Project](#run-the-project)
-  - [Licensing](#licensing)
+`MRZScanner` is the ready-to-use component that allows developers to quickly set up an MRZ scanning app. With the built-in component, it streamlines the integration of MRZ scanning functionality into any application.
 
 ## Supported Machine-Readable Travel Document Types
 
@@ -45,7 +22,7 @@ The Machine Readable Travel Documents (MRTD) standard specified by the Internati
 Currently, the SDK supports three types of MRTD:
 
 > [!Note]
-> If you need support for other types of MRTDs, our SDK can be easily customized. Please contact support@dynamsoft.com.
+> If you need support for other types of MRTDs, our SDK can be easily customized. Please contact our [support team](https://www.dynamsoft.com/contact/).
 
 ### ID (TD1 Size)
 
@@ -73,28 +50,51 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each lin
 
 ## System Requirements
 
-### .Net
+### .NET
 
-- 8.0 and 9.0.
+- 8.0 / 9.0 / 10.0
 
 ### Android
 
-- Supported OS: **Android 5.0** (API Level 21) or higher.
-- Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
-- Development Environment: Visual Studio 2022 recommended.
+- Supported OS: **Android 5.0** (API Level 21) or higher
+- Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**
+- Development Environment: Visual Studio 2022 recommended
 - JDK: 1.8+
 
 ### iOS
 
-- Supported OS: **iOS 13.0** or higher.
-- Supported ABI: **arm64** and **x86_64**.
-- Development Environment: Visual Studio 2022 for Mac and Xcode 14.3+ recommended.
+- Supported OS: **iOS 13.0** or higher
+- Supported ABI: **arm64** and **x86_64**
+- Development Environment: Xcode 14.3+
 
-## Installation
+## Including the Library
 
-### Visual Studio for Mac
+### Visual Studio Code for Mac
 
-In the **NuGet Package Manager>Manage Packages for Solution** of your project, search for **Dynamsoft.MRZScannerBundle.Maui**. Select it and click **install**.
+Once the MAUI app is initialized in Visual Studio Code, the easiest way to include the library is to use the .NET CLI in the terminal. All you need to do is 
+
+1. Open the Terminal in Visual Studio Code
+2. Navigate to the project root directory (please note this is the folder that is in the same directory as <Project Name>.sln)
+3. Run the following command `dotnet add package Dynamsoft.MRZScannerBundle.Maui --version 3.2.3000`
+
+If the installation is successful, you should see the following line in the *.csproj* file
+
+```xml
+<PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.2.3000" />
+```
+
+When the project is built, the package will be downloaded and installed.
+
+> [!IMPORTANT]
+> Please note that the default MAUI app configuration includes the Windows and Mac Catalyst platforms. The Dynamsoft MRZ Scanner MAUI library currently only supports iOS and Android.
+>
+> **Please remove the Windows and Mac Catalyst platforms from the `<TargetFrameworks>` of the *.csproj* to avoid build errors.**
+
+
+> [!TIP]
+> To learn fully about how to use Visual Studio Code to create a new .NET MAUI project, please visit this [guide](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-10.0&tabs=visual-studio-code&pivots=devices-ios) by Microsoft.
+
+
 
 ### Visual Studio for Windows
 
@@ -112,122 +112,128 @@ You need to add the library via the project file and complete additional steps f
     </Project>
     ```
 
-2. Open the **Package Manager Console** and run the following commands:
+2. Open the **Package Manager Console** and run the following command:
 
     ```bash
     dotnet build
     ```
 
-> [!Note]
+> [!IMPORTANT]
 >
-> - Windows system have a limitation of 260 characters in the path. If you don't use console to install the package, you will receive error "Could not find a part of the path 'C:\Users\admin\.nuget\packages\dynamsoft.imageprocessing.ios\2.4.200\lib\net7.0-ios16.1\Dynamsoft.ImageProcessing.iOS.resources\DynamsoftImageProcessing.xcframework\ios-arm64\dSYMs\DynamsoftImageProcessing.framework.dSYM\Contents\Resources\DWARF\DynamsoftImageProcessing'"
-> - The library only support Android & iOS platform. Be sure that you remove the other platforms like Windows, maccatalyst, etc.
-
-## Build Your MRZ Scanner App
-
-Now you will learn how to create a simple MRZ scanner using DynamsoftMRZScanner MAUI SDK.
-
-> [!Note]
+> Windows system paths have a limitation of 260 characters. If the console is not used to install the package, you will receive an error saying
+> 
+> `Could not find a part of the path 'C:\Users\admin\.nuget\packages\dynamsoft.imageprocessing.ios\2.4.200\lib\net7.0-ios16.1\Dynamsoft.ImageProcessing.iOS.resources\DynamsoftImageProcessing.xcframework\ios-arm64\dSYMs\DynamsoftImageProcessing.framework.dSYM\Contents\Resources\DWARF\DynamsoftImageProcessing'`
 >
-> - You can get the similar source code of the ScanMRZ app from the following link
->   - [C#](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ){:target="_blank"}.
+> 
+> The library only support the iOS and Android platforms. Be sure that you remove the other platforms like Windows, maccatalyst, etc.
 
-### Set up Development Environment
+## Building the MRZ Scanner Component
 
-If you are a beginner with MAUI, please follow the guide on the <a href="https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation" target="_blank">.Net MAUI official website</a> to set up the development environment.
+Now that the package is added, it's time to start building the `MRZScanner` component.
+
+> [!NOTE]
+>
+> You can get the full source code of the ScanMRZ app from this [Github repo](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ){:target="_blank"}.
+
+### Set up the Development Environment
+
+If you are a beginner with MAUI, please follow the guide on the <a href="https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation" target="_blank">.NET MAUI official website</a> to set up the development environment.
+
+> [!TIP]
+> On Mac, you need to use Visual Studio Code with the .NET MAUI extension in order to create .NET MAUI apps.
 
 ### Initialize the Project
 
-#### Visual Studio
+#### Visual Studio (Windows)
 
 1. Open the Visual Studio and select **Create a new project**.
-2. Select **.Net MAUI App** and click **Next**.
+2. Select **.NET MAUI App** and click **Next**.
 3. Name the project **ScanMRZ**. Select a location for the project and click **Next**.
-4. Select **.Net 9.0** and click **Create**.
+4. Select **.NET 10.0** and click **Create**.
 
-#### Visual Studio for Mac
+#### Visual Studio Code (MacOS)
 
-1. Open Visual Studio and select **New**.
-2. Select **Multiplatform > App > .Net MAUI App > C#** and click **Continue**.
-3. Select **.Net 9.0** and click **Continue**.
-4. Name the project **ScanMRZ** and select a location, click **Create**.
+To set up a new .NET MAUI app on Visual Studio Code for Mac, please follow the instructions provided by Microsoft [here](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-10.0&tabs=visual-studio-code&pivots=devices-ios#create-an-app-1).
 
-### Include the Library
+> [!NOTE]
+> ScanMRZ is the project name that we use throughout this guide, but of course it is not a requirement.
 
-Please view the [installation section](#installation) on how to add the library.
+> [!TIP]
+> Please note that this guide uses .NET 10, but you can use .NET 8 or 9 if you wish. Before doing so, please check that the version of .NET that you want to use is currently supported on this [page](https://learn.microsoft.com/en-us/dotnet/core/releases-and-support).
 
-Add the following code to the **App.xaml.cs** file to use the library:
+
+### Importing the Library
+
+With the package now added to the project, you can import the library by adding the following code at the top of the **App.xaml.cs** file:
 
 ```c#
 using Dynamsoft.MRZScannerBundle.Maui;
 ```
 
-### Add Your Code for MRZ Scanning
+### Quick Start
 
-1. Edit the **MainPage.xaml** file.
+In this section we will take you through the full *Hello World* implementation in **MainPage.xaml.cs** as well as **MainPage.xaml**.
 
-   Replace your **MainPage.xaml** with the following code.
+1. First, let's edit **MainPage.xaml.cs** in order to define the operation of the MRZ Scanner
 
-   ```c#
-   using System.Collections.ObjectModel;
-   using Dynamsoft.MRZScannerBundle.Maui;
-   
-   namespace ScanMRZ;
-   
-   public partial class MainPage : ContentPage
-   {
-       public ObservableCollection<TableItem> TableItems { get; set; } = new();
-   
-       public MainPage()
-       {
-           InitializeComponent();
-           BindingContext = this;
-       }
-   
-       private async void OnScanMRZ(object sender, EventArgs e)
-       {
-           // The string "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9" here grants a time-limited free trial which requires network connection to work.
-           // You can request a 30-day trial license via the Request a Trial License page https://www.dynamsoft.com/customer/license/trialLicense?product=dbr&utm_source=guide&package=maui.
-           var config = new MRZScannerConfig("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-           var result = await MRZScanner.Start(config);
-   
-           TableItems.Clear();
-   
-           if (result.ResultStatus == EnumResultStatus.Finished && result.Data is not null)
-           {
-               var data = result.Data;
-   
-               TableItems.Add(new TableItem { Key = "Name", Value = $"{data.FirstName} {data.LastName}" });
-               TableItems.Add(new TableItem { Key = "Sex", Value = data.Sex.ToUpperInvariant() });
-               TableItems.Add(new TableItem { Key = "Age", Value = data.Age.ToString() });
-               TableItems.Add(new TableItem { Key = "Document Type", Value = data.DocumentType });
-               TableItems.Add(new TableItem { Key = "Document Number", Value = data.DocumentNumber });
-               TableItems.Add(new TableItem { Key = "Issuing State", Value = data.IssuingState });
-               TableItems.Add(new TableItem { Key = "Nationality", Value = data.Nationality });
-               TableItems.Add(new TableItem { Key = "Date Of Birth (YYYY-MM-DD)", Value = data.DateOfBirth });
-               TableItems.Add(new TableItem { Key = "Date Of Expire (YYYY-MM-DD)", Value = data.DateOfExpire });
-           }
-           else
-           {
-               var msg = result.ResultStatus == EnumResultStatus.Canceled
-                   ? "Scanning canceled"
-                   : result.ErrorString ?? "Unknown error";
-   
-               TableItems.Add(new TableItem { Key = "Result", Value = msg });
-           }
-       }
-   }
-   
-   public class TableItem
-   {
-       public string Key { get; set; }
-       public string Value { get; set; }
-   }
-   ```
+    ```c#
+    using System.Collections.ObjectModel;
+    using Dynamsoft.MRZScannerBundle.Maui;
 
-2. Edit the MainPage.xaml file.
+    namespace ScanMRZ;
 
-   Add the following code to the **MainPage.xaml** file:
+    public partial class MainPage : ContentPage
+    {
+        public ObservableCollection<TableItem> TableItems { get; set; } = new();
+
+        public MainPage()
+        {
+            InitializeComponent();
+            BindingContext = this;
+        }
+
+        private async void OnScanMRZ(object sender, EventArgs e)
+        {
+            // The string "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9" here grants a time-limited free trial which requires network connection to work.
+            // You can request a 30-day trial license via the Request a Trial License page https://www.dynamsoft.com/customer/license/trialLicense?product=dbr&utm_source=guide&package=maui.
+            var config = new MRZScannerConfig("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
+            var result = await MRZScanner.Start(config);
+
+            TableItems.Clear();
+
+            if (result.ResultStatus == EnumResultStatus.Finished && result.Data is not null)
+            {
+                var data = result.Data;
+
+                TableItems.Add(new TableItem { Key = "Name", Value = $"{data.FirstName} {data.LastName}" });
+                TableItems.Add(new TableItem { Key = "Sex", Value = data.Sex.ToUpperInvariant() });
+                TableItems.Add(new TableItem { Key = "Age", Value = data.Age.ToString() });
+                TableItems.Add(new TableItem { Key = "Document Type", Value = data.DocumentType });
+                TableItems.Add(new TableItem { Key = "Document Number", Value = data.DocumentNumber });
+                TableItems.Add(new TableItem { Key = "Issuing State", Value = data.IssuingState });
+                TableItems.Add(new TableItem { Key = "Nationality", Value = data.Nationality });
+                TableItems.Add(new TableItem { Key = "Date Of Birth (YYYY-MM-DD)", Value = data.DateOfBirth });
+                TableItems.Add(new TableItem { Key = "Date Of Expire (YYYY-MM-DD)", Value = data.DateOfExpire });
+            }
+            else
+            {
+                var msg = result.ResultStatus == EnumResultStatus.Canceled
+                    ? "Scanning canceled"
+                    : result.ErrorString ?? "Unknown error";
+
+                TableItems.Add(new TableItem { Key = "Result", Value = msg });
+            }
+        }
+    }
+
+    public class TableItem
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
+    ```
+
+2. Edit **MainPage.xaml** to setup the UI portion of the app
 
    ```xml
    <?xml version="1.0" encoding="utf-8" ?>
@@ -269,25 +275,80 @@ using Dynamsoft.MRZScannerBundle.Maui;
        </Grid>
    </ContentPage>
    ```
+> [!NOTE]
+>
+>- The license string here grants a time-limited free trial which requires network connection to work.
+>- You can request a 30-day trial license via the [Trial License portal](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=github&package=mobile).
 
-### Configure the Camera Permission
+### MRZ Result and Data
 
-Open the **Info.plist** file under the **Platforms/iOS/** folder (Open with XML Text Editor). Add the following lines to request camera permission on iOS platform:
+Once the scan process completes and the MRZ Scanner successfully recognizes a MRZ, a `MRZScanResult` is produced, representing all of the decrypted data contained within the MRZ.
+
+[`MRZScanResult`](../api-reference/mrz-scan-result.md) has the following properties:
+
+- **resultStatus**: The status of the MRZ scan result, of type [`EnumResultStatus`](../api-reference/result-status.md).
+    - *Finished*: The MRZ scan was successful.
+    - *Canceled*: The MRZ scanning activity is closed before the process is finished.
+    - *Exception*: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
+- **errorCode**: The error code indicates if something went wrong during the MRZ scanning process (0 means no error). Only defined when the `resultStatus` is `Exception`.
+- **errorString**: The error message associated with the error code if an error occurs during MRZ scanning process. Only defined when the `resultStatus` is `Exception`.
+- **data**: The parsed MRZ data as a `MRZData` object.
+  
+[`MRZData`](../api-reference/mrz-data.md) holds the actual decrypted data of the MRZ result, and it comes with the following fields:
+
+- **documentType**: The type of MRZ document, which would either be `EnumDocumentType.Passport`, `EnumDocumentType.Id`, or `EnumDocumentType.All`. You can check out the [Supported Machine-Readable Travel Document Types](#supported-machine-readable-travel-document-types) to learn more. 
+- **firstName**: The first name of the MRZ document holder.
+- **lastName**: The last name of the MRZ document holder.
+- **sex**: The sex of the MRZ document holder.
+- **issuingState**: The issuing state of the MRZ document.
+- **nationality**: The nationality of the MRZ document holder.
+- **dateOfBirth**: The date of birth of the MRZ document holder.
+- **dateOfExpiry**: The expiry date of the MRZ document.
+- **documentNumber**: The MRZ document number.
+- **age**: The age of the MRZ document holder.
+- **mrzText**: The raw text of the MRZ.
+
+### Customizing the MRZ Scanner (Optional)
+
+Even though the default settings of the ready-to-use MRZ Scanner is sufficient to cover the majority of MRZ scanning scenarios, the [`MRZScannerConfig`](../api-reference/mrz-scanner-config.md) class allows you to change the behaviour of the MRZ Scanner to fit your specific scenario. Using this class can help you customize different UI elements and determine the settings of the scanner engine itself.
+
+To learn of the different ways in which the MRZ scanner can be customized, please refer to the [MRZ Scanner Customization Guide](customize-mrz-scanner.md).
+
+## Run the Project
+
+### iOS
+
+#### Configure Camera Permissions
+
+Open the **Info.plist** file under the **Platforms/iOS/** folder using a IDE or text editor. Add the following lines towards the bottom (right before to request camera permission on iOS platform:
 
 ```xml
 <key>NSCameraUsageDescription</key>
 <string>The APP needs to access your camera.</string>
 ```
 
-### Run the Project
+#### Deploying to Device
 
-Select your device and run the project.
+In order to deploy the app to your connected iPhone, please make sure that there is valid provisioning profile for the app ID set in the *.csproj* or else you will encounter a general build error on Visual Studio Code.
 
-You can get the similar source code of the ScanMRZ app from the following link:
+The app can then be run using the C# Dev Kit extension of Visual Studio Code per the instructions [here](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-10.0&tabs=visual-studio-code&pivots=devices-ios).
 
-- [C#](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ){:target="_blank"}.
+> [!IMPORTANT]
+> It is highly recommended to use the C# Dev Kit extension when developing for iOS on Visual Studio Code. However, you can also run the app via command-line.
 
-> [!Note]
+### Android
+
+#### Configure Camera Permissions
+
+On Android, there is no need to configure the camera permissions as that is handled internally by the library.
+
+#### Deploying to Device
+
+If you are running on **Visual Studio**, simply select the target Android phone and run the project.
+
+If you are running on **Visual Studio Code**, use the C# Dev Kit to run the Android target on the selected Android phone, similar to the iOS workflow.
+
+> [!NOTE]
 > If you are running Android only on Visual Studio Windows, please manually exclude iOS and Windows platforms. Otherwise, the Visual Studio will report type or namespace not found errors.
 
 ![Exclude iOS and Windows from targets](../../assets/maui-exclude.png)
