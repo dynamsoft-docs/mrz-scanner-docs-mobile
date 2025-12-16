@@ -15,9 +15,9 @@ Dynamsoft MRZ Scanner SDK MAUI Edition is designed to scan the MRZ code from a p
 
 ### System Requirements
 
-#### .Net
+#### .NET
 
-- .NET 8.0 and .NET 9.0.
+- .NET 8.0 / 9.0 / 10.0
 
 #### Android
 
@@ -34,8 +34,8 @@ Dynamsoft MRZ Scanner SDK MAUI Edition is designed to scan the MRZ code from a p
 
 ### User Guide
 
-- [Build your First APP](user-guide/index.md)
-- [Configure MRZ Scanner](user-guide/configure-mrz-scanner.md)
+- [MRZ Scanner User Guide](user-guide/index.md)
+- [MRZ Scanner Customization](user-guide/customize-mrz-scanner.md)
 
 ### Samples and Demos
 
