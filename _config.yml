@@ -73,8 +73,23 @@ defaults:
   - scope:
       path: "programming/ios"
     values:
-      docRootName: "MRZ Scanner iOS Edition" 
+      docRootName: "MRZ Scanner iOS Edition"
       docHomePage: "/mrz-scanner/docs/mobile/programming/ios/"
+  - scope:
+      path: "programming/maui"
+    values:
+      docRootName: "MRZ Scanner MAUI Edition"
+      docHomePage: "/mrz-scanner/docs/mobile/programming/maui/"
+  - scope:
+      path: "programming/flutter"
+    values:
+      docRootName: "MRZ Scanner Flutter Edition"
+      docHomePage: "/mrz-scanner/docs/mobile/programming/flutter/"
+  - scope:
+      path: "programming/react-native"
+    values:
+      docRootName: "MRZ Scanner React Native Edition"
+      docHomePage: "/mrz-scanner/docs/mobile/programming/react-native/"
   - scope:
       path: ""
     values:
