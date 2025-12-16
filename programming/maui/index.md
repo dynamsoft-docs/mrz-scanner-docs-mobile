@@ -35,7 +35,7 @@ Dynamsoft MRZ Scanner SDK MAUI Edition is designed to scan the MRZ code from a p
 ### User Guide
 
 - [MRZ Scanner User Guide](user-guide/index.md)
-- [MRZ Scanner Customization](user-guide/customize-mrz-scanner.md)
+- [Customizing the MRZ Scanner](user-guide/customize-mrz-scanner.md)
 
 ### Samples and Demos
 
