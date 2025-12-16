@@ -1,11 +1,11 @@
 ---
 layout: default-layout
-title: MRZScannerConfig Class - Dynamsoft MRZ Scanner React Native Edition
-description: MRZScannerConfig of DynamsoftMRZScanner React Native is the class that defines the configurations for MRZ scanning.
+title: MRZScanConfig Class - Dynamsoft MRZ Scanner React Native Edition
+description: MRZScanConfig of DynamsoftMRZScanner React Native is the class that defines the configurations for MRZ scanning.
 keywords: MRZ, scanner, config, React Native
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
-breadcrumbText: MRZScannerConfig
+breadcrumbText: MRZScanConfig
 ---
 
 # MRZScanConfig
@@ -20,7 +20,7 @@ breadcrumbText: MRZScannerConfig
 *Assembly:* dynamsoft-capture-vision-react-native
 
 ```ts
-interface MRZScannerConfig
+interface MRZScanConfig
 ```
 
 ## Properties

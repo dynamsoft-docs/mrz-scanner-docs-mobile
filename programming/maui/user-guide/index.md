@@ -331,6 +331,12 @@ Open the **Info.plist** file under the **Platforms/iOS/** folder using a IDE or 
 
 In order to deploy the app to your connected iPhone, please make sure that there is valid provisioning profile for the app ID set in the *.csproj* or else you will encounter a general build error on Visual Studio Code.
 
+> [!TIP]
+> If you are using automatic signing, one of the easiest ways to ensure that your app has a valid provisioning profile is to **create a project in Xcode with the exact same project name and app ID as the MAUI project**.
+>
+>
+> Open the project settings, and then go to Signing & Provisioning - where you can configure the team, and make sure that it is set to *Automatically manage signing*. **You must ensure that the bundle identifier in the Xcode project is the same as the MAUI project.**
+
 The app can then be run using the C# Dev Kit extension of Visual Studio Code per the instructions [here](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-10.0&tabs=visual-studio-code&pivots=devices-ios).
 
 > [!IMPORTANT]
