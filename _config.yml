@@ -23,6 +23,14 @@ maui_api: /mrz-scanner/docs/mobile/programming/maui/api-reference/
 maui_release_notes: /mrz-scanner/docs/mobile/programming/maui/release-notes/
 maui_faq: /mrz-scanner/docs/mobile/programming/maui/faq/
 
+flutter: /mrz-scanner/docs/mobile/programming/flutter/
+flutter_api: /mrz-scanner/docs/mobile/programming/flutter/api-reference/
+flutter_release_notes: /mrz-scanner/docs/mobile/programming/flutter/release-notes/
+
+react_native: /mrz-scanner/docs/mobile/programming/react-native/
+react_native_api: /mrz-scanner/docs/mobile/programming/react-native/api-reference/
+react_native_release_notes: /mrz-scanner/docs/mobile/programming/react-native/release-notes/
+
 dcvb_android_api: /capture-vision/docs/mobile/programming/android/api-reference/
 dcvb_ios_api: /capture-vision/docs/mobile/programming/ios/api-reference/
 

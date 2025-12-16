@@ -10,6 +10,12 @@ noTitleIndex: true
 
 # Release Notes for MAUI SDK - 3.x
 
+## 3.2.3000 (11/19/2025)
+
+- Updated the underlying Capture Vision bundle to 3.2.3000 for major improvements in reading accuracy and speed.
+- Neural MRZ Localization – The new MRZLocalization model improves region detection accuracy and delivers up to **42.7% faster processing** for MRZ-based document workflows.
+- Configurable Localization Control – The new LocalizationModes parameter allows configuration for text line detection.
+
 ## 3.0.5200 (08/18/2025)
 
 ### Fixed
