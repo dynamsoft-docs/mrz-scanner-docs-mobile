@@ -10,9 +10,14 @@ multiProgrammingLanguage: true
 enableLanguageSelection: true
 ---
 
-# Android User Guide for MRZ Scanning
+# MRZ Scanner User Guide (Android Edition)
 
-This user guide will walk through the [ScanMRZ](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ) sample app. When creating your own project, please use this sample as a reference. This guide uses RTU (Ready to Use) APIs which aim to elevate the UI creation process with less code and offer a more pleasant and intuitive UI for your app.
+This user guide will explore using the Dynamsoft MRZ Scanner (Android Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
+
+`MRZScanner` is the ready-to-use component that allows developers to quickly set up an MRZ scanning app. With the built-in component, it streamlines the integration of MRZ scanning functionality into any application.
+
+> [!IMPORTANT]
+> If you would like access to the full sample code, please visit the [Github ScanMRZ repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 
 ## Supported Machine-Readable Travel Document Types
 
@@ -46,7 +51,7 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
    <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
 </div>
 
-## Requirements
+## System Requirements
 
 - Supported OS:  **Android 5.0** (API Level 21) or higher.
 - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
@@ -55,7 +60,7 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
    - JDK: **Java 17** or higher.
    - Gradle: **8.0** or higher.
 
-## Add the SDK
+## Including the Library
 
 1. Open the file `[App Project Root Path]\app\build.gradle` and add the Maven repository:
 
@@ -73,13 +78,17 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
 
    ```groovy
    dependencies {
-      implementation 'com.dynamsoft:mrzscannerbundle:3.2.3000'
+      implementation 'com.dynamsoft:mrzscannerbundle:3.2.5000'
    }
    ```
 
 3. Click **Sync Now**. After the synchronization is complete, the SDK is added to the project.
 
-## Step 1: Create a New Project
+## Building the MRZ Scanner Application
+
+Let's now proceed with building the full **ScanMRZ** application which is a Hello World implementation. We will go through it step-by-step in this section, but you can also find the full sample and code in the [Github repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+
+### Step 1: Create a New Project
 
 The first thing that we are going to do is to create a fresh new project. Here are the steps on how to quickly do that
 
@@ -93,11 +102,11 @@ The first thing that we are going to do is to create a fresh new project. Here a
 >
 > - With **minSdkVersion** set to 21, your app is compatible with more than 99.6% of devices on the Google Play Store (last update: October 2023).
 
-## Step 2: Include the Library
+### Step 2: Include the Library
 
-Please read [Add the SDK](#add-the-sdk) section for instructions on how to add the SDK to your Android project.
+Please read [Including the Library](#including-the-library) section for instructions on how to add the SDK to your Android project.
 
-## Step 3: Get Prepare for the Layout File
+### Step 3: Editing the Layout
 
 Open your **activity_main.xml** and replace it with the following code. In the layout file, we prepared 2 UI elements:
 
@@ -133,7 +142,7 @@ Open your **activity_main.xml** and replace it with the following code. In the l
 </RelativeLayout>
 ```
 
-## Step 4: Initialize the License
+### Step 4: Initialize the License
 
 The first step in code configuration is to include a valid license in the `MRZScannerConfig` object, which is used when launching the scanner. If you are just getting started with the MRZ Scanner from Dynamsoft, we recommend getting your own 30-day trial license through the following modal:
 
@@ -199,7 +208,7 @@ class MainActivity : AppCompatActivity() {
 >- The license string here grants a time-limited free trial which requires network connection to work.
 >- You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
 
-## Step 5: Implementing the MRZ Scanner
+### Step 5: Implementing the MRZ Scanner
 
 Now that the MRZ Scanner is configured and the license has been set, it is time to implement the actions (via the `launcher`) to take when a MRZ is scanned. Once the launcher is called, the MRZ Scanner opens the camera and begins the scanning process.
 
@@ -259,7 +268,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-## Step 6: Configure the MRZ Scanner (optional)
+### Step 6: Configure the MRZ Scanner (optional)
 
 This next step, although optional, is highly recommended to help achieve a more smooth-looking and intuitive UI. In this setup we will configure the visibility of the torch button as well as the close button. To do this, we are going back to the `MRZScannerConfig` object we used to define the license, and will make use of some of the other parameters available in the `MRZScannerConfig` class.
 
@@ -314,7 +323,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-## Step 7: Run the Project
+### Step 7: Run the Project
 
 Now that the code has been written and the project complete, it's time to run the project. During setup, all of the gradle settings should have already been configured for you, so pretty much all you need to do now is to connect a physical Android device, select the proper configuration, and click Run.
 

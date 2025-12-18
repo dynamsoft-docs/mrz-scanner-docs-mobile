@@ -10,6 +10,12 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
+## 3.2.5000 (12/18/2025)
+
+### Fixes & Improvements
+
+- Resolved a libPNG CVE issue by updating the C++ dependencies to use the latest libPNG CVE.
+
 ## 3.2.3000 (11/05/2025)
 
 ### Fixed

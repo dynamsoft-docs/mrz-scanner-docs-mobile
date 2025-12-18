@@ -10,12 +10,18 @@ noTitleIndex: true
 
 # Release Notes for iOS SDK - 3.x
 
+## 3.2.5000 (12/18/2025)
+
+### Fixes & Improvements
+
+- Resolved a libPNG CVE issue by updating the C++ dependencies to use the latest libPNG CVE.
+
 ## 3.2.3000 (11/05/2025)
 
-### Fixed
+### Fixes & Improvements
 
 - Resolved an issue where scanning could take longer than expected.
-- Fixed a potential crash that could occur in certain scenarios.
+- Fixes & Improvements a potential crash that could occur in certain scenarios.
 
 ## 3.2.1000 (10/16/2025)
 
@@ -23,28 +29,25 @@ noTitleIndex: true
 
 ## 3.0.5200 (08/18/2025)
 
-### Fixed
+### Fixes & Improvements
 
-- Fixed an xcframework signature issue.
+- Fixes & Improvements an xcframework signature issue.
 
 ## 3.0.5100 (08/05/2025)
 
-### Fixed
+### Fixes & Improvements
 
 - Small fixes and tweaks.
 
 ## 3.0.5000 (07/29/2025)
 
-### Changed
+### Fixes & Improvements
 
 - **Default Camera Changed**: To address short-distance focusing issues on Pro Max iPhones, the default camera has been switched to `BackDualWideAuto`, enabling automatic switching between the wide and ultra-wide cameras.
-
-### Fixed
-
-- Fixed various minor bugs and improved overall stability.
+- Fixes & Improvements various minor bugs and improved overall stability.
 
 ## 3.0.0 (05/15/2025)
 
-### Improved
+### Fixes & Improvements
 
 - Improved the read-rate and the accuracy of MRZ text recognition.

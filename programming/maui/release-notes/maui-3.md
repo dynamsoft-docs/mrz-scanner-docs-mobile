@@ -10,6 +10,12 @@ noTitleIndex: true
 
 # Release Notes for MAUI SDK - 3.x
 
+## 3.2.5000 (12/18/2025)
+
+### Fixes & Improvements
+
+- Resolved a libPNG CVE issue by updating the C++ dependencies to use the latest libPNG CVE.
+
 ## 3.2.3000 (11/19/2025)
 
 - Updated the underlying Capture Vision bundle to 3.2.3000 for major improvements in reading accuracy and speed.
@@ -18,19 +24,19 @@ noTitleIndex: true
 
 ## 3.0.5200 (08/18/2025)
 
-### Fixed
+### Fixes & Improvements
 
-- Fixed an xcframework signature issue.
+- Fixed a xcframework signature issue.
 
 ## 3.0.5100 (08/12/2025)
 
-### Fixed
+### Fixes & Improvements
 
 - Small fixes and tweaks.
 
 ## 3.0.3100 (05/30/2025)
 
-### New
+### Highlighted Features
 
 - Added a new component `MRZScanner`. Users can quickly set up a MRZ scanning app with the build in UI of `MRZScanner`. The following classes are added to use the `MRZScanner` component:
   - [`MRZScanner`]({{ site.maui_api }}mrz-scanner.html): The main class of `MRZScanner` component. It implements MRZ scanning features.
