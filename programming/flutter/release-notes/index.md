@@ -10,6 +10,12 @@ noTitleIndex: true
 
 # Dynamsoft MRZ Scanner Flutter SDK - Release Notes
 
+## 3.2.5000 (12/18/2025)
+
+### Fixes & Improvements
+
+- Resolved a libPNG CVE issue by updating the C++ dependencies to use the latest libPNG CVE.
+
 ## 3.2.3000 (11/06/2025)
 
 ### Highlighted Features
@@ -30,6 +36,6 @@ This is the introductory version of the MRZ Scanner (Flutter Edition) to include
 - Modular, view-based design for easy maintenance and customization
 - Added support for 16kb page sizes for Android.
 
-### Improvements
+### Fixes & Improvements
 
 - **License Validation Behavior**: Instead of stopping execution immediately on an invalid license module, the library now continues processing and returns results from modules with valid licenses. An error is still reported to indicate the license issue.

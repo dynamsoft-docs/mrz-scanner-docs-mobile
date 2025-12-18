@@ -10,9 +10,14 @@ multiProgrammingLanguage: true
 enableLanguageSelection: true
 ---
 
-# iOS User Guide for MRZ Scanning
+# MRZ Scanner User Guide (iOS Edition)
 
-This user guide will walk through the [ScanMRZ](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ/) sample app. When creating your own project, please use this sample as a reference. This guide uses RTU (Ready to Use) APIs which aim to elevate the UI creation process with less code and offer a more pleasant and intuitive UI for your app.
+This user guide will explore using the Dynamsoft MRZ Scanner (Android Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
+
+`MRZScanner` is the ready-to-use component that allows developers to quickly set up an MRZ scanning app. With the built-in component, it streamlines the integration of MRZ scanning functionality into any application.
+
+> [!IMPORTANT]
+> If you would like access to the full sample code, please visit the [Github ScanMRZ repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 
 ## Supported Machine-Readable Travel Document Types
 
@@ -46,13 +51,13 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
    <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
 </div>
 
-## Requirements
+## System Requirements
 
 - Supported OS: **iOS 13** or higher.
 - Supported ABI: **arm64** and **x86_64**.
 - Development Environment: **Xcode 13** and above (**Xcode 14.1+** recommended).
 
-## Add the SDK
+## Including the Library
 
 There are two ways in which you can include the `DynamsoftMRZScanner` library in your app:
 
@@ -62,7 +67,7 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
 
 2. In the top-right section of the window, search "https://github.com/Dynamsoft/mrz-scanner-spm"
 
-3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.2.3000**, then click **Add Package**.
+3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.2.5000**, then click **Add Package**.
 
 4. Check all the **xcframeworks** and add them.
 
@@ -74,7 +79,7 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
    target 'TargetName' do
       use_frameworks!
 
-   pod 'DynamsoftMRZScannerBundle','3.2.3000'
+   pod 'DynamsoftMRZScannerBundle','3.2.5000'
 
    end
    ```
@@ -85,7 +90,11 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
    pod install
    ```
 
-## Step 1: Create a New Project
+## Building the MRZ Scanner Application
+
+Let's now proceed with building the full **ScanMRZ** application which is a Hello World implementation. We will go through it step-by-step in this section, but you can also find the full sample and code in the [Github repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
+
+### Step 1: Create a New Project
 
 The first thing that we are going to do is to create a fresh new project. Here are the steps on how to quickly do that
 
@@ -99,11 +108,11 @@ The first thing that we are going to do is to create a fresh new project. Here a
 
 5. Click on the **Create** button to finish.
 
-## Step 2: Include the Library
+### Step 2: Include the Library
 
-Please read [Add the SDK](#add-the-sdk) section for instructions on how to add the SDK to your iOS application.
+Please read [Including the Library](#including-the-library) for instructions on how to add the SDK to your iOS application.
 
-## Step 3: Initialize the License
+### Step 3: Initialize the License
 
 The first major step in code configuration is to include a valid license in the `MRZScannerConfig`, which is used when launching the scanner. If you are just getting started with the MRZ Scanner from Dynamsoft, we recommend getting your own 30-day trial license through the following modal:
 
@@ -229,7 +238,7 @@ class ViewController: UIViewController {
 
    We will only have one *ViewController*, where most of the code will be written including the license initialization, along with an associated *NavigationController* to allow the user to navigate back and forth from the home page to the main *ViewController* where the MRZ Scanner will operate.
 
-## Step 4: Implementing the MRZ Scanner
+### Step 4: Implementing the MRZ Scanner
 
 Now that the license is configured and set, it is time to implement the actions to take when an MRZ is scanned via the `onScannedResult` callback function. The callback function is triggered whenever an MRZ is scanned, so we must implement the code that will display the parsed MRZ information in the *label* that we previously defined.
 
@@ -329,7 +338,7 @@ Each result comes with a `DSResultStatus` that can be one of *finished*, *cancel
 }
 ```
 
-## Step 5: Configure the MRZ Scanner (optional)
+### Step 5: Configure the MRZ Scanner (optional)
 
 This next step, although optional, is highly recommended to help you achieve a smooth-looking UI. In this step, we will configure the `MRZScannerConfig` object to utilize some of the other properties that are available in the class. In step 3, `MRZScannerConfig` was initially used to configure the license. Now, let's use some of the other settings which include the document type, the visibility of the torch button, and whether a beep should be played after a successful recognition.
 
@@ -369,13 +378,14 @@ config.isCloseButtonVisible = false
 > [!NOTE]
 >The code above only shows the configuration of the MRZScannerConfig object, which takes place right at the beginning of the `buttonTapped` function in steps 3 and 4.
 
-## Step 6: Run the Project
+### Step 6: Run the Project
 
 Now that the code has been written, it's time to run the project. The first thing that needs to be done is to configure the *Signing & Capabilities* section of the project. After you complete this section, move to the *Info* section of the project settings. In the *Info* section, please make sure that the "Privacy - Camera Usage Description" key is included in the list.
 
 In order to run the project, you will require a physical iOS device. Once the device is connected, you should see it as an available device in top bar. After selecting the device from the menu, all you need to do is click the Run button. 
 
-> [!NOTE] If you try running the project on a simulator, you will encounter errors as this sample uses the device camera which is unavailable when using the simulator.
+> [!NOTE] 
+> If you try running the project on a simulator, you will encounter errors as this sample uses the device camera which is unavailable when using the simulator.
 
 ## Conclusion
 
