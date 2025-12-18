@@ -42,6 +42,8 @@ final class MRZScannerConfig
 | [`getDocumentType`](#getdocumenttype) | Returns the type of document to scan, such as ID cards or passports. |
 | [`isGuideFrameVisible`](#isguideframevisible) | Returns the visibility status of the guide frame on the display. |
 | [`setGuideFrameVisible`](#setguideframevisible) | Sets the visibility of the guide frame on the display. |
+| [`isCameraToggleButtonVisible`](#iscameratogglebuttonvisible) | Returns the visibility status of the guide frame on the display. |
+| [`setCameraToggleButtonVisible`](#setcameratogglebuttonvisible) | Sets the visibility of the guide frame on the display. |
 
 The following methods are deprecated:
 
@@ -206,6 +208,18 @@ boolean isCloseButtonVisible();
 
 A boolean value that determines whether the close button is displayed.
 
+### isCameraToggleButtonVisible
+
+Returns whether the camera toggle button is visible. The camera toggle button allows users to switch between the front and rear cameras.
+
+```java
+boolean isCameraToggleButtonVisible();
+```
+
+**Return Value**
+
+A boolean value that determines whether the camera switch button is displayed.
+
 ### getDocumentType
 
 Returns the type of document to scan, such as ID cards or passports.
@@ -241,6 +255,18 @@ void setGuideFrameVisible(boolean guideFrameVisible);
 **Parameter(s)**
 
 `guideFrameVisible`: A boolean value that determines whether to display the guide frame.
+
+### setCameraToggleButtonVisible
+
+Sets whether to display the camera switch button or not. The camera toggle button allows users to switch between the front and rear cameras.
+
+```java
+void setGuideFrameVisible(boolean cameraToggleButtonVisible);
+```
+
+**Parameter(s)**
+
+`cameraToggleButtonVisible`: A boolean value that determines whether to display the camera switch button.
 
 ### setTemplateFilePath
 

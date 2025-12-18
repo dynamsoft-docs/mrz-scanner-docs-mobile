@@ -41,6 +41,7 @@ class MRZScannerConfig : NSObject
 | [`isVibrateEnabled`](#isvibrateenabled) | *BOOL* | Sets/Returns whether the vibration is enabled when a MRZ is scanned. |
 | [`isCloseButtonVisible`](#isclosebuttonvisible) | *BOOL* | Sets/Returns the visibility of the close button. |
 | [`isGuideFrameVisible`](#isguideframevisible) | *BOOL* | Sets/Returns the visibility of the guide frame on the display. |
+| [`isCameraToggleButtonVisible`](#iscameratogglebuttonvisible) | *BOOL* | Sets/Returns the visibility of the camera switch button. |
 
 The following property is deprecated:
 
@@ -182,6 +183,23 @@ Sets or returns the visibility of the guide frame on the display.
 2. 
 ```swift
 var isGuideFrameVisible: Bool { get set }
+```
+
+### isCameraToggleButtonVisible
+
+Sets or returns the visibility of the camera switch button that allows users to switch between the rear and front cameras.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+@property(nonatomic, assign) BOOL isCameraToggleButtonVisible;
+```
+2. 
+```swift
+var isCameraToggleButtonVisible: Bool { get set }
 ```
 
 ### templateFilePath
