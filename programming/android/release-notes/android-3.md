@@ -10,6 +10,35 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
+## 3.4.1000 (03/19/2026)
+
+### New
+
+- **Image results**: `MRZScanResult` now returns captured images alongside the parsed MRZ data. Three types of images can be retrieved from the result:
+  - **Document image**: A cropped and perspective-corrected image of the document, available via `getDocumentImage(EnumDocumentSide)`. Returned by default.
+  - **Original image**: The raw full-frame camera image captured at the moment of scanning, available via `getOriginalImage(EnumDocumentSide)`. Disabled by default.
+  - **Portrait image**: The detected portrait extracted from the document, available via `getPortraitImage()`. Returned by default.
+  - For two-sided ID cards, images for both sides are accessible by passing `EnumDocumentSide.DS_MRZ` or `EnumDocumentSide.DS_OPPOSITE` to `getDocumentImage()` and `getOriginalImage()`.
+
+- **New `EnumDocumentSide` enumeration**: Added `EnumDocumentSide` with values `DS_MRZ` (the side containing the MRZ) and `DS_OPPOSITE` (the reverse side) to identify which side of a document an image belongs to.
+
+- **Image return configuration**: Added three new `MRZScannerConfig` methods to control which images are included in the scan result:
+  - `setReturnDocumentImage(boolean)` (default: `true`)
+  - `setReturnOriginalImage(boolean)` (default: `false`)
+  - `setReturnPortraitImage(boolean)` (default: `true`)
+
+- **Additional MRZ data fields**: `MRZData` now exposes the following additional parsed fields:
+  - `getIssuingStateRaw()` — the raw issuing state value as encoded in the MRZ, before standardization.
+  - `getNationalityRaw()` — the raw nationality value as encoded in the MRZ, before standardization.
+  - `getOptionalData1()` — the first optional data field (nullable).
+  - `getOptionalData2()` — the second optional data field (nullable).
+  - `getPersonalNumber()` — the personal number field, typically present on TD3 passport documents (nullable).
+
+- **New UI button visibility controls**: Added three new `MRZScannerConfig` methods to control the visibility of toggle buttons in the scanning UI:
+  - `setBeepButtonVisible(boolean)` — shows or hides the beep sound toggle button (default: `true`).
+  - `setVibrateButtonVisible(boolean)` — shows or hides the vibration toggle button (default: `true`).
+  - `setFormatSelectorVisible(boolean)` — shows or hides the document format selector at the bottom of the scanning UI (default: `true`).
+
 ## 3.2.5000 (12/18/2025)
 
 ### Fixes & Improvements
