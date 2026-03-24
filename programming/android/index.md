@@ -11,37 +11,35 @@ breadcrumbText: Android
 
 Dynamsoft MRZ Scanner SDK Android Edition is designed to scan the MRZ code from a passport or ID card for Android developers.
 
-## Using the SDK
-
-### System Requirements
+## System Requirements
 
 - Supported OS: Android 5.0 (API Level 21) or higher.
 - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
 - Development Environment: Android Studio 2022.2.1 or higher.
 
-### User Guide
+## User Guide
 
 - [MRZ Scanner User Guide (Android Edition)](user-guide/index.md)
 - [Customizing the MRZ Scanner](user-guide/customize-mrz-scanner.md)
+- [License Initialization](user-guide/license-activation.md)
+- [Upgrade Guide](user-guide/upgrade.md)
 
-### Samples and Demos
+## Samples and Demos
 
 - [Samples & Demos](samples/index.md)
 
-### API Reference
+## API Reference
 
 - [API Reference](./api-reference/index.md)
 
 ## Release Notes
 
-- [Version 2.x](release-notes/android-2.html)
 - [Version 3.x](release-notes/android-3.html)
+- [Version 2.x](release-notes/android-2.html)
 
-## License Subscription
+## Licensing
 
-To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key:
-
-- [Request a 30-day free trial license](https://www.dynamsoft.com/customer/license/trialLicense?utm_source=docs&product=mrz&package=android){:target="_blank"}
+To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key. See [License Initialization](user-guide/license-activation.md) for details.
 
 ## Contact Us
 
