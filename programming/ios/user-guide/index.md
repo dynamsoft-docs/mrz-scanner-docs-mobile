@@ -12,44 +12,17 @@ enableLanguageSelection: true
 
 # MRZ Scanner User Guide (iOS Edition)
 
-This user guide will explore using the Dynamsoft MRZ Scanner (Android Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
-
-`MRZScanner` is the ready-to-use component that allows developers to quickly set up an MRZ scanning app. With the built-in component, it streamlines the integration of MRZ scanning functionality into any application.
+The Dynamsoft MRZ Scanner (iOS Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScannerViewController` — the built-in view controller that handles the camera UI, scanning logic, and result delivery.
 
 > [!IMPORTANT]
-> If you would like access to the full sample code, please visit the [Github ScanMRZ repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
+> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 
-## Supported Machine-Readable Travel Document Types
+## Supported Document Types
 
-The Machine Readable Travel Document (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
+The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
 
-Currently, the SDK supports three types of MRTD:
-
-> [!NOTE] If you need support for other types of MRTDs, our SDK can be easily customized. Please contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) if you have such a request.
-
-### ID (TD1 Size)
-
-The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines with 30 characters in each line.
-
-<div>
-   <img src="../../assets/td1-id.png" alt="Example of MRZ in TD1 format" width="60%" />
-</div>
-
-### ID (TD2 Size)
-
-The MRZ (Machine Readable Zone) in TD2 format consists of 2 lines with 36 characters in each line.
-
-<div>
-   <img src="../../assets/td2-id.png" alt="Example of MRZ in TD2 format" width="72%" />
-</div>
-
-### Passport (TD3 Size)
-
-The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 characters in each line.
-
-<div>
-   <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
-</div>
+> [!NOTE]
+> For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ## System Requirements
 
@@ -57,9 +30,9 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines with 44 charac
 - Supported ABI: **arm64** and **x86_64**.
 - Development Environment: **Xcode 13** and above (**Xcode 14.1+** recommended).
 
-## Including the Library
+## Add the SDK
 
-There are two ways in which you can include the `DynamsoftMRZScanner` library in your app:
+There are two ways in which you can include the `DynamsoftMRZScannerBundle` library in your app:
 
 ### Option 1: Add the xcframeworks via Swift Package Manager
 
@@ -67,7 +40,7 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
 
 2. In the top-right section of the window, search "https://github.com/Dynamsoft/mrz-scanner-spm"
 
-3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.2.5000**, then click **Add Package**.
+3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.4.1000**, then click **Add Package**.
 
 4. Check all the **xcframeworks** and add them.
 
@@ -79,7 +52,7 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
    target 'TargetName' do
       use_frameworks!
 
-   pod 'DynamsoftMRZScannerBundle','3.2.5000'
+   pod 'DynamsoftMRZScannerBundle','3.4.1000'
 
    end
    ```
@@ -92,67 +65,48 @@ There are two ways in which you can include the `DynamsoftMRZScanner` library in
 
 ## Building the MRZ Scanner Application
 
-Let's now proceed with building the full **ScanMRZ** application which is a Hello World implementation. We will go through it step-by-step in this section, but you can also find the full sample and code in the [Github repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
+The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 
 ### Step 1: Create a New Project
 
-The first thing that we are going to do is to create a fresh new project. Here are the steps on how to quickly do that
+1. Open Xcode and select **File > New > New Project**.
+2. Choose **iOS > App** as the project template.
+3. Set the product name to *ScanMRZ*, choose **StoryBoard** as the interface, and select your language (Objective-C or Swift).
 
-1. Open Xcode and select create a new project.
+### Step 2: Add the SDK
 
-2. Select **iOS > App** for your application.
+Follow the instructions in the [Add the SDK](#add-the-sdk) section above to add `DynamsoftMRZScannerBundle` to your project.
 
-3. Input your product name (ScanMRZ), interface (StoryBoard) and select the language (Objective-C/Swift).
+### Step 3: Set Up the UI
 
-4. Click on the **Next** button and select the location to save the project.
-
-5. Click on the **Create** button to finish.
-
-### Step 2: Include the Library
-
-Please read [Including the Library](#including-the-library) for instructions on how to add the SDK to your iOS application.
-
-### Step 3: Initialize the License
-
-The first major step in code configuration is to include a valid license in the `MRZScannerConfig`, which is used when launching the scanner. If you are just getting started with the MRZ Scanner from Dynamsoft, we recommend getting your own 30-day trial license through the following modal:
-
-{% include trialLicense.html %}
-
-Let's break it down into two smaller steps:
-
-1. In the *ViewController* code, there will be a single button that will start the operation and a label where the error message will be displayed should something go wrong during the capture process. In order to store the parsed MRZ information, we will also create a data struct with the necessary fields as show in the below code snippet.
-
-   The first step in code configuration is to include a valid license in the `MRZScannerConfig` object, which is used when launching the scanner.
+Create the main `ViewController` with a single "Scan an MRZ" button and a label to display status messages. The button is anchored to the bottom of the screen; the label is centered. Scan results will be shown in a separate `ResultViewController`, created in [Step 6](#step-6-display-the-results).
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
 >- Swift
 >
->1. 
+>1.
 ```objc
 #import "ViewController.h"
-#import <DynamsoftLicense/DynamsoftLicense.h>
 #import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle.h>
 #import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle-Swift.h>
 @interface ViewController ()
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong) DSMRZScannerConfig *config;
 @end
 @implementation ViewController
 - (void)viewDidLoad {
    [super viewDidLoad];
+   self.navigationController.navigationBar.hidden = YES;
+   self.view.backgroundColor = [UIColor whiteColor];
+   self.config = [[DSMRZScannerConfig alloc] init];
    [self setup];
-}
-- (void)buttonTapped {
-   DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
-   DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
-   config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
-   vc.config = config;
 }
 - (void)setup {
    self.button = [UIButton buttonWithType:UIButtonTypeSystem];
    self.button.backgroundColor = [UIColor blackColor];
-   [self.button setTitle:@"Scan MRZ" forState:UIControlStateNormal];
+   [self.button setTitle:@"Scan an MRZ" forState:UIControlStateNormal];
    [self.button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
    self.button.layer.cornerRadius = 8;
    self.button.clipsToBounds = YES;
@@ -169,7 +123,7 @@ Let's break it down into two smaller steps:
    UILayoutGuide *safeArea = self.view.safeAreaLayoutGuide;
    [NSLayoutConstraint activateConstraints:@[
           [self.button.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-          [self.button.topAnchor constraintEqualToAnchor:safeArea.topAnchor constant:50],
+          [self.button.bottomAnchor constraintEqualToAnchor:safeArea.bottomAnchor constant:-10],
           [self.button.heightAnchor constraintEqualToConstant:50],
           [self.button.widthAnchor constraintEqualToConstant:150],
           [self.label.centerXAnchor constraintEqualToAnchor:safeArea.centerXAnchor],
@@ -180,27 +134,23 @@ Let's break it down into two smaller steps:
 }
 @end
 ```
-2. 
+2.
 ```swift
 import UIKit
-import DynamsoftLicense
 import DynamsoftMRZScannerBundle
 class ViewController: UIViewController {
    let button = UIButton()
    let label = UILabel()
+   private let config = MRZScannerConfig()
    override func viewDidLoad() {
           super.viewDidLoad()
+          navigationController?.navigationBar.isHidden = true
+          view.backgroundColor = .white
           setup()
    }
-   @objc func buttonTapped() {
-          let vc = MRZScannerViewController()
-          let config = MRZScannerConfig()
-          config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-          vc.config = config
-   }      
    func setup() {
           button.backgroundColor = .black
-          button.setTitle("Scan MRZ", for: .normal)
+          button.setTitle("Scan an MRZ", for: .normal)
           button.setTitleColor(.white, for: .normal)
           button.layer.cornerRadius = 8
           button.clipsToBounds = true
@@ -216,7 +166,7 @@ class ViewController: UIViewController {
           let safeArea = view.safeAreaLayoutGuide
           NSLayoutConstraint.activate([
              button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-             button.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 50),
+             button.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10),
              button.heightAnchor.constraint(equalToConstant: 50),
              button.widthAnchor.constraint(equalToConstant: 150),
              label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
@@ -228,169 +178,329 @@ class ViewController: UIViewController {
 }
 ```
 
-   > [!NOTE]  
-   >
-   >- The license string here grants a time-limited free trial which requires network connection to work.
-   >- You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
-   >- The *setup* method is used to define the properties of the UI elements (label, button) via the code instead of configuring them via the storyboard. It is called in `viewDidLoad` to ensure that these settings are applied once the app is opened.
+> [!NOTE]
+> We will only have one *ViewController*, where most of the code will be written, along with an associated *NavigationController* to allow the user to navigate back and forth between the home page and the `ResultViewController` where the MRZ data is displayed.
 
-2. Configure *NavigationController*
+### Step 4: Configure the Scanner
 
-   We will only have one *ViewController*, where most of the code will be written including the license initialization, along with an associated *NavigationController* to allow the user to navigate back and forth from the home page to the main *ViewController* where the MRZ Scanner will operate.
+All scanner settings are controlled through a single `MRZScannerConfig` object declared as a property in Step 3. Configure it in `viewDidLoad` after `setup()`.
 
-### Step 4: Implementing the MRZ Scanner
+The only required setting is the license key. If you are just getting started, request a free 30-day trial license below:
 
-Now that the license is configured and set, it is time to implement the actions to take when an MRZ is scanned via the `onScannedResult` callback function. The callback function is triggered whenever an MRZ is scanned, so we must implement the code that will display the parsed MRZ information in the *label* that we previously defined.
+{% include trialLicense.html %}
 
-Each result comes with a `DSResultStatus` that can be one of *finished*, *canceled*, or *exception*. The first, *finished*, indicates that the result has been parsed and is available - while *canceled* indicates that the operation has been halted. If *exception* is the result status, then that means that an error has occurred during the MRZ scanning process. So let us now continue the code of the `buttonTapped` method from step 3:
+All other settings are optional and can be omitted to use their defaults. The code below shows the full set of available options with their default values noted in comments:
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
 >- Swift
 >
->1. 
+>1.
 ```objc
-/* CONTINUATION OF CODE FROM STEP 3 */
+/* CONTINUATION OF STEP 3 — add to viewDidLoad after [self setup] */
+- (void)viewDidLoad {
+   /* ... */
+   [self setup];
+   // Required: set a valid license key.
+   self.config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
+   // Optional: restrict scanning to a specific document type (default: DSDocumentTypeAll).
+   self.config.documentType = DSDocumentTypePassport;
+   // Optional: load a custom template from "DynamsoftResources.bundle\Templates\" or pass a JSON string.
+   self.config.templateFile = @"CustomizedTemplate.json";
+   // Optional: feedback on successful scan (both default to false).
+   self.config.isBeepEnabled = true;
+   self.config.isVibrateEnabled = true;
+   // Optional: control which buttons appear on the scanner UI.
+   self.config.isTorchButtonVisible = true;           // Torch toggle (default: true).
+   self.config.isCloseButtonVisible = true;           // Close/back button (default: true).
+   self.config.isCameraToggleButtonVisible = true;    // Front/back camera toggle (default: true).
+   self.config.isBeepButtonVisible = true;            // Beep on/off toggle (default: true).
+   self.config.isVibrateButtonVisible = true;         // Vibrate on/off toggle (default: true).
+   self.config.isFormatSelectorVisible = true;        // Document format selector (default: true).
+   // Optional: choose which images to return with the result.
+   self.config.returnDocumentImage = true;    // Cropped document image (default: true).
+   self.config.returnPortraitImage = true;    // Portrait extracted from document (default: true).
+   self.config.returnOriginalImage = false;   // Full camera frame (default: false).
+}
+```
+2.
+```swift
+/* CONTINUATION OF STEP 3 — add to viewDidLoad after setup() */
+override func viewDidLoad() {
+   /* ... */
+   setup()
+   // Required: set a valid license key.
+   config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+   // Optional: restrict scanning to a specific document type (default: .all).
+   config.documentType = .passport
+   // Optional: load a custom template from "DynamsoftResources.bundle\Templates\" or pass a JSON string.
+   config.templateFile = "CustomizedTemplate.json"
+   // Optional: feedback on successful scan (both default to false).
+   config.isBeepEnabled = true
+   config.isVibrateEnabled = true
+   // Optional: control which buttons appear on the scanner UI.
+   config.isTorchButtonVisible = true           // Torch toggle (default: true).
+   config.isCloseButtonVisible = true           // Close/back button (default: true).
+   config.isCameraToggleButtonVisible = true    // Front/back camera toggle (default: true).
+   config.isBeepButtonVisible = true            // Beep on/off toggle (default: true).
+   config.isVibrateButtonVisible = true         // Vibrate on/off toggle (default: true).
+   config.isFormatSelectorVisible = true        // Document format selector (default: true).
+   // Optional: choose which images to return with the result.
+   config.returnDocumentImage = true    // Cropped document image (default: true).
+   config.returnPortraitImage = true    // Portrait extracted from document (default: true).
+   config.returnOriginalImage = false   // Full camera frame (default: false).
+}
+```
+
+> [!NOTE]
+>
+> - The license string above grants a time-limited free trial which requires a network connection.
+> - You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
+
+### Step 5: Launch the Scanner
+
+Wire the scan button to `MRZScannerViewController` and handle results via the `onScannedResult` callback. Each result carries a `resultStatus` of *finished* (MRZ decoded), *canceled* (user closed the scanner), or *exception* (an error occurred).
+
+Continuing from Step 4:
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+/* CONTINUATION OF STEP 4 — add buttonTapped method */
 - (void)buttonTapped {
    DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
-   DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
-   config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
-   // Extra configurations from step 5 go here
-   vc.config = config;
+   vc.config = self.config;
    __weak typeof(self) weakSelf = self;
    vc.onScannedResult = ^(DSMRZScanResult *result) {
           switch (result.resultStatus) {
              case DSResultStatusFinished: {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                   NSString *documentType = result.data.documentType ?: @"";
-                   NSString *documentNumber = result.data.documentNumber ?: @"";
-                   weakSelf.label.text = [NSString stringWithFormat:@"Result:\nDocumentType: %@\nDocumentNumber: %@", documentType, documentNumber];
-                });
+                if (result.data) {
+                   dispatch_async(dispatch_get_main_queue(), ^{
+                      ResultViewController *resultVC = [[ResultViewController alloc] init];
+                      resultVC.mrzData = result.data;
+                      NSError *error = nil;
+                      resultVC.portraitImage = [[result getPortraitImage] toUIImageAndReturnError:&error];
+                      resultVC.primaryDocumentImage = [[result getDocumentImage:DSDocumentSideMrz] toUIImageAndReturnError:&error];
+                      resultVC.primaryOriginalImage = [[result getOriginalImage:DSDocumentSideMrz] toUIImageAndReturnError:&error];
+                      resultVC.secondaryDocumentImage = [[result getDocumentImage:DSDocumentSideOpposite] toUIImageAndReturnError:&error];
+                      resultVC.secondaryOriginalImage = [[result getOriginalImage:DSDocumentSideOpposite] toUIImageAndReturnError:&error];
+                      [weakSelf.navigationController pushViewController:resultVC animated:YES];
+                   });
+                }
                 break;
              }
              case DSResultStatusCanceled: {
                 dispatch_async(dispatch_get_main_queue(), ^{
+                   weakSelf.label.hidden = NO;
                    weakSelf.label.text = @"Scan canceled";
+                   [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
                 break;
              }
              case DSResultStatusException: {
                 dispatch_async(dispatch_get_main_queue(), ^{
+                   weakSelf.label.hidden = NO;
                    weakSelf.label.text = result.errorString;
+                   [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
                 break;
              }
              default:
                 break;
           }
-          dispatch_async(dispatch_get_main_queue(), ^{
-             [weakSelf.navigationController popViewControllerAnimated:YES];
-          });
    };
+   self.label.hidden = YES;
    dispatch_async(dispatch_get_main_queue(), ^{
-          weakSelf.navigationController.navigationBar.hidden = YES;
           [weakSelf.navigationController pushViewController:vc animated:YES];
    });
 }
 ```
-2. 
+2.
 ```swift
-/* CONTINUATION OF CODE FROM STEP 3 */
+/* CONTINUATION OF STEP 4 — add buttonTapped method */
 @objc func buttonTapped() {
    let vc = MRZScannerViewController()
-   let config = MRZScannerConfig()
-   config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-   // Extra configurations from step 5 go here
    vc.config = config
    vc.onScannedResult = { [weak self] result in
           guard let self = self else { return }
           switch result.resultStatus {
-          /* if the result is valid, display it in the label */
+          /* if the result is valid, navigate to ResultViewController */
           case .finished:
-             DispatchQueue.main.async {
-                let documentType = result.data?.documentType ?? ""
-                let documentNumber = result.data?.documentNumber ?? ""
-                self.label.text = "Result:\nDocumentType: " + (documentType) + "\n" + "DocumentNumber: " + (documentNumber)
+             if let data = result.data {
+                DispatchQueue.main.async {
+                   let resultVC = ResultViewController()
+                   resultVC.mrzData = data
+                   resultVC.portraitImage = try? result.getPortraitImage()?.toUIImage()
+                   resultVC.primaryDocumentImage = try? result.getDocumentImage(.mrz)?.toUIImage()
+                   resultVC.primaryOriginalImage = try? result.getOriginalImage(.mrz)?.toUIImage()
+                   resultVC.secondaryDocumentImage = try? result.getDocumentImage(.opposite)?.toUIImage()
+                   resultVC.secondaryOriginalImage = try? result.getOriginalImage(.opposite)?.toUIImage()
+                   self.navigationController?.pushViewController(resultVC, animated: true)
+                }
              }
           /* if the scan operation is canceled by the user */
           case .canceled:
              DispatchQueue.main.async {
+                self.label.isHidden = false
                 self.label.text = "Scan canceled"
+                self.navigationController?.popViewController(animated: true)
              }
           /* if an error occurs during capture, display the error string in the label */
           case .exception:
              DispatchQueue.main.async {
+                self.label.isHidden = false
                 self.label.text = result.errorString
+                self.navigationController?.popViewController(animated: true)
              }
           @unknown default:
              break
           }
-          /* return back to the home page to display the result/cancel message/error string */
-          DispatchQueue.main.async {
-             self.navigationController?.popViewController(animated: true)
-          }
    }
-   /* when the button is clicked, hide the navigation bar and push the newly created MRZScannerViewController to the main view */
+   label.isHidden = true
    DispatchQueue.main.async {
-          self.navigationController?.navigationBar.isHidden = true
           self.navigationController?.pushViewController(vc, animated: true)
    }
 }
 ```
 
-### Step 5: Configure the MRZ Scanner (optional)
+> [!NOTE]
+>
+> - `DocumentSide.mrz` refers to the side of the document containing the machine-readable zone. `DocumentSide.opposite` refers to the reverse side, which is relevant for two-sided documents such as TD1 ID cards.
+> - Image retrieval methods on `MRZScanResult` (`getDocumentImage()`, `getOriginalImage()`, `getPortraitImage()`) return `nil` if the corresponding option was disabled in the config or if no image was captured for that side.
 
-This next step, although optional, is highly recommended to help you achieve a smooth-looking UI. In this step, we will configure the `MRZScannerConfig` object to utilize some of the other properties that are available in the class. In step 3, `MRZScannerConfig` was initially used to configure the license. Now, let's use some of the other settings which include the document type, the visibility of the torch button, and whether a beep should be played after a successful recognition.
+### Step 6: Display the Results
+
+Create `ResultViewController` to receive and display the scan result. The *canceled* and *exception* statuses are already handled inline in Step 5's callback, so `ResultViewController` only needs to handle the *finished* status. It provides **Re-scan** and **Return Home** actions.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
 >- Swift
 >
->1. 
+>1.
 ```objc
-DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
-// You can use the following code to specify the document type.
-config.documentType = DSDocumentTypePassport;
-// If you have a customized template file, please put it under "DynamsoftResources.bundle\Templates\" and call the following code. You can also use a JSON string as the `templateFile`.
-config.templateFile = @"CustomizedTemplate.json";
-// Add the following line to enable the beep sound when an MRZ is scanned successfully.
-config.isBeepEnabled = true;
-// Add the following line if you don't want to display the torch button.
-config.isTorchButtonVisible = false;
-// Add the following line if you don't want to display the close button.
-config.isCloseButtonVisible = false;
+/* ResultViewController.h */
+#import <UIKit/UIKit.h>
+#import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle-Swift.h>
+@interface ResultViewController : UIViewController
+@property (nonatomic, strong) DSMRZData *mrzData;
+@property (nonatomic, strong) UIImage *portraitImage;
+@property (nonatomic, strong) UIImage *primaryDocumentImage;
+@property (nonatomic, strong) UIImage *primaryOriginalImage;
+@property (nonatomic, strong) UIImage *secondaryDocumentImage;
+@property (nonatomic, strong) UIImage *secondaryOriginalImage;
+@end
+/* ResultViewController.m */
+#import "ResultViewController.h"
+@interface ResultViewController ()
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *subInfoLabel;
+@property (nonatomic, strong) UIImageView *portraitImageView;
+@property (nonatomic, strong) UIImageView *primaryImageView;
+@property (nonatomic, strong) UIImageView *secondaryImageView;
+@property (nonatomic, strong) UILabel *mrzTextLabel;
+@end
+@implementation ResultViewController
+- (void)viewDidLoad {
+   [super viewDidLoad];
+   self.view.backgroundColor = [UIColor blackColor];
+   self.title = @"Result";
+   [self setupUI];
+   [self populateData];
+}
+- (void)populateData {
+   if (!self.mrzData) return;
+   self.nameLabel.text = [NSString stringWithFormat:@"%@ %@", self.mrzData.firstName, self.mrzData.lastName];
+   self.subInfoLabel.text = [NSString stringWithFormat:@"%@, %ld years old\nExpiry: %@",
+      self.mrzData.sex, (long)self.mrzData.age, self.mrzData.dateOfExpire];
+   if (self.portraitImage) {
+      self.portraitImageView.image = self.portraitImage;
+   }
+   self.primaryImageView.image = self.primaryDocumentImage;
+   self.secondaryImageView.image = self.secondaryDocumentImage;
+   self.mrzTextLabel.text = self.mrzData.mrzText;
+}
+- (void)rescanTapped {
+   [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)returnHomeTapped {
+   [self.navigationController popToRootViewControllerAnimated:YES];
+}
+@end
 ```
-2. 
+2.
 ```swift
-let config = MRZScannerConfig()
-// You can use the following code to specify the document type.
-config.documentType = .passport
-// If you have a customized template file, please put it under "DynamsoftResources.bundle\Templates\" and call the following code. You can also use a JSON string as the `templateFile`.
-config.templateFile = "CustomizedTemplate.json"
-// Add the following line to enable the beep sound when an MRZ is scanned successfully.
-config.isBeepEnabled = true
-// Add the following line if you don't want to display the torch button.
-config.isTorchButtonVisible = false
-// Add the following line if you don't want to display the close button.
-config.isCloseButtonVisible = false
+import UIKit
+import DynamsoftMRZScannerBundle
+class ResultViewController: UIViewController {
+   // Data properties — set by ViewController before pushing
+   var mrzData: MRZData?
+   var portraitImage: UIImage?
+   var primaryDocumentImage: UIImage?
+   var primaryOriginalImage: UIImage?
+   var secondaryDocumentImage: UIImage?
+   var secondaryOriginalImage: UIImage?
+   // UI components
+   let nameLabel = UILabel()
+   let subInfoLabel = UILabel()
+   let portraitImageView = UIImageView()
+   let primaryImageView = UIImageView()
+   let secondaryImageView = UIImageView()
+   let mrzTextLabel = UILabel()
+   let rescanButton = UIButton(type: .system)
+   let returnHomeButton = UIButton(type: .system)
+   override func viewDidLoad() {
+          super.viewDidLoad()
+          view.backgroundColor = .black
+          title = "Result"
+          setupUI()
+          populateData()
+   }
+   private func populateData() {
+          guard let data = mrzData else { return }
+          // Personal info header
+          nameLabel.text = "\(data.firstName) \(data.lastName)"
+          subInfoLabel.text = "\(data.sex.capitalized), \(data.age) years old\nExpiry: \(data.dateOfExpire)"
+          // Portrait image
+          if let portrait = portraitImage {
+             portraitImageView.image = portrait
+          }
+          // Document images
+          primaryImageView.image = primaryDocumentImage
+          secondaryImageView.image = secondaryDocumentImage
+          // Raw MRZ text
+          mrzTextLabel.text = data.mrzText
+   }
+   @objc private func rescanTapped() {
+          navigationController?.popViewController(animated: true)
+   }
+   @objc private func returnHomeTapped() {
+          navigationController?.popToRootViewController(animated: true)
+   }
+}
 ```
 
 > [!NOTE]
->The code above only shows the configuration of the MRZScannerConfig object, which takes place right at the beginning of the `buttonTapped` function in steps 3 and 4.
+>
+> - `primaryDocumentImage` and `secondaryDocumentImage` correspond to the MRZ side and opposite side of the document respectively, as retrieved via `getDocumentImage(.mrz)` and `getDocumentImage(.opposite)` in Step 5.
+> - When no portrait image is available, use a placeholder — the sample uses a bundled asset named `"user"`. Add your own placeholder image to your asset catalog and reference it as `UIImage(named: "yourPlaceholder")` / `[UIImage imageNamed:@"yourPlaceholder"]`.
+> - For the complete `ResultViewController` implementation including the full UI layout, segmented image switcher, and info sections, refer to the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 
-### Step 6: Run the Project
+For the full list of fields available on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
 
-Now that the code has been written, it's time to run the project. The first thing that needs to be done is to configure the *Signing & Capabilities* section of the project. After you complete this section, move to the *Info* section of the project settings. In the *Info* section, please make sure that the "Privacy - Camera Usage Description" key is included in the list.
+### Step 7: Run the Project
 
-In order to run the project, you will require a physical iOS device. Once the device is connected, you should see it as an available device in top bar. After selecting the device from the menu, all you need to do is click the Run button. 
+Connect a physical iOS device, configure **Signing & Capabilities**, and add the "Privacy - Camera Usage Description" key in the **Info** section of the project settings. Select your device from the top bar and click **Run**. When the scanner finishes, the result is passed to `ResultViewController`, where the extracted MRZ data and any captured images are displayed.
 
-> [!NOTE] 
+> [!NOTE]
 > If you try running the project on a simulator, you will encounter errors as this sample uses the device camera which is unavailable when using the simulator.
-
-## Conclusion
-
-Now that your project is up and running you should be able to see a clean and simplified UI that contains all the necessary UI elements that are needed to make the MRZ scanning process as easy and intuitive for the user as it can be.
 
 ## Next Steps
 
-If you have any questions in regards to the usage of the new specialized SDK, do not hesitate to get in touch with the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
+- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
+- **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
+- **API Reference** — Browse the full [iOS API Reference](../api-reference/index.md) for all classes and methods.
+- **License** — See the [License Activation](license-activation.md) guide for production license setup.
+- **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.

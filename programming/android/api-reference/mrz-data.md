@@ -37,6 +37,11 @@ class MRZData
 | [`getDocumentNumber`](#getdocumentnumber) | Returns the MRZ document number. |
 | [`getAge`](#getage) | Returns the age of the user of the MRZ document. |
 | [`getMrzText`](#getmrztext) | Returns the raw text of the MRZ. |
+| [`getIssuingStateRaw`](#getissuingstateraw) | Returns the raw issuing state value as encoded in the MRZ. |
+| [`getNationalityRaw`](#getnationalityraw) | Returns the raw nationality value as encoded in the MRZ. |
+| [`getOptionalData1`](#getoptionaldata1) | Returns the first optional data field from the MRZ. |
+| [`getOptionalData2`](#getoptionaldata2) | Returns the second optional data field from the MRZ. |
+| [`getPersonalNumber`](#getpersonalnumber) | Returns the personal number from the MRZ. |
 
 ### getFirstName
 
@@ -169,3 +174,66 @@ String getMrzText();
 **Return Value**
 
 The raw text of the MRZ.
+
+### getIssuingStateRaw
+
+Returns the raw issuing state value exactly as encoded in the MRZ, before any standardization or lookup.
+
+```java
+String getIssuingStateRaw();
+```
+
+**Return Value**
+
+The raw issuing state string from the MRZ.
+
+### getNationalityRaw
+
+Returns the raw nationality value exactly as encoded in the MRZ, before any standardization or lookup.
+
+```java
+String getNationalityRaw();
+```
+
+**Return Value**
+
+The raw nationality string from the MRZ.
+
+### getOptionalData1
+
+Returns the first optional data field from the MRZ. The content depends on the document type and issuing authority.
+
+```java
+@Nullable
+String getOptionalData1();
+```
+
+**Return Value**
+
+The first optional data field, or `null` if not present.
+
+### getOptionalData2
+
+Returns the second optional data field from the MRZ. The content depends on the document type and issuing authority.
+
+```java
+@Nullable
+String getOptionalData2();
+```
+
+**Return Value**
+
+The second optional data field, or `null` if not present.
+
+### getPersonalNumber
+
+Returns the personal number from the MRZ. This field is typically found on TD3 (passport) documents.
+
+```java
+@Nullable
+String getPersonalNumber();
+```
+
+**Return Value**
+
+The personal number, or `null` if not present.

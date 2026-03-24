@@ -42,8 +42,20 @@ final class MRZScannerConfig
 | [`getDocumentType`](#getdocumenttype) | Returns the type of document to scan, such as ID cards or passports. |
 | [`isGuideFrameVisible`](#isguideframevisible) | Returns the visibility status of the guide frame on the display. |
 | [`setGuideFrameVisible`](#setguideframevisible) | Sets the visibility of the guide frame on the display. |
-| [`isCameraToggleButtonVisible`](#iscameratogglebuttonvisible) | Returns the visibility status of the guide frame on the display. |
-| [`setCameraToggleButtonVisible`](#setcameratogglebuttonvisible) | Sets the visibility of the guide frame on the display. |
+| [`isCameraToggleButtonVisible`](#iscameratogglebuttonvisible) | Returns the visibility status of the camera toggle button. |
+| [`setCameraToggleButtonVisible`](#setcameratogglebuttonvisible) | Sets the visibility of the camera toggle button. |
+| [`setBeepButtonVisible`](#setbeepbuttonvisible) | Sets the visibility of the beep toggle button in the UI. |
+| [`isBeepButtonVisible`](#isbeepbuttonvisible) | Returns the visibility status of the beep toggle button. |
+| [`setVibrateButtonVisible`](#setvibrateButtonvisible) | Sets the visibility of the vibrate toggle button in the UI. |
+| [`isVibrateButtonVisible`](#isvibrateButtonvisible) | Returns the visibility status of the vibrate toggle button. |
+| [`setFormatSelectorVisible`](#setformatselectorvisible) | Sets the visibility of the document format selector. |
+| [`isFormatSelectorVisible`](#isformatselectorvisible) | Returns the visibility status of the document format selector. |
+| [`setReturnDocumentImage`](#setreturndocumentimage) | Sets whether to return a cropped document image after scanning. |
+| [`isReturnDocumentImage`](#isreturndocumentimage) | Returns whether a cropped document image is returned after scanning. |
+| [`setReturnOriginalImage`](#setreturnoriginalimage) | Sets whether to return the original full-frame image after scanning. |
+| [`isReturnOriginalImage`](#isreturnoriginalimage) | Returns whether the original full-frame image is returned after scanning. |
+| [`setReturnPortraitImage`](#setreturnportraitimage) | Sets whether to return the detected portrait image after scanning. |
+| [`isReturnPortraitImage`](#isreturnportraitimage) | Returns whether the detected portrait image is returned after scanning. |
 
 The following methods are deprecated:
 
@@ -261,12 +273,156 @@ void setGuideFrameVisible(boolean guideFrameVisible);
 Sets whether to display the camera switch button or not. The camera toggle button allows users to switch between the front and rear cameras.
 
 ```java
-void setGuideFrameVisible(boolean cameraToggleButtonVisible);
+void setCameraToggleButtonVisible(boolean cameraToggleButtonVisible);
 ```
 
 **Parameter(s)**
 
 `cameraToggleButtonVisible`: A boolean value that determines whether to display the camera switch button.
+
+### setBeepButtonVisible
+
+Sets the visibility of the beep toggle button in the scanning UI. When visible, users can tap the button to enable or disable the beep sound.
+
+```java
+void setBeepButtonVisible(boolean isVisible);
+```
+
+**Parameter(s)**
+
+`isVisible`: A boolean value that determines whether to display the beep toggle button.
+
+### isBeepButtonVisible
+
+Returns the visibility status of the beep toggle button.
+
+```java
+boolean isBeepButtonVisible();
+```
+
+**Return Value**
+
+A boolean value that determines whether the beep toggle button is displayed.
+
+### setVibrateButtonVisible
+
+Sets the visibility of the vibrate toggle button in the scanning UI. When visible, users can tap the button to enable or disable vibration feedback.
+
+```java
+void setVibrateButtonVisible(boolean isVisible);
+```
+
+**Parameter(s)**
+
+`isVisible`: A boolean value that determines whether to display the vibrate toggle button.
+
+### isVibrateButtonVisible
+
+Returns the visibility status of the vibrate toggle button.
+
+```java
+boolean isVibrateButtonVisible();
+```
+
+**Return Value**
+
+A boolean value that determines whether the vibrate toggle button is displayed.
+
+### setFormatSelectorVisible
+
+Sets the visibility of the document format selector, which allows users to switch between scanning ID cards, passports, or both.
+
+```java
+void setFormatSelectorVisible(boolean isVisible);
+```
+
+**Parameter(s)**
+
+`isVisible`: A boolean value that determines whether to display the document format selector.
+
+### isFormatSelectorVisible
+
+Returns the visibility status of the document format selector.
+
+```java
+boolean isFormatSelectorVisible();
+```
+
+**Return Value**
+
+A boolean value that determines whether the document format selector is displayed.
+
+### setReturnDocumentImage
+
+Sets whether to return a cropped document image as part of the scan result. Enabled by default.
+
+```java
+void setReturnDocumentImage(boolean returnDocumentImage);
+```
+
+**Parameter(s)**
+
+`returnDocumentImage`: A boolean value that determines whether to include the document image in the result.
+
+### isReturnDocumentImage
+
+Returns whether a cropped document image is included in the scan result.
+
+```java
+boolean isReturnDocumentImage();
+```
+
+**Return Value**
+
+A boolean value that determines whether the document image is returned.
+
+### setReturnOriginalImage
+
+Sets whether to return the original full-frame camera image as part of the scan result. Disabled by default.
+
+```java
+void setReturnOriginalImage(boolean returnOriginalImage);
+```
+
+**Parameter(s)**
+
+`returnOriginalImage`: A boolean value that determines whether to include the original full-frame image in the result.
+
+### isReturnOriginalImage
+
+Returns whether the original full-frame image is included in the scan result.
+
+```java
+boolean isReturnOriginalImage();
+```
+
+**Return Value**
+
+A boolean value that determines whether the original image is returned.
+
+### setReturnPortraitImage
+
+Sets whether to return the detected portrait image as part of the scan result. Enabled by default.
+
+```java
+void setReturnPortraitImage(boolean returnPortraitImage);
+```
+
+**Parameter(s)**
+
+`returnPortraitImage`: A boolean value that determines whether to include the portrait image in the result.
+
+### isReturnPortraitImage
+
+Returns whether the detected portrait image is included in the scan result.
+
+```java
+boolean isReturnPortraitImage();
+```
+
+**Return Value**
+
+A boolean value that determines whether the portrait image is returned.
 
 ### setTemplateFilePath
 

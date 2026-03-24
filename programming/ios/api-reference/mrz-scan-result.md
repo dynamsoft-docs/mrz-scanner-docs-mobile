@@ -48,11 +48,11 @@ The parsed MRZ information as a [`MRZData`](mrz-data.md) object.
 >
 >1. 
 ```objc
-@property (nonatomic, readonly) DSMRZData* data;
+@property (nonatomic, nullable, readonly) DSMRZData* data;
 ```
-2. 
+2.
 ```swift
-var data: MRZData {get}
+var data: MRZData? {get}
 ```
 
 ### resultStatus
@@ -105,11 +105,90 @@ The error message associated with the error code should something go wrong durin
 >- Objective-C
 >- Swift
 >
->1. 
+>1.
 ```objc
-@property (nonatomic, assign, readonly) NSString * errorMessage;
+@property (nonatomic, assign, readonly) NSString * errorString;
 ```
-2. 
+2.
 ```swift
-var errorMessage: String? { get }
+var errorString: String? { get }
 ```
+
+## Methods
+
+| Method | Description |
+| ------ | ----------- |
+| [`getPortraitImage`](#getportraitimage) | Returns the captured portrait image. |
+| [`getDocumentImage`](#getdocumentimage) | Returns the captured document image for the specified side. |
+| [`getOriginalImage`](#getoriginalimage) | Returns the original frame image for the specified side. |
+
+### getPortraitImage
+
+Returns the captured portrait image, if available.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+- (nullable DSImageData *)getPortraitImage;
+```
+2.
+```swift
+func getPortraitImage() -> ImageData?
+```
+
+**Return Value**
+
+An `ImageData` object containing the portrait image, or `nil` if no portrait was captured or `returnPortraitImage` was disabled in [`MRZScannerConfig`](mrz-scanner-config.md).
+
+### getDocumentImage
+
+Returns the captured document image for the specified side.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+- (nullable DSImageData *)getDocumentImage:(DSDocumentSide)side;
+```
+2.
+```swift
+func getDocumentImage(_ side: DocumentSide) -> ImageData?
+```
+
+**Parameters**
+
+`side`: A [`DocumentSide`](document-side.md) value specifying which side of the document to retrieve. Use `.mrz` for the side containing the MRZ, or `.opposite` for the other side.
+
+**Return Value**
+
+An `ImageData` object containing the document image, or `nil` if the image was not captured or `returnDocumentImage` was disabled in [`MRZScannerConfig`](mrz-scanner-config.md).
+
+### getOriginalImage
+
+Returns the original full-frame image for the specified side.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+- (nullable DSImageData *)getOriginalImage:(DSDocumentSide)side;
+```
+2.
+```swift
+func getOriginalImage(_ side: DocumentSide) -> ImageData?
+```
+
+**Parameters**
+
+`side`: A [`DocumentSide`](document-side.md) value specifying which side of the document to retrieve.
+
+**Return Value**
+
+An `ImageData` object containing the original frame image, or `nil` if the image was not captured or `returnOriginalImage` was disabled in [`MRZScannerConfig`](mrz-scanner-config.md).

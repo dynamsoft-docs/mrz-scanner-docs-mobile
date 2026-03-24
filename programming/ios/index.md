@@ -12,37 +12,35 @@ breadcrumbText: iOS
 
 Dynamsoft MRZ Scanner SDK iOS Edition is designed to scan the MRZ code from a passport or ID card for iOS developers.
 
-## Using the SDK
-
-### System Requirements
+## System Requirements
 
 - Supported OS: iOS 13+.
 - Supported ABI: arm64 and x86_64.
 - Development Environment: Xcode 13+ (Xcode 14.1+ recommended).
 
-### User Guide
+## User Guide
 
 - [MRZ Scanner User Guide (iOS Edition)](user-guide/index.md)
 - [Customizing the MRZ Scanner](user-guide/customize-mrz-scanner.md)
+- [License Initialization](user-guide/license-activation.md)
+- [Upgrade Guide](user-guide/upgrade.md)
 
-### Samples and Demos
+## Samples and Demos
 
 - [Samples & Demos](samples/index.md)
 
-### API Reference
+## API Reference
 
 - [API Reference](./api-reference/index.md)
 
 ## Release Notes
 
-- [Version 2.x](release-notes/ios-2.html)
 - [Version 3.x](release-notes/ios-3.html)
+- [Version 2.x](release-notes/ios-2.html)
 
-## License Subscription
+## Licensing
 
-To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key:
-
-- [Request a 30-day free trial license](https://www.dynamsoft.com/customer/license/trialLicense?utm_source=docs&product=mrz&package=ios){:target="_blank"}
+To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key. See [License Initialization](user-guide/license-activation.md) for details.
 
 ## Contact Us
 

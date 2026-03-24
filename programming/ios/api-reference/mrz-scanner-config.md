@@ -42,12 +42,12 @@ class MRZScannerConfig : NSObject
 | [`isCloseButtonVisible`](#isclosebuttonvisible) | *BOOL* | Sets/Returns the visibility of the close button. |
 | [`isGuideFrameVisible`](#isguideframevisible) | *BOOL* | Sets/Returns the visibility of the guide frame on the display. |
 | [`isCameraToggleButtonVisible`](#iscameratogglebuttonvisible) | *BOOL* | Sets/Returns the visibility of the camera switch button. |
-
-The following property is deprecated:
-
-| Property | Type | Description |
-| -------- | ---- | ----------- |
-| [`templateFilePath`](#templatefilepath) | *NSString* | Sets/Returns the local file path for the JSON parameters template file. |
+| [`isBeepButtonVisible`](#isbeepbuttonvisible) | *BOOL* | Sets/Returns the visibility of the beep toggle button. |
+| [`isVibrateButtonVisible`](#isvibratebuttonvisible) | *BOOL* | Sets/Returns the visibility of the vibrate toggle button. |
+| [`isFormatSelectorVisible`](#isformatselectorvisible) | *BOOL* | Sets/Returns the visibility of the document format selector. |
+| [`returnDocumentImage`](#returndocumentimage) | *BOOL* | Sets/Returns whether to return a cropped document image in the scan result. |
+| [`returnPortraitImage`](#returnportraitimage) | *BOOL* | Sets/Returns whether to return a cropped portrait image in the scan result. |
+| [`returnOriginalImage`](#returnoriginalimage) | *BOOL* | Sets/Returns whether to return the original frame image in the scan result. |
 
 ### license
 
@@ -80,7 +80,7 @@ Sets or returns the template with a file path or a JSON string.
 ```
 2. 
 ```swift
-var templateFile: String { get set }
+var templateFile: String? { get set }
 ```
 
 ### documentType
@@ -202,19 +202,104 @@ Sets or returns the visibility of the camera switch button that allows users to 
 var isCameraToggleButtonVisible: Bool { get set }
 ```
 
-### templateFilePath
+### isBeepButtonVisible
 
-Sets or returns the local file path for the JSON parameters template file.
+Sets or returns the visibility of the beep toggle button. Users can click the beep button to turn on/off the beep sound.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
 >- Swift
 >
->1. 
+>1.
 ```objc
-@property(nonatomic, assign) NSString* templateFilePath;
+@property(nonatomic, assign) BOOL isBeepButtonVisible;
 ```
-2. 
+2.
 ```swift
-var templateFilePath: String { get set }
+var isBeepButtonVisible: Bool { get set }
+```
+
+### isVibrateButtonVisible
+
+Sets or returns the visibility of the vibrate toggle button. Users can click the vibrate button to turn on/off the vibration.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+@property(nonatomic, assign) BOOL isVibrateButtonVisible;
+```
+2.
+```swift
+var isVibrateButtonVisible: Bool { get set }
+```
+
+### isFormatSelectorVisible
+
+Sets or returns the visibility of the document format selector that allows users to switch between scanning modes (ID cards, passports, or both).
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+@property(nonatomic, assign) BOOL isFormatSelectorVisible;
+```
+2.
+```swift
+var isFormatSelectorVisible: Bool { get set }
+```
+
+### returnDocumentImage
+
+Sets or returns whether to return a cropped document image in the scan result. Enabled by default.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+@property(nonatomic, assign) BOOL returnDocumentImage;
+```
+2.
+```swift
+var returnDocumentImage: Bool { get set }
+```
+
+### returnPortraitImage
+
+Sets or returns whether to return a cropped portrait image in the scan result. Enabled by default.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+@property(nonatomic, assign) BOOL returnPortraitImage;
+```
+2.
+```swift
+var returnPortraitImage: Bool { get set }
+```
+
+### returnOriginalImage
+
+Sets or returns whether to return the original full-frame image in the scan result. Disabled by default.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1.
+```objc
+@property(nonatomic, assign) BOOL returnOriginalImage;
+```
+2.
+```swift
+var returnOriginalImage: Bool { get set }
 ```
