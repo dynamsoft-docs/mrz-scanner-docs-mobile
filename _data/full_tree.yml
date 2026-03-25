@@ -1,7 +1,11 @@
 tree_file_list:
   - sidelist-full-tree.html
   - sidelist-programming/programming-android.html
+  - sidelist-programming/programming-android-v3.2.5000.html
+  - sidelist-programming/programming-android-v2.0.2.html
   - sidelist-programming/programming-ios.html
+  - sidelist-programming/programming-ios-v3.2.5000.html
+  - sidelist-programming/programming-ios-v2.0.2.html
   - sidelist-programming/programming-maui.html
   - sidelist-programming/programming-flutter.html
   - sidelist-programming/programming-react-native.html
