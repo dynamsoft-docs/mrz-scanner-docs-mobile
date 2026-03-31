@@ -105,19 +105,21 @@ val config = MRZScannerConfig().apply {
 ## Configure the UI Elements
 
 <div align="center">
-    <p><img src="../../assets/mrz-scanner-ui.png" width="70%" alt="mrz-scanner"></p>
+    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="70%" alt="mrz-scanner"></p>
     <p>MRZ Scanner UI Component</p>
 </div>
 
 The MRZ Scanner UI includes the following configurable elements:
 
-- **Close button**: Stops scanning and returns to the previous activity.
-- **Torch button**: Toggles the device flashlight on or off.
-- **Camera toggle button**: Switches between the front and rear cameras.
-- **Beep button**: Toggles the beep sound feedback on or off.
-- **Vibrate button**: Toggles the vibration feedback on or off.
-- **Format selector**: A bottom bar that lets users switch between scanning ID cards, passports, or both.
-- **Guide frame**: A visual overlay that helps users align the document for optimal scanning.
+- **Close button**: Dismisses the scanner and returns the user to the previous screen.
+- **Torch button**: Turns the device flashlight on or off to improve scanning in low-light conditions.
+- **Camera toggle button**: Switches between the front and rear cameras for flexible document placement.
+- **Beep button**: Lets users enable or disable the audible beep that plays on a successful scan.
+- **Vibrate button**: Lets users enable or disable haptic vibration feedback on a successful scan.
+- **Guide frame**: A viewfinder overlay that guides users in positioning the document within the camera frame.
+- **Prompt text**: A status label that updates dynamically to guide users through each step of the scanning process.
+- **Format selector**: A bottom control bar for selecting the target document type — ID card, passport, or both.
+
 
 All UI elements are visible by default. Use the following configuration to hide any elements that are not needed for your use case:
 
@@ -136,7 +138,7 @@ config.setVibrateButtonVisible(false);
 config.setFormatSelectorVisible(false);
 config.setGuideFrameVisible(false);
 ```
-2. 
+1. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    setCloseButtonVisible(false)
