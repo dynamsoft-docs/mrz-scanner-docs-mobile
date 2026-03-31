@@ -6,6 +6,8 @@ keywords: updates guide, ios
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
 noTitleIndex: true
+multiProgrammingLanguage: true
+enableLanguageSelection: true
 ---
 
 # How to Upgrade

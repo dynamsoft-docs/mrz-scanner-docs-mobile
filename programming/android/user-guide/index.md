@@ -63,7 +63,7 @@ A valid license key is required to use the SDK. If you are just getting started,
 
    ```groovy
    dependencies {
-      implementation 'com.dynamsoft:mrzscannerbundle:3.4.1000'
+      implementation 'com.dynamsoft:mrzscannerbundle:3.4.1100'
    }
    ```
 
@@ -125,7 +125,6 @@ The only required setting is the license key — see the [Licensing](#licensing)
 >1. 
 ```java
 package com.dynamsoft.scanmrz;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
@@ -138,11 +137,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentType;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-
 public class MainActivity extends AppCompatActivity {
    private ActivityResultLauncher<MRZScannerConfig> launcher;
    private final MRZScannerConfig config = new MRZScannerConfig();
-
    @SuppressLint("RestrictedApi")
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -154,19 +151,15 @@ public class MainActivity extends AppCompatActivity {
          v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
          return insets;
       });
-
       // Required: set a valid license key.
       config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-
       // Optional: restrict scanning to a specific document type (default: DT_ALL).
       config.setDocumentType(EnumDocumentType.DT_PASSPORT);
       // Optional: load a custom template from src/main/assets/Templates/ or pass a JSON string.
       config.setTemplateFile("CustomizedTemplate.json");
-
       // Optional: enable audio and haptic feedback on a successful scan (both default to false).
       config.setBeepEnabled(true);
       config.setVibrateEnabled(true);
-
       // Optional: control which buttons appear on the scanner UI.
       config.setTorchButtonVisible(true);           // Torch toggle (default: true).
       config.setCloseButtonVisible(true);           // Close/back button (default: true).
@@ -174,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
       config.setBeepButtonVisible(true);            // Beep on/off toggle (default: true).
       config.setVibrateButtonVisible(true);         // Vibrate on/off toggle (default: true).
       config.setFormatSelectorVisible(true);        // Document format selector (default: true).
-
       // Optional: choose which images to return with the scan result.
       config.setReturnDocumentImage(true);    // Cropped document image (default: true).
       config.setReturnPortraitImage(true);    // Portrait extracted from the document (default: true).
@@ -185,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
 2. 
 ```kotlin
 package com.dynamsoft.scanmrz
-
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.EdgeToEdge
@@ -197,11 +188,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentType
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
-
 class MainActivity : AppCompatActivity() {
    private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
    private val config = MRZScannerConfig()
-
    @SuppressLint("RestrictedApi")
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
@@ -212,20 +201,16 @@ class MainActivity : AppCompatActivity() {
          v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
          insets
       }
-
       // Required: set a valid license key.
       config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9")
-
       config.apply {
          // Optional: restrict scanning to a specific document type (default: DT_ALL).
          setDocumentType(EnumDocumentType.DT_PASSPORT)
          // Optional: load a custom template from src/main/assets/Templates/ or pass a JSON string.
          setTemplateFile("CustomizedTemplate.json")
-
          // Optional: enable audio and haptic feedback on a successful scan (both default to false).
          setBeepEnabled(true)
          setVibrateEnabled(true)
-
          // Optional: control which buttons appear on the scanner UI.
          setTorchButtonVisible(true)          // Torch toggle (default: true).
          setCloseButtonVisible(true)          // Close/back button (default: true).
@@ -233,7 +218,6 @@ class MainActivity : AppCompatActivity() {
          setBeepButtonVisible(true)           // Beep on/off toggle (default: true).
          setVibrateButtonVisible(true)        // Vibrate on/off toggle (default: true).
          setFormatSelectorVisible(true)       // Document format selector (default: true).
-
          // Optional: choose which images to return with the scan result.
          setReturnDocumentImage(true)    // Cropped document image (default: true).
          setReturnPortraitImage(true)    // Portrait extracted from the document (default: true).
@@ -264,7 +248,6 @@ Continuing from Step 4:
 public class MainActivity extends AppCompatActivity {
    private ActivityResultLauncher<MRZScannerConfig> launcher;
    private final MRZScannerConfig config = new MRZScannerConfig();
-
    @SuppressLint("RestrictedApi")
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -280,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
       });
       findViewById(R.id.btn_start).setOnClickListener(v -> launcher.launch(config));
    }
-
    @Override
    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
@@ -298,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
 class MainActivity : AppCompatActivity() {
    private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
    private val config = MRZScannerConfig()
-
    @SuppressLint("RestrictedApi")
    override fun onCreate(savedInstanceState: Bundle?) {
       /* CONTINUATION OF THE CODE FROM STEP 4 */
@@ -315,7 +296,6 @@ class MainActivity : AppCompatActivity() {
          launcher.launch(config)
       }
    }
-
    @Deprecated("Deprecated in Java")
    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
       super.onActivityResult(requestCode, resultCode, data)
@@ -490,7 +470,6 @@ Now implement `ResultActivity`:
 >1. 
 ```java
 package com.dynamsoft.scanmrz;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -504,14 +483,12 @@ import com.dynamsoft.core.basic_structures.ImageData;
 import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentSide;
 import com.dynamsoft.mrzscannerbundle.ui.MRZData;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
-
 public class ResultActivity extends AppCompatActivity {
    public static final int REQUEST_CODE = 1024;
    public static final String EXTRA_RESULT = "RESULT";
    public static final String EXTRA_ACTION = "ACTION";
    public static final int ACTION_RESCAN = 0;
    public static final int ACTION_RETURN_HOME = 1;
-
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -521,12 +498,10 @@ public class ResultActivity extends AppCompatActivity {
          v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
          return insets;
       });
-
       MRZScanResult scanResult = (MRZScanResult) getIntent().getSerializableExtra(EXTRA_RESULT);
       if (scanResult != null) {
          showMRZScanResult(scanResult);
       }
-
       findViewById(R.id.btn_rescan).setOnClickListener(v -> {
          setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RESCAN));
          finish();
@@ -536,7 +511,6 @@ public class ResultActivity extends AppCompatActivity {
          finish();
       });
    }
-
    private void showMRZScanResult(MRZScanResult result) {
       if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
          // The user closed the scanner — return to the home screen without displaying a result.
@@ -552,12 +526,10 @@ public class ResultActivity extends AppCompatActivity {
          tvNoResult.setText(result.getErrorString());
          return;
       }
-
       // RS_FINISHED — the MRZ was successfully decoded. Show the result view.
       findViewById(R.id.result_view).setVisibility(View.VISIBLE);
       findViewById(R.id.no_result_view).setVisibility(View.GONE);
       MRZData data = result.getData();
-
       // Display personal information extracted from the MRZ.
       TextView tvFullName = findViewById(R.id.tv_full_name);
       tvFullName.setText(data.getFirstName() + " " + data.getLastName());
@@ -565,17 +537,14 @@ public class ResultActivity extends AppCompatActivity {
       tvGenderAndAge.setText(data.getSex() + ", " + data.getAge() + " years old");
       TextView tvNationality = findViewById(R.id.tv_nationality);
       tvNationality.setText(data.getNationality());
-
       // Display document information extracted from the MRZ.
       TextView tvDocNumber = findViewById(R.id.tv_doc_number);
       tvDocNumber.setText(data.getDocumentNumber());
       TextView tvExpiry = findViewById(R.id.tv_expiry_date);
       tvExpiry.setText(data.getDateOfExpire());
-
       // Display the raw MRZ text as read from the document.
       TextView tvRawMRZ = findViewById(R.id.tv_raw_mrz);
       tvRawMRZ.setText(data.getMrzText());
-
       // Display the portrait image, or fall back to a placeholder if none was captured.
       ImageView ivPortrait = findViewById(R.id.iv_portrait);
       ImageData portraitImage = result.getPortraitImage();
@@ -589,13 +558,11 @@ public class ResultActivity extends AppCompatActivity {
          // Add a placeholder drawable to res/drawable/ and reference it here.
          ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder);
       }
-
       // Retrieve the cropped document images for both sides of the document.
       // DS_MRZ is the side containing the machine-readable zone; DS_OPPOSITE is the reverse side.
       // These are null if setReturnDocumentImage(false) was set in the config.
       ImageData mrzSideDocImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ);
       ImageData oppositeSideDocImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
-
       // Retrieve the full original camera frame images for both sides of the document.
       // These are null if setReturnOriginalImage(false) was set in the config (which is the default).
       ImageData mrzSideOriginal = result.getOriginalImage(EnumDocumentSide.DS_MRZ);
@@ -606,7 +573,6 @@ public class ResultActivity extends AppCompatActivity {
 2. 
 ```kotlin
 package com.dynamsoft.scanmrz
-
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -620,7 +586,6 @@ import com.dynamsoft.core.basic_structures.ImageData
 import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentSide
 import com.dynamsoft.mrzscannerbundle.ui.MRZData
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
-
 class ResultActivity : AppCompatActivity() {
    companion object {
       const val REQUEST_CODE = 1024
@@ -629,7 +594,6 @@ class ResultActivity : AppCompatActivity() {
       const val ACTION_RESCAN = 0
       const val ACTION_RETURN_HOME = 1
    }
-
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
       setContentView(R.layout.activity_results)
@@ -638,10 +602,8 @@ class ResultActivity : AppCompatActivity() {
          v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
          insets
       }
-
       val scanResult = intent.getSerializableExtra(EXTRA_RESULT) as? MRZScanResult
       scanResult?.let { showMRZScanResult(it) }
-
       findViewById<View>(R.id.btn_rescan).setOnClickListener {
          setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RESCAN))
          finish()
@@ -651,7 +613,6 @@ class ResultActivity : AppCompatActivity() {
          finish()
       }
    }
-
    private fun showMRZScanResult(result: MRZScanResult) {
       if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
          // The user closed the scanner — return to the home screen without displaying a result.
@@ -667,12 +628,10 @@ class ResultActivity : AppCompatActivity() {
          tvNoResult.text = result.errorString
          return
       }
-
       // RS_FINISHED — the MRZ was successfully decoded. Show the result view.
       findViewById<View>(R.id.result_view).visibility = View.VISIBLE
       findViewById<View>(R.id.no_result_view).visibility = View.GONE
       val data = result.data
-
       // Display personal information extracted from the MRZ.
       val tvFullName = findViewById<TextView>(R.id.tv_full_name)
       tvFullName.text = "${data.firstName} ${data.lastName}"
@@ -680,17 +639,14 @@ class ResultActivity : AppCompatActivity() {
       tvGenderAndAge.text = "${data.sex}, ${data.age} years old"
       val tvNationality = findViewById<TextView>(R.id.tv_nationality)
       tvNationality.text = data.nationality
-
       // Display document information extracted from the MRZ.
       val tvDocNumber = findViewById<TextView>(R.id.tv_doc_number)
       tvDocNumber.text = data.documentNumber
       val tvExpiry = findViewById<TextView>(R.id.tv_expiry_date)
       tvExpiry.text = data.dateOfExpire
-
       // Display the raw MRZ text as read from the document.
       val tvRawMRZ = findViewById<TextView>(R.id.tv_raw_mrz)
       tvRawMRZ.text = data.mrzText
-
       // Display the portrait image, or fall back to a placeholder if none was captured.
       val ivPortrait = findViewById<ImageView>(R.id.iv_portrait)
       val portraitImage = result.getPortraitImage()
@@ -704,13 +660,11 @@ class ResultActivity : AppCompatActivity() {
          // Add a placeholder drawable to res/drawable/ and reference it here.
          ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder)
       }
-
       // Retrieve the cropped document images for both sides of the document.
       // DS_MRZ is the side containing the machine-readable zone; DS_OPPOSITE is the reverse side.
       // These are null if setReturnDocumentImage(false) was set in the config.
       val mrzSideDocImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ)
       val oppositeSideDocImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
-
       // Retrieve the full original camera frame images for both sides of the document.
       // These are null if setReturnOriginalImage(false) was set in the config (which is the default).
       val mrzSideOriginal = result.getOriginalImage(EnumDocumentSide.DS_MRZ)
