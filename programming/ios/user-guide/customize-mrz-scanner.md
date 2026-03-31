@@ -107,8 +107,8 @@ A template file is a JSON file that includes a series of algorithm parameter set
 ## Configure the UI Elements
 
 <div align="center">
-    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="70%" alt="mrz-scanner"></p>
-    <p>MRZ Scanner UI Components</p>
+    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="90%" alt="mrz-scanner"></p>
+    <p>MRZ Scanner UI</p>
 </div>
 
 The MRZ Scanner UI includes the following configurable elements:
@@ -139,7 +139,7 @@ config.isVibrateButtonVisible = false;
 config.isFormatSelectorVisible = false;
 config.isGuideFrameVisible = false;
 ```
-2. 
+1. 
 ```swift
 let config = MRZScannerConfig()
 config.isCloseButtonVisible = false
