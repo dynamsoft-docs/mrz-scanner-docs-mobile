@@ -13,7 +13,7 @@ needAutoGenerateSidebar: true
 
 When developing with `MRZScannerViewController`, you can add configurations via the `MRZScannerConfig` class. This page will guide you on how to configure the settings.
 
-## `MRZScannerConfig` Overview
+## MRZScannerConfig Overview
 
 The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is capable of configuring almost all customization options applicable to MRZ scanning use cases with the MRZ Scanner. The MRZ Scanner uses passes an `MRZScannerConfig` object to the constructor when creating an MRZ Scanner instance. `MRZScannerConfig` contains the following properties:
 
@@ -107,7 +107,7 @@ A template file is a JSON file that includes a series of algorithm parameter set
 ## Configure the UI Elements
 
 <div align="center">
-    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="90%" alt="mrz-scanner"></p>
+    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="80%" alt="mrz-scanner"></p>
     <p>MRZ Scanner UI</p>
 </div>
 

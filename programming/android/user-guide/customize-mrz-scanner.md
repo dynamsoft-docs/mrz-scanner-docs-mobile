@@ -13,7 +13,7 @@ needAutoGenerateSidebar: true
 
 When developing with `MRZScannerActivity`, you can add configurations via the `MRZScannerConfig` class. This page will guide you on how to configure the settings.
 
-## `MRZScannerConfig` Overview
+## MRZScannerConfig Overview
 
 The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is capable of configuring almost all customization options applicable to MRZ scanning use cases with the MRZ Scanner. The MRZ Scanner passes an `MRZScannerConfig` object to the constructor when creating an MRZ Scanner instance. `MRZScannerConfig` contains the following properties:
 
@@ -105,8 +105,8 @@ val config = MRZScannerConfig().apply {
 ## Configure the UI Elements
 
 <div align="center">
-    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="90%" alt="mrz-scanner"></p>
-    <p>MRZ Scanner UI Component</p>
+    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="80%" alt="mrz-scanner"></p>
+    <p>MRZ Scanner UI</p>
 </div>
 
 The MRZ Scanner UI includes the following configurable elements:
