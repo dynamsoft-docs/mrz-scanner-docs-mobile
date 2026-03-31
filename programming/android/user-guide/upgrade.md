@@ -20,7 +20,7 @@ noTitleIndex: true
    >- groovy
    >- kts
    >
-   >1.
+   >1. 
    ```groovy
    dependencyResolutionManagement {
       repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -33,7 +33,7 @@ noTitleIndex: true
       }
    }
    ```
-   2.
+   2. 
    ```kotlin
    dependencyResolutionManagement {
       repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -55,13 +55,13 @@ noTitleIndex: true
    >- groovy
    >- kts
    >
-   >1.
+   >1. 
    ```groovy
    dependencies {
       implementation 'com.dynamsoft:mrzscannerbundle:{version-number}'
    }
    ```
-   2.
+   2. 
    ```kotlin
    dependencies {
       implementation("com.dynamsoft:mrzscannerbundle:{version-number}")
@@ -86,14 +86,14 @@ Control which images are returned using the new [`MRZScannerConfig`](../api-refe
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 MRZScannerConfig config = new MRZScannerConfig();
 config.setReturnDocumentImage(true);  // default: true
 config.setReturnPortraitImage(true);  // default: true
 config.setReturnOriginalImage(false); // default: false — opt in to enable
 ```
-2.
+2. 
 ```kotlin
 val config = MRZScannerConfig()
 config.setReturnDocumentImage(true)   // default: true
@@ -107,7 +107,7 @@ Retrieve the images from the scan result:
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 ImageData portrait = result.getPortraitImage();
 ImageData docImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ);
@@ -116,7 +116,7 @@ ImageData original = result.getOriginalImage(EnumDocumentSide.DS_MRZ);
 // For two-sided ID cards, also retrieve the opposite side:
 ImageData opposite = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
 ```
-2.
+2. 
 ```kotlin
 val portrait = result.getPortraitImage()
 val docImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ)
@@ -138,7 +138,7 @@ val opposite = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
    >- groovy
    >- kts
    >
-   >1.
+   >1. 
    ```groovy
    dependencyResolutionManagement {
       repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -151,7 +151,7 @@ val opposite = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
       }
    }
    ```
-   2.
+   2. 
    ```kotlin
    dependencyResolutionManagement {
       repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -173,13 +173,13 @@ val opposite = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
    >- groovy
    >- kts
    >
-   >1.
+   >1. 
    ```groovy
    dependencies {
       implementation 'com.dynamsoft:mrzscannerbundle:{version-number}'
    }
    ```
-   2.
+   2. 
    ```kotlin
    dependencies {
       implementation("com.dynamsoft:mrzscannerbundle:{version-number}")

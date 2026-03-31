@@ -75,7 +75,7 @@ The last name of the user of the MRZ document.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* lastName;
 ``` 
@@ -92,7 +92,7 @@ The sex of the user of the MRZ document.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* sex;
 ``` 
@@ -109,11 +109,11 @@ The issuing state of the MRZ document.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* issuingState;
 ```
-2.
+2. 
 ```swift
 let issuingState: String
 ```
@@ -126,11 +126,11 @@ The raw issuing state string as it appears in the MRZ, before any decoding or no
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* issuingStateRaw;
 ```
-2.
+2. 
 ```swift
 let issuingStateRaw: String
 ```
@@ -143,11 +143,11 @@ The nationality of the user of the MRZ document.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* nationality;
 ```
-2.
+2. 
 ```swift
 let nationality: String
 ```
@@ -160,11 +160,11 @@ The raw nationality string as it appears in the MRZ, before any decoding or norm
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* nationalityRaw;
 ```
-2.
+2. 
 ```swift
 let nationalityRaw: String
 ```
@@ -177,7 +177,7 @@ The date of birth of the user of the MRZ document.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* dateOfBirth;
 ``` 
@@ -194,7 +194,7 @@ The expiry date of the MRZ document.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* dateOfExpire;
 ``` 
@@ -211,7 +211,7 @@ The type of MRZ document.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* documentType;
 ``` 
@@ -228,11 +228,11 @@ The MRZ document number.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* documentNumber;
 ```
-2.
+2. 
 ```swift
 let documentNumber: String
 ```
@@ -245,11 +245,11 @@ The personal number from the MRZ document. Returns `nil` if not present in the d
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, nullable, readonly) NSString* personalNumber;
 ```
-2.
+2. 
 ```swift
 let personalNumber: String?
 ```
@@ -262,11 +262,11 @@ The first optional data field from the MRZ. Returns `nil` if not present in the 
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, nullable, readonly) NSString* optionalData1;
 ```
-2.
+2. 
 ```swift
 let optionalData1: String?
 ```
@@ -279,11 +279,11 @@ The second optional data field from the MRZ. Returns `nil` if not present in the
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, nullable, readonly) NSString* optionalData2;
 ```
-2.
+2. 
 ```swift
 let optionalData2: String?
 ```
@@ -313,7 +313,7 @@ The raw text of the MRZ.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, readonly) NSString* mrzText;
 ``` 

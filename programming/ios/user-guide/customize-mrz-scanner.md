@@ -91,7 +91,7 @@ A template file is a JSON file that includes a series of algorithm parameter set
    DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
    config.templateFile = @"CustomizedTemplate.json";
    ```
-   2.
+   2. 
    ```swift
    let config = MRZScannerConfig()
    config.templateFile = "CustomizedTemplate.json"
@@ -127,7 +127,7 @@ All UI elements are visible by default. Use the following configuration to hide 
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
 config.isCloseButtonVisible = false;
@@ -138,7 +138,7 @@ config.isVibrateButtonVisible = false;
 config.isFormatSelectorVisible = false;
 config.isGuideFrameVisible = false;
 ```
-2.
+2. 
 ```swift
 let config = MRZScannerConfig()
 config.isCloseButtonVisible = false
@@ -170,13 +170,13 @@ The MRZ Scanner can play a beep sound or vibrate the device upon a successful sc
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
 config.isBeepEnabled = true;
 config.isVibrateEnabled = true;
 ```
-2.
+2. 
 ```swift
 let config = MRZScannerConfig()
 config.isBeepEnabled = true
@@ -198,14 +198,14 @@ By default, the scan result includes a cropped document image and a portrait ima
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
 config.returnDocumentImage = true;   // Cropped document image (default: true).
 config.returnPortraitImage = true;   // Portrait image (default: true).
 config.returnOriginalImage = false;  // Original full-frame image (default: false).
 ```
-2.
+2. 
 ```swift
 let config = MRZScannerConfig()
 config.returnDocumentImage = true   // Cropped document image (default: true).

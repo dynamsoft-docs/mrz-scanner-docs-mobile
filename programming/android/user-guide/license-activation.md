@@ -26,12 +26,12 @@ Set the license key on `MRZScannerConfig` before launching the scanner.
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 MRZScannerConfig config = new MRZScannerConfig();
 config.setLicense("YOUR-LICENSE-KEY");
 ```
-2.
+2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    license = "YOUR-LICENSE-KEY"

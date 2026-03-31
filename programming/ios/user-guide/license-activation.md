@@ -26,12 +26,12 @@ Set the license key on `MRZScannerConfig` before launching the scanner.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
 config.license = @"YOUR-LICENSE-KEY";
 ```
-2.
+2. 
 ```swift
 let config = MRZScannerConfig()
 config.license = "YOUR-LICENSE-KEY"
