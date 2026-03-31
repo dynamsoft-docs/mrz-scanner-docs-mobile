@@ -114,7 +114,6 @@ Retrieve the images from the scan result:
 ImageData portrait = result.getPortraitImage();
 ImageData docImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ);
 ImageData original = result.getOriginalImage(EnumDocumentSide.DS_MRZ);
-
 // For two-sided ID cards, also retrieve the opposite side:
 ImageData opposite = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
 ```
@@ -123,7 +122,6 @@ ImageData opposite = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
 val portrait = result.getPortraitImage()
 val docImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ)
 val original = result.getOriginalImage(EnumDocumentSide.DS_MRZ)
-
 // For two-sided ID cards, also retrieve the opposite side:
 val opposite = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
 ```
