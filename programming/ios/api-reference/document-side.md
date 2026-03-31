@@ -20,7 +20,7 @@ breadcrumbText: DSDocumentSide
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 typedef NS_ENUM(NSInteger, DSDocumentSide)
 {
@@ -28,7 +28,7 @@ typedef NS_ENUM(NSInteger, DSDocumentSide)
     DSDocumentSideOpposite = 1
 };
 ```
-2.
+2. 
 ```swift
 @objc public enum DocumentSide: Int {
     case mrz = 0

@@ -210,11 +210,11 @@ Sets or returns the visibility of the beep toggle button. Users can click the be
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property(nonatomic, assign) BOOL isBeepButtonVisible;
 ```
-2.
+2. 
 ```swift
 var isBeepButtonVisible: Bool { get set }
 ```
@@ -227,11 +227,11 @@ Sets or returns the visibility of the vibrate toggle button. Users can click the
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property(nonatomic, assign) BOOL isVibrateButtonVisible;
 ```
-2.
+2. 
 ```swift
 var isVibrateButtonVisible: Bool { get set }
 ```
@@ -244,11 +244,11 @@ Sets or returns the visibility of the document format selector that allows users
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property(nonatomic, assign) BOOL isFormatSelectorVisible;
 ```
-2.
+2. 
 ```swift
 var isFormatSelectorVisible: Bool { get set }
 ```
@@ -261,11 +261,11 @@ Sets or returns whether to return a cropped document image in the scan result. E
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property(nonatomic, assign) BOOL returnDocumentImage;
 ```
-2.
+2. 
 ```swift
 var returnDocumentImage: Bool { get set }
 ```
@@ -278,11 +278,11 @@ Sets or returns whether to return a cropped portrait image in the scan result. E
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property(nonatomic, assign) BOOL returnPortraitImage;
 ```
-2.
+2. 
 ```swift
 var returnPortraitImage: Bool { get set }
 ```
@@ -295,11 +295,11 @@ Sets or returns whether to return the original full-frame image in the scan resu
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property(nonatomic, assign) BOOL returnOriginalImage;
 ```
-2.
+2. 
 ```swift
 var returnOriginalImage: Bool { get set }
 ```

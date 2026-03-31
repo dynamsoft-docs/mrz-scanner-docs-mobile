@@ -50,7 +50,7 @@ The parsed MRZ information as a [`MRZData`](mrz-data.md) object.
 ```objc
 @property (nonatomic, nullable, readonly) DSMRZData* data;
 ```
-2.
+2. 
 ```swift
 var data: MRZData? {get}
 ```
@@ -105,11 +105,11 @@ The error message associated with the error code should something go wrong durin
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 @property (nonatomic, assign, readonly) NSString * errorString;
 ```
-2.
+2. 
 ```swift
 var errorString: String? { get }
 ```
@@ -130,11 +130,11 @@ Returns the captured portrait image, if available.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 - (nullable DSImageData *)getPortraitImage;
 ```
-2.
+2. 
 ```swift
 func getPortraitImage() -> ImageData?
 ```
@@ -151,11 +151,11 @@ Returns the captured document image for the specified side.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 - (nullable DSImageData *)getDocumentImage:(DSDocumentSide)side;
 ```
-2.
+2. 
 ```swift
 func getDocumentImage(_ side: DocumentSide) -> ImageData?
 ```
@@ -176,11 +176,11 @@ Returns the original full-frame image for the specified side.
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 - (nullable DSImageData *)getOriginalImage:(DSDocumentSide)side;
 ```
-2.
+2. 
 ```swift
 func getOriginalImage(_ side: DocumentSide) -> ImageData?
 ```

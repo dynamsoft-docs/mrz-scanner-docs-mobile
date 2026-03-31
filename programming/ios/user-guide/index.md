@@ -30,6 +30,18 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
 - Supported ABI: **arm64** and **x86_64**.
 - Development Environment: **Xcode 13** and above (**Xcode 14.1+** recommended).
 
+## Licensing
+
+A valid license key is required to use the SDK. If you are just getting started, request a free 30-day trial license below:
+
+{% include trialLicense.html %}
+
+> [!NOTE]
+>
+> - The license string above grants a time-limited free trial which requires a network connection.
+> - You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
+> - For production license setup, see the [License Activation](license-activation.md) guide.
+
 ## Add the SDK
 
 There are two ways in which you can include the `DynamsoftMRZScannerBundle` library in your app:
@@ -85,7 +97,7 @@ Create the main `ViewController` with a single "Scan an MRZ" button and a label 
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 #import "ViewController.h"
 #import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle.h>
@@ -134,7 +146,7 @@ Create the main `ViewController` with a single "Scan an MRZ" button and a label 
 }
 @end
 ```
-2.
+2. 
 ```swift
 import UIKit
 import DynamsoftMRZScannerBundle
@@ -185,17 +197,13 @@ class ViewController: UIViewController {
 
 All scanner settings are controlled through a single `MRZScannerConfig` object declared as a property in Step 3. Configure it in `viewDidLoad` after `setup()`.
 
-The only required setting is the license key. If you are just getting started, request a free 30-day trial license below:
-
-{% include trialLicense.html %}
-
-All other settings are optional and can be omitted to use their defaults. The code below shows the full set of available options with their default values noted in comments:
+The only required setting is the license key — see the [Licensing](#licensing) section above for how to obtain one. All other settings are optional and can be omitted to use their defaults. The code below shows the full set of available options with their default values noted in comments:
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 /* CONTINUATION OF STEP 3 — add to viewDidLoad after [self setup] */
 - (void)viewDidLoad {
@@ -223,7 +231,7 @@ All other settings are optional and can be omitted to use their defaults. The co
    self.config.returnOriginalImage = false;   // Full camera frame (default: false).
 }
 ```
-2.
+2. 
 ```swift
 /* CONTINUATION OF STEP 3 — add to viewDidLoad after setup() */
 override func viewDidLoad() {
@@ -252,11 +260,6 @@ override func viewDidLoad() {
 }
 ```
 
-> [!NOTE]
->
-> - The license string above grants a time-limited free trial which requires a network connection.
-> - You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
-
 ### Step 5: Launch the Scanner
 
 Wire the scan button to `MRZScannerViewController` and handle results via the `onScannedResult` callback. Each result carries a `resultStatus` of *finished* (MRZ decoded), *canceled* (user closed the scanner), or *exception* (an error occurred).
@@ -267,7 +270,7 @@ Continuing from Step 4:
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 /* CONTINUATION OF STEP 4 — add buttonTapped method */
 - (void)buttonTapped {
@@ -318,7 +321,7 @@ Continuing from Step 4:
    });
 }
 ```
-2.
+2. 
 ```swift
 /* CONTINUATION OF STEP 4 — add buttonTapped method */
 @objc func buttonTapped() {
@@ -379,7 +382,7 @@ Create `ResultViewController` to receive and display the scan result. The *cance
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 /* ResultViewController.h */
 #import <UIKit/UIKit.h>
@@ -430,7 +433,7 @@ Create `ResultViewController` to receive and display the scan result. The *cance
 }
 @end
 ```
-2.
+2. 
 ```swift
 import UIKit
 import DynamsoftMRZScannerBundle

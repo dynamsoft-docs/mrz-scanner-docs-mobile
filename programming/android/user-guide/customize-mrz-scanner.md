@@ -59,12 +59,12 @@ Specifies the type of document to scan, such as ID cards or passports. It also i
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 MRZScannerConfig config = new MRZScannerConfig();
 config.setDocumentType(EnumDocumentType.DT_PASSPORT);
 ```
->2.
+2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    setDocumentType(EnumDocumentType.DT_PASSPORT)
@@ -83,12 +83,12 @@ A template file is a JSON file that includes a series of algorithm parameter set
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 MRZScannerConfig config = new MRZScannerConfig();
 config.setTemplateFile("CustomizedTemplate.json");
 ```
->2.
+2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    setTemplateFile("CustomizedTemplate.json")
@@ -125,7 +125,7 @@ All UI elements are visible by default. Use the following configuration to hide 
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 MRZScannerConfig config = new MRZScannerConfig();
 config.setCloseButtonVisible(false);
@@ -136,7 +136,7 @@ config.setVibrateButtonVisible(false);
 config.setFormatSelectorVisible(false);
 config.setGuideFrameVisible(false);
 ```
->2.
+2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    setCloseButtonVisible(false)
@@ -169,13 +169,13 @@ The MRZ Scanner can play a beep sound or vibrate the device upon a successful sc
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 MRZScannerConfig config = new MRZScannerConfig();
 config.setBeepEnabled(true);
 config.setVibrateEnabled(true);
 ```
->2.
+2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    setBeepEnabled(true)
@@ -196,14 +196,14 @@ By default, the scan result includes a cropped document image and a portrait ima
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 MRZScannerConfig config = new MRZScannerConfig();
 config.setReturnDocumentImage(true);   // Cropped document image (default: true).
 config.setReturnPortraitImage(true);   // Portrait image (default: true).
 config.setReturnOriginalImage(false);  // Original full-frame image (default: false).
 ```
->2.
+2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    setReturnDocumentImage(true)   // Cropped document image (default: true).

@@ -57,7 +57,7 @@ The `data` property on [`MRZScanResult`](../api-reference/mrz-scan-result.md) is
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 // Before
 NSString *firstName = result.data.firstName;
@@ -67,7 +67,7 @@ if (result.data != nil) {
     NSString *firstName = result.data.firstName;
 }
 ```
-2.
+2. 
 ```swift
 // Before
 let firstName = result.data.firstName
@@ -85,7 +85,7 @@ The `errorMessage` property on [`MRZScanResult`](../api-reference/mrz-scan-resul
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 // Before
 NSLog(@"%@", result.errorMessage);
@@ -93,7 +93,7 @@ NSLog(@"%@", result.errorMessage);
 // After
 NSLog(@"%@", result.errorString);
 ```
-2.
+2. 
 ```swift
 // Before
 print(result.errorMessage)
@@ -116,14 +116,14 @@ Control which images are returned using the new [`MRZScannerConfig`](../api-refe
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
 config.returnDocumentImage = YES; // default: YES
 config.returnPortraitImage = YES; // default: YES
 config.returnOriginalImage = NO;  // default: NO — opt in to enable
 ```
-2.
+2. 
 ```swift
 let config = MRZScannerConfig()
 config.returnDocumentImage = true  // default: true
@@ -137,7 +137,7 @@ Retrieve the images from the scan result:
 >- Objective-C
 >- Swift
 >
->1.
+>1. 
 ```objc
 DSImageData *portrait = [result getPortraitImage];
 DSImageData *docImage = [result getDocumentImage:DSDocumentSideMRZ];
@@ -146,7 +146,7 @@ DSImageData *original = [result getOriginalImage:DSDocumentSideMRZ];
 // For two-sided ID cards, also retrieve the opposite side:
 DSImageData *opposite = [result getDocumentImage:DSDocumentSideOpposite];
 ```
-2.
+2. 
 ```swift
 let portrait = result.getPortraitImage()
 let docImage = result.getDocumentImage(.mrz)

@@ -36,7 +36,7 @@ public static final class ResultContract extends ActivityResultContract<MRZScann
 >- Java
 >- Kotlin
 >
->1.
+>1. 
 ```java
 public class MainActivity extends AppCompatActivity {
    private ActivityResultLauncher<MRZScannerConfig> launcher;
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
    }
 }
 ```
-2.
+2. 
 ```kotlin
 class MainActivity : AppCompatActivity() {
    private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
