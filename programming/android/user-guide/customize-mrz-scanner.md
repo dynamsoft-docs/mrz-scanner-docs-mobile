@@ -105,7 +105,7 @@ val config = MRZScannerConfig().apply {
 ## Configure the UI Elements
 
 <div align="center">
-    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="70%" alt="mrz-scanner"></p>
+    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="90%" alt="mrz-scanner"></p>
     <p>MRZ Scanner UI Component</p>
 </div>
 
