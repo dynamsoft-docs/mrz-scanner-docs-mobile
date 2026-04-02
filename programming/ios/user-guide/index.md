@@ -13,12 +13,19 @@ enableLanguageSelection: true
 # MRZ Scanner User Guide (iOS Edition)
 
 The Dynamsoft MRZ Scanner (iOS Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScannerViewController` — the built-in view controller that handles the camera UI, scanning logic, and result delivery.
+The Dynamsoft MRZ Scanner (iOS Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScannerViewController` — the built-in view controller that handles the camera UI, scanning logic, and result delivery.
 
 > [!IMPORTANT]
 > For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
+> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 
 ## Supported Document Types
+## Supported Document Types
 
+The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
+
+> [!NOTE]
+> For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
 
 > [!NOTE]
@@ -43,7 +50,21 @@ A valid license key is required to use the SDK. If you are just getting started,
 > - For production license setup, see the [License Activation](license-activation.md) guide.
 
 ## Add the SDK
+## Licensing
 
+A valid license key is required to use the SDK. If you are just getting started, request a free 30-day trial license below:
+
+{% include trialLicense.html %}
+
+> [!NOTE]
+>
+> - The license string above grants a time-limited free trial which requires a network connection.
+> - You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=ios){:target="_blank"} link.
+> - For production license setup, see the [License Activation](license-activation.md) guide.
+
+## Add the SDK
+
+There are two ways in which you can include the `DynamsoftMRZScannerBundle` library in your app:
 There are two ways in which you can include the `DynamsoftMRZScannerBundle` library in your app:
 
 ### Option 1: Add the xcframeworks via Swift Package Manager
@@ -52,6 +73,7 @@ There are two ways in which you can include the `DynamsoftMRZScannerBundle` libr
 
 2. In the top-right section of the window, search "https://github.com/Dynamsoft/mrz-scanner-spm"
 
+3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.4.1200**, then click **Add Package**.
 3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.4.1200**, then click **Add Package**.
 
 4. Check all the **xcframeworks** and add them.
@@ -64,6 +86,7 @@ There are two ways in which you can include the `DynamsoftMRZScannerBundle` libr
    target 'TargetName' do
       use_frameworks!
 
+   pod 'DynamsoftMRZScannerBundle','3.4.1200'
    pod 'DynamsoftMRZScannerBundle','3.4.1200'
 
    end
@@ -78,9 +101,13 @@ There are two ways in which you can include the `DynamsoftMRZScannerBundle` libr
 ## Building the MRZ Scanner Application
 
 The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
+The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 
 ### Step 1: Create a New Project
 
+1. Open Xcode and select **File > New > New Project**.
+2. Choose **iOS > App** as the project template.
+3. Set the product name to *ScanMRZ*, choose **StoryBoard** as the interface, and select your language (Objective-C or Swift).
 1. Open Xcode and select **File > New > New Project**.
 2. Choose **iOS > App** as the project template.
 3. Set the product name to *ScanMRZ*, choose **StoryBoard** as the interface, and select your language (Objective-C or Swift).
@@ -105,6 +132,7 @@ Create the main `ViewController` with a single "Scan an MRZ" button and a label 
 @interface ViewController ()
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong) DSMRZScannerConfig *config;
 @end
 @implementation ViewController
 - (void)viewDidLoad {
@@ -117,6 +145,7 @@ Create the main `ViewController` with a single "Scan an MRZ" button and a label 
 - (void)setup {
    self.button = [UIButton buttonWithType:UIButtonTypeSystem];
    self.button.backgroundColor = [UIColor blackColor];
+   [self.button setTitle:@"Scan an MRZ" forState:UIControlStateNormal];
    [self.button setTitle:@"Scan an MRZ" forState:UIControlStateNormal];
    [self.button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
    self.button.layer.cornerRadius = 8;
@@ -134,6 +163,7 @@ Create the main `ViewController` with a single "Scan an MRZ" button and a label 
    UILayoutGuide *safeArea = self.view.safeAreaLayoutGuide;
    [NSLayoutConstraint activateConstraints:@[
           [self.button.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+          [self.button.bottomAnchor constraintEqualToAnchor:safeArea.bottomAnchor constant:-10],
           [self.button.bottomAnchor constraintEqualToAnchor:safeArea.bottomAnchor constant:-10],
           [self.button.heightAnchor constraintEqualToConstant:50],
           [self.button.widthAnchor constraintEqualToConstant:150],
@@ -162,6 +192,7 @@ import DynamsoftMRZScannerBundle
 class ViewController: UIViewController {
    let button = UIButton()
    let label = UILabel()
+   private let config = MRZScannerConfig()
    override func viewDidLoad() {
       super.viewDidLoad()
       navigationController?.navigationBar.isHidden = true
@@ -315,6 +346,19 @@ Continuing from Step 5:
                       [weakSelf.navigationController pushViewController:resultVC animated:YES];
                    });
                 }
+                if (result.data) {
+                   dispatch_async(dispatch_get_main_queue(), ^{
+                      ResultViewController *resultVC = [[ResultViewController alloc] init];
+                      resultVC.mrzData = result.data;
+                      NSError *error = nil;
+                      resultVC.portraitImage = [[result getPortraitImage] toUIImageAndReturnError:&error];
+                      resultVC.primaryDocumentImage = [[result getDocumentImage:DSDocumentSideMrz] toUIImageAndReturnError:&error];
+                      resultVC.primaryOriginalImage = [[result getOriginalImage:DSDocumentSideMrz] toUIImageAndReturnError:&error];
+                      resultVC.secondaryDocumentImage = [[result getDocumentImage:DSDocumentSideOpposite] toUIImageAndReturnError:&error];
+                      resultVC.secondaryOriginalImage = [[result getOriginalImage:DSDocumentSideOpposite] toUIImageAndReturnError:&error];
+                      [weakSelf.navigationController pushViewController:resultVC animated:YES];
+                   });
+                }
                 break;
              }
              /* if the scan operation is canceled by the user */
@@ -322,6 +366,7 @@ Continuing from Step 5:
                 dispatch_async(dispatch_get_main_queue(), ^{
                    weakSelf.label.isHidden = NO;
                    weakSelf.label.text = @"Scan canceled";
+                   [weakSelf.navigationController popViewControllerAnimated:YES];
                    [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
                 break;
@@ -331,6 +376,7 @@ Continuing from Step 5:
                 dispatch_async(dispatch_get_main_queue(), ^{
                    weakSelf.label.isHidden = NO;
                    weakSelf.label.text = result.errorString;
+                   [weakSelf.navigationController popViewControllerAnimated:YES];
                    [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
                 break;
@@ -519,6 +565,54 @@ class ResultViewController: UIViewController {
           navigationController?.popToRootViewController(animated: true)
    }
 }
+import UIKit
+import DynamsoftMRZScannerBundle
+class ResultViewController: UIViewController {
+   // Data properties — set by ViewController before pushing
+   var mrzData: MRZData?
+   var portraitImage: UIImage?
+   var primaryDocumentImage: UIImage?
+   var primaryOriginalImage: UIImage?
+   var secondaryDocumentImage: UIImage?
+   var secondaryOriginalImage: UIImage?
+   // UI components
+   let nameLabel = UILabel()
+   let subInfoLabel = UILabel()
+   let portraitImageView = UIImageView()
+   let primaryImageView = UIImageView()
+   let secondaryImageView = UIImageView()
+   let mrzTextLabel = UILabel()
+   let rescanButton = UIButton(type: .system)
+   let returnHomeButton = UIButton(type: .system)
+   override func viewDidLoad() {
+          super.viewDidLoad()
+          view.backgroundColor = .black
+          title = "Result"
+          setupUI()
+          populateData()
+   }
+   private func populateData() {
+          guard let data = mrzData else { return }
+          // Personal info header
+          nameLabel.text = "\(data.firstName) \(data.lastName)"
+          subInfoLabel.text = "\(data.sex.capitalized), \(data.age) years old\nExpiry: \(data.dateOfExpire)"
+          // Portrait image
+          if let portrait = portraitImage {
+             portraitImageView.image = portrait
+          }
+          // Document images
+          primaryImageView.image = primaryDocumentImage
+          secondaryImageView.image = secondaryDocumentImage
+          // Raw MRZ text
+          mrzTextLabel.text = data.mrzText
+   }
+   @objc private func rescanTapped() {
+          navigationController?.popViewController(animated: true)
+   }
+   @objc private func returnHomeTapped() {
+          navigationController?.popToRootViewController(animated: true)
+   }
+}
 ```
 
 > [!NOTE]
@@ -540,10 +634,16 @@ Before running, complete these two required configuration steps in Xcode:
 Once both are configured, connect a physical iOS device, select it from the top bar, and click **Run**. When the scanner finishes, the result is passed to `ResultViewController`, where the extracted MRZ data and any captured images are displayed.
 
 > [!NOTE]
+> [!NOTE]
 > If you try running the project on a simulator, you will encounter errors as this sample uses the device camera which is unavailable when using the simulator.
 
 ## Next Steps
 
+- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
+- **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
+- **API Reference** — Browse the full [iOS API Reference](../api-reference/index.md) for all classes and methods.
+- **License** — See the [License Activation](license-activation.md) guide for production license setup.
+- **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
 - **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [iOS API Reference](../api-reference/index.md) for all classes and methods.

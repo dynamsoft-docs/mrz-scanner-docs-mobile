@@ -13,12 +13,19 @@ enableLanguageSelection: true
 # MRZ Scanner User Guide (Android Edition)
 
 The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScannerActivity` — the built-in activity that handles the camera UI, scanning logic, and result delivery.
+The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScannerActivity` — the built-in activity that handles the camera UI, scanning logic, and result delivery.
 
 > [!IMPORTANT]
 > For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
 
 ## Supported Document Types
+## Supported Document Types
 
+The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](supported-document-types.md).
+
+> [!NOTE]
+> For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](supported-document-types.md).
 
 > [!NOTE]
@@ -27,12 +34,26 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
 ## System Requirements
 
 - Supported OS: **Android 5.0** (API Level 21) or higher.
+- Supported OS: **Android 5.0** (API Level 21) or higher.
 - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
 - Development Environment:
    - IDE: **Android Studio 2024.3.2** suggested.
    - JDK: **Java 17** or higher.
    - Gradle: **8.0** or higher.
 
+## Licensing
+
+A valid license key is required to use the SDK. If you are just getting started, request a free 30-day trial license below:
+
+{% include trialLicense.html %}
+
+> [!NOTE]
+>
+> - The license string above grants a time-limited free trial which requires a network connection.
+> - You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=android){:target="_blank"} link.
+> - For production license setup, see the [License Activation](license-activation.md) guide.
+
+## Add the SDK
 ## Licensing
 
 A valid license key is required to use the SDK. If you are just getting started, request a free 30-day trial license below:
@@ -60,17 +81,21 @@ A valid license key is required to use the SDK. If you are just getting started,
    ```
 
 2. Add the dependency:
+2. Add the dependency:
 
    ```groovy
    dependencies {
+      implementation 'com.dynamsoft:mrzscannerbundle:3.4.1200'
       implementation 'com.dynamsoft:mrzscannerbundle:3.4.1200'
    }
    ```
 
 3. Click **Sync Now**. After the synchronization completes, the SDK is added to the project.
+3. Click **Sync Now**. After the synchronization completes, the SDK is added to the project.
 
 ## Building the MRZ Scanner Application
 
+The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
 The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
 
 ### Step 1: Create a New Project
@@ -82,16 +107,26 @@ The following steps build the **ScanMRZ** sample app. You can also download the 
 ### Step 2: Add the SDK
 
 Follow the instructions in the [Add the SDK](#add-the-sdk) section above to add `mrzscannerbundle` to your project.
+2. Choose **Empty Views Activity** as the project template.
+3. Set the app name to *ScanMRZ*, choose a save location and language, and set the **Minimum SDK** to 21.
+
+### Step 2: Add the SDK
+
+Follow the instructions in the [Add the SDK](#add-the-sdk) section above to add `mrzscannerbundle` to your project.
 
 ### Step 3: Set Up the Layout
+### Step 3: Set Up the Layout
 
+Open **activity_main.xml** and replace its contents with the following. The layout contains a single "Scan an MRZ" button centered on the screen. Scan results will be shown in a separate `ResultActivity`, created in [Step 6](#step-6-display-the-results).
 Open **activity_main.xml** and replace its contents with the following. The layout contains a single "Scan an MRZ" button centered on the screen. Scan results will be shown in a separate `ResultActivity`, created in [Step 6](#step-6-display-the-results).
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -102,8 +137,19 @@ Open **activity_main.xml** and replace its contents with the following. The layo
         android:text="Scan an MRZ"
         android:textSize="18sp"
         android:padding="16dp"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_start"
+        android:text="Scan an MRZ"
+        android:textSize="18sp"
+        android:padding="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -125,7 +171,9 @@ The only required setting is the license key — see the [Licensing](#licensing)
 >1. 
 ```java
 package com.dynamsoft.scanmrz;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import androidx.activity.EdgeToEdge;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
@@ -155,7 +203,9 @@ public class MainActivity extends AppCompatActivity {
 2. 
 ```kotlin
 package com.dynamsoft.scanmrz
+import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.activity.EdgeToEdge
 import androidx.activity.EdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
@@ -1170,6 +1220,13 @@ class ResultActivity : AppCompatActivity() {
 > [!NOTE]
 > - `EnumDocumentSide.DS_MRZ` refers to the side of the document containing the machine-readable zone; `DS_OPPOSITE` is the reverse side (relevant for two-sided documents like TD1 ID cards).
 > - Image retrieval methods on `MRZScanResult` (`getDocumentImage()`, `getOriginalImage()`, `getPortraitImage()`) return `null` if the corresponding option was disabled in the config or if no image was captured for that side.
+> - `ic_portrait_placeholder` referenced in the portrait fallback is a custom drawable. Add your own placeholder image to **res/drawable/** and reference it there.
+
+For the full list of fields available on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
+
+> [!NOTE]
+> - `EnumDocumentSide.DS_MRZ` refers to the side of the document containing the machine-readable zone; `DS_OPPOSITE` is the reverse side (relevant for two-sided documents like TD1 ID cards).
+> - Image retrieval methods on `MRZScanResult` (`getDocumentImage()`, `getOriginalImage()`, `getPortraitImage()`) return `null` if the corresponding option was disabled in the config or if no image was captured for that side.
 
 For the full list of fields available on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
 
@@ -1192,6 +1249,11 @@ When the scanner finishes, the result is passed to `ResultActivity`, where the e
 
 ## Next Steps
 
+- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+- **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
+- **API Reference** — Browse the full [Android API Reference](../api-reference/index.md) for all classes and methods.
+- **License** — See the [License Activation](license-activation.md) guide for production license setup.
+- **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
 - **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [Android API Reference](../api-reference/index.md) for all classes and methods.
