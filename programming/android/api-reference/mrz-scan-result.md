@@ -30,6 +30,9 @@ class MRZScanResult
 | [`getResultStatus`](#getresultstatus) | Returns the result status, which can be finished, canceled or exception. |
 | [`getErrorCode`](#geterrorcode) | Returns the error code should something go wrong during the MRZ scanning process. |
 | [`getErrorString`](#geterrorstring) | Returns the error message associated with the error code should something go wrong during the MRZ scanning process. |
+| [`getDocumentImage`](#getdocumentimage) | Returns the cropped document image for the specified document side. |
+| [`getOriginalImage`](#getoriginalimage) | Returns the original full-frame image for the specified document side. |
+| [`getPortraitImage`](#getportraitimage) | Returns the detected portrait image. |
 
 ### getData
 
@@ -83,3 +86,62 @@ String getErrorString();
 **Return Value**
 
 A string representing the message of a `EnumErrorCode`.
+
+### getDocumentImage
+
+Returns the cropped document image for the specified side of the document.
+
+```java
+@Nullable
+ImageData getDocumentImage(EnumDocumentSide documentSide);
+```
+
+**Parameter(s)**
+
+`documentSide`: An [`EnumDocumentSide`](document-side.md) value specifying which side of the document to retrieve the image for.
+
+**Return Value**
+
+An `ImageData` object containing the cropped document image, or `null` if not available.
+
+The return value will be `null` in the following cases:
+
+- `setReturnDocumentImage(false)` was set in the configuration.
+- `EnumDocumentSide.DS_OPPOSITE` was requested but the document is single-sided (e.g. passports).
+- `EnumDocumentSide.DS_OPPOSITE` was requested but the opposite side could not be captured, for example due to a capture failure or because the user exited the scanning process before the second side was scanned.
+
+### getOriginalImage
+
+Returns the original full-frame camera image for the specified side of the document. Disabled by default — enable by calling `setReturnOriginalImage(true)` in the configuration.
+
+```java
+@Nullable
+ImageData getOriginalImage(EnumDocumentSide documentSide);
+```
+
+**Parameter(s)**
+
+`documentSide`: An [`EnumDocumentSide`](document-side.md) value specifying which side of the document to retrieve the image for.
+
+**Return Value**
+
+An `ImageData` object containing the original full-frame image, or `null` if not available.
+
+The return value will be `null` in the following cases:
+
+- `setReturnOriginalImage(false)` was set in the configuration (this is the default).
+- `EnumDocumentSide.DS_OPPOSITE` was requested but the document is single-sided (e.g. passports).
+- `EnumDocumentSide.DS_OPPOSITE` was requested but the opposite side could not be captured, for example due to a capture failure or because the user exited the scanning process before the second side was scanned.
+
+### getPortraitImage
+
+Returns the detected portrait image extracted from the document. Returns `null` if the image is not available, which may happen if `setReturnPortraitImage(false)` was set in the configuration, or if no portrait was detected.
+
+```java
+@Nullable
+ImageData getPortraitImage();
+```
+
+**Return Value**
+
+An `ImageData` object containing the portrait image, or `null` if not available.

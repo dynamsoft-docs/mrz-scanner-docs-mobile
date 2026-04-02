@@ -19,4 +19,3 @@ keywords: MRZScanner, api reference, Android
 | [`MRZData`](mrz-data.md) | The class that contains the parsed MRZ information. |
 | [`EnumResultStatus`](result-status.md) | A enumeration class that describes the result status. |
 | [`EnumDocumentType`](document-type.md) | A enumeration class that defines the type of document to scan, such as ID cards or passports. |
-| [`EnumDocumentSide`](document-side.md) | A enumeration class that defines the side of a document when retrieving scanned images. |

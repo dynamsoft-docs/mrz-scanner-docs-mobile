@@ -91,7 +91,7 @@ var onScannedResult: ((MRZScanResult) -> Void)?
    [super viewDidLoad];
    [self setup];
 }
-// Config a button on the UI. Pop the MRZScannerViewController when the button is clicked.
+// Configure a button that pushes MRZScannerViewController when tapped.
 - (void)buttonTapped {
    DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
    DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
@@ -99,16 +99,16 @@ var onScannedResult: ((MRZScanResult) -> Void)?
    vc.config = config;
    __weak typeof(self) weakSelf = self;
    vc.onScannedResult = ^(DSMRZScanResult *result) {
-          // The result have 3 status: finished (Successfully decoded), canceled (Quit by clicking close button), exception (error occurs when processing).
+          // The result has 3 statuses: finished, canceled, and exception.
           switch (result.resultStatus) {
              case DSResultStatusFinished: {
-                    // Add your code to do when the result status is finished.
+                    // Access result.data for the parsed MRZ fields (name, DOB, nationality, expiry, etc.)
              }
              case DSResultStatusCanceled: {
-                    // Add your code to do when the result status is canceled.
+                    // User dismissed the scanner — no MRZ data is available.
              }
              case DSResultStatusException: {
-                    // Add your code to do when the result status is exception.
+                    // An error occurred — check result.errorString for details.
              }
              default:
                     break;
@@ -136,24 +136,23 @@ class ViewController: UIViewController {
           super.viewDidLoad()
           setup()
    }
-   // Config a button on the UI. Pop the MRZScannerViewController when the button is clicked.
+   // Configure a button that pushes MRZScannerViewController when tapped.
    @objc func buttonTapped() {
           let vc = MRZScannerViewController()
-          // Set up the license via the MRZScannerConfig
           let config = MRZScannerConfig()
           config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
           vc.config = config
           // Set up the result callback of MRZScannerViewController.
           vc.onScannedResult = { [weak self] result in
              guard let self = self else { return }
-             // The result have 3 status: finished (Successfully decoded), canceled (Quit by clicking close button), exception (error occurs when processing).
+             // The result has 3 statuses: finished, canceled, and exception.
              switch result.resultStatus {
              case .finished:
-                    // Add your code to do when the result status is finished.
+                    // Access result.data for the parsed MRZ fields (name, DOB, nationality, expiry, etc.)
              case .canceled:
-                    // Add your code to do when the result status is canceled.
+                    // User dismissed the scanner — no MRZ data is available.
              case .exception:
-                    // Add your code to do when the result status is exception.
+                    // An error occurred — check result.errorString for details.
              @unknown default:
                     break
              }
