@@ -91,7 +91,7 @@ Follow the instructions in the [Add the SDK](#add-the-sdk) section above to add 
 
 ### Step 3: Set Up the UI
 
-Create the main `ViewController` with a single "Scan an MRZ" button and a label to display status messages. The button is anchored to the bottom of the screen; the label is centered. Scan results will be shown in a separate `ResultViewController`, created in [Step 6](#step-6-display-the-results).
+Create the main `ViewController` with a single "Scan an MRZ" button and a label to display status messages. The button is anchored to the bottom of the screen; the label is centered. Scan results will be shown in a separate `ResultViewController`, created in [Step 7](#step-7-display-the-results).
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -105,15 +105,14 @@ Create the main `ViewController` with a single "Scan an MRZ" button and a label 
 @interface ViewController ()
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, strong) UILabel *label;
-@property (nonatomic, strong) DSMRZScannerConfig *config;
 @end
 @implementation ViewController
 - (void)viewDidLoad {
    [super viewDidLoad];
    self.navigationController.navigationBar.hidden = YES;
    self.view.backgroundColor = [UIColor whiteColor];
-   self.config = [[DSMRZScannerConfig alloc] init];
    [self setup];
+   [self setupAppearance];
 }
 - (void)setup {
    self.button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -144,6 +143,16 @@ Create the main `ViewController` with a single "Scan an MRZ" button and a label 
           [self.label.trailingAnchor constraintEqualToAnchor:safeArea.trailingAnchor constant:-30]
    ]];
 }
+- (void)setupAppearance {
+   UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+   [appearance configureWithOpaqueBackground];
+   appearance.backgroundColor = [UIColor blackColor];
+   appearance.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor]};
+   self.navigationController.navigationBar.standardAppearance = appearance;
+   self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+   self.navigationController.navigationBar.compactAppearance = appearance;
+   self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+}
 @end
 ```
 2. 
@@ -153,39 +162,49 @@ import DynamsoftMRZScannerBundle
 class ViewController: UIViewController {
    let button = UIButton()
    let label = UILabel()
-   private let config = MRZScannerConfig()
    override func viewDidLoad() {
-          super.viewDidLoad()
-          navigationController?.navigationBar.isHidden = true
-          view.backgroundColor = .white
-          setup()
+      super.viewDidLoad()
+      navigationController?.navigationBar.isHidden = true
+      view.backgroundColor = .white
+      setup()
+      setupAppearance()
    }
    func setup() {
-          button.backgroundColor = .black
-          button.setTitle("Scan an MRZ", for: .normal)
-          button.setTitleColor(.white, for: .normal)
-          button.layer.cornerRadius = 8
-          button.clipsToBounds = true
-          button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-          button.translatesAutoresizingMaskIntoConstraints = false
-          view.addSubview(button)
-          label.numberOfLines = 0
-          label.textColor = .black
-          label.textAlignment = .center
-          label.font = UIFont.systemFont(ofSize: 20)
-          label.translatesAutoresizingMaskIntoConstraints = false
-          view.addSubview(label)
-          let safeArea = view.safeAreaLayoutGuide
-          NSLayoutConstraint.activate([
-             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-             button.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10),
-             button.heightAnchor.constraint(equalToConstant: 50),
-             button.widthAnchor.constraint(equalToConstant: 150),
-             label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-             label.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
-             label.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 30),
-             label.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -30)
-          ])
+      button.backgroundColor = .black
+      button.setTitle("Scan an MRZ", for: .normal)
+      button.setTitleColor(.white, for: .normal)
+      button.layer.cornerRadius = 8
+      button.clipsToBounds = true
+      button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+      button.translatesAutoresizingMaskIntoConstraints = false
+      view.addSubview(button)
+      label.numberOfLines = 0
+      label.textColor = .black
+      label.textAlignment = .center
+      label.font = UIFont.systemFont(ofSize: 20)
+      label.translatesAutoresizingMaskIntoConstraints = false
+      view.addSubview(label)
+      let safeArea = view.safeAreaLayoutGuide
+      NSLayoutConstraint.activate([
+         button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+         button.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10),
+         button.heightAnchor.constraint(equalToConstant: 50),
+         button.widthAnchor.constraint(equalToConstant: 150),
+         label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+         label.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
+         label.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 30),
+         label.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -30)
+      ])
+   }
+   func setupAppearance() {
+      let appearance = UINavigationBarAppearance()
+      appearance.configureWithOpaqueBackground()
+      appearance.backgroundColor = .black
+      appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+      navigationController?.navigationBar.standardAppearance = appearance
+      navigationController?.navigationBar.scrollEdgeAppearance = appearance
+      navigationController?.navigationBar.compactAppearance = appearance
+      navigationController?.navigationBar.tintColor = UIColor.white
    }
 }
 ```
@@ -193,11 +212,9 @@ class ViewController: UIViewController {
 > [!NOTE]
 > We will only have one *ViewController*, where most of the code will be written, along with an associated *NavigationController* to allow the user to navigate back and forth between the home page and the `ResultViewController` where the MRZ data is displayed.
 
-### Step 4: Configure the Scanner
+### Step 4: Set Up the Scene Delegate
 
-All scanner settings are controlled through a single `MRZScannerConfig` object declared as a property in Step 3. Configure it in `viewDidLoad` after `setup()`.
-
-The only required setting is the license key — see the [Licensing](#licensing) section above for how to obtain one. All other settings are optional and can be omitted to use their defaults. The code below shows the full set of available options with their default values noted in comments:
+Since this project uses programmatic UI (no storyboard), you need to configure `SceneDelegate.swift` to set up the `UINavigationController` as the root. Replace the default `func scene` body with the following:
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -205,66 +222,35 @@ The only required setting is the license key — see the [Licensing](#licensing)
 >
 >1. 
 ```objc
-/* CONTINUATION OF STEP 3 — add to viewDidLoad after [self setup] */
-- (void)viewDidLoad {
-   /* ... */
-   [self setup];
-   // Required: set a valid license key.
-   self.config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
-   // Optional: restrict scanning to a specific document type (default: DSDocumentTypeAll).
-   self.config.documentType = DSDocumentTypePassport;
-   // Optional: load a custom template from "DynamsoftResources.bundle\Templates\" or pass a JSON string.
-   self.config.templateFile = @"CustomizedTemplate.json";
-   // Optional: feedback on successful scan (both default to false).
-   self.config.isBeepEnabled = true;
-   self.config.isVibrateEnabled = true;
-   // Optional: control which buttons appear on the scanner UI.
-   self.config.isTorchButtonVisible = true;           // Torch toggle (default: true).
-   self.config.isCloseButtonVisible = true;           // Close/back button (default: true).
-   self.config.isCameraToggleButtonVisible = true;    // Front/back camera toggle (default: true).
-   self.config.isBeepButtonVisible = true;            // Beep on/off toggle (default: true).
-   self.config.isVibrateButtonVisible = true;         // Vibrate on/off toggle (default: true).
-   self.config.isFormatSelectorVisible = true;        // Document format selector (default: true).
-   // Optional: choose which images to return with the result.
-   self.config.returnDocumentImage = true;    // Cropped document image (default: true).
-   self.config.returnPortraitImage = true;    // Portrait extracted from document (default: true).
-   self.config.returnOriginalImage = false;   // Full camera frame (default: false).
+- (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
+   UIWindowScene *windowScene = (UIWindowScene *)scene;
+   if (!windowScene) return;
+   UIWindow *window = [[UIWindow alloc] initWithWindowScene:windowScene];
+   ViewController *rootViewController = [[ViewController alloc] init];
+   UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
+   window.rootViewController = navigationController;
+   self.window = window;
+   [window makeKeyAndVisible];
 }
 ```
 2. 
 ```swift
-/* CONTINUATION OF STEP 3 — add to viewDidLoad after setup() */
-override func viewDidLoad() {
-   /* ... */
-   setup()
-   // Required: set a valid license key.
-   config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-   // Optional: restrict scanning to a specific document type (default: .all).
-   config.documentType = .passport
-   // Optional: load a custom template from "DynamsoftResources.bundle\Templates\" or pass a JSON string.
-   config.templateFile = "CustomizedTemplate.json"
-   // Optional: feedback on successful scan (both default to false).
-   config.isBeepEnabled = true
-   config.isVibrateEnabled = true
-   // Optional: control which buttons appear on the scanner UI.
-   config.isTorchButtonVisible = true           // Torch toggle (default: true).
-   config.isCloseButtonVisible = true           // Close/back button (default: true).
-   config.isCameraToggleButtonVisible = true    // Front/back camera toggle (default: true).
-   config.isBeepButtonVisible = true            // Beep on/off toggle (default: true).
-   config.isVibrateButtonVisible = true         // Vibrate on/off toggle (default: true).
-   config.isFormatSelectorVisible = true        // Document format selector (default: true).
-   // Optional: choose which images to return with the result.
-   config.returnDocumentImage = true    // Cropped document image (default: true).
-   config.returnPortraitImage = true    // Portrait extracted from document (default: true).
-   config.returnOriginalImage = false   // Full camera frame (default: false).
+func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+   guard let windowScene = (scene as? UIWindowScene) else { return }
+   let window = UIWindow(windowScene: windowScene)
+   let rootViewController = ViewController()
+   let navigationController = UINavigationController(rootViewController: rootViewController)
+   window.rootViewController = navigationController
+   self.window = window
+   window.makeKeyAndVisible()
 }
 ```
 
-### Step 5: Launch the Scanner
+### Step 5: Configure the Scanner
 
-Wire the scan button to `MRZScannerViewController` and handle results via the `onScannedResult` callback. Each result carries a `resultStatus` of *finished* (MRZ decoded), *canceled* (user closed the scanner), or *exception* (an error occurred).
+This step implements the `buttonTapped` action wired to the button in Step 3 — without it, the project will not compile. Create an `MRZScannerViewController` and configure it with an `MRZScannerConfig`. 
 
-Continuing from Step 4:
+The only required setting is the license key — see the [Licensing](#licensing) section above for how to obtain one. For the full list of optional settings such as document type filtering, UI button visibility, and image capture options, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -272,13 +258,49 @@ Continuing from Step 4:
 >
 >1. 
 ```objc
-/* CONTINUATION OF STEP 4 — add buttonTapped method */
+/* Add to ViewController.swift */
 - (void)buttonTapped {
    DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
-   vc.config = self.config;
+   DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
+   // Required: set a valid license key.
+   config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
+   vc.config = config;
+}
+```
+2. 
+```swift
+/* Add to ViewController.swift */
+@objc func buttonTapped() {
+   let vc = MRZScannerViewController()
+   let config = MRZScannerConfig()
+   // Required: set a valid license key.
+   config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+   vc.config = config
+}
+```
+
+### Step 6: Launch the Scanner
+
+Wire the scan button to `MRZScannerViewController` and handle results via the `onScannedResult` callback. Each result carries a `resultStatus` of *finished* (MRZ decoded), *canceled* (user closed the scanner), or *exception* (an error occurred).
+
+Continuing from Step 5:
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+/* ViewController.swift — continue the buttonTapped method from Step 5 */
+- (void)buttonTapped {
+   DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
+   DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
+   config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
+   vc.config = config;
    __weak typeof(self) weakSelf = self;
    vc.onScannedResult = ^(DSMRZScanResult *result) {
           switch (result.resultStatus) {
+             /* if the result is valid, navigate to ResultViewController */
              case DSResultStatusFinished: {
                 if (result.data) {
                    dispatch_async(dispatch_get_main_queue(), ^{
@@ -295,17 +317,19 @@ Continuing from Step 4:
                 }
                 break;
              }
+             /* if the scan operation is canceled by the user */
              case DSResultStatusCanceled: {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                   weakSelf.label.hidden = NO;
+                   weakSelf.label.isHidden = NO;
                    weakSelf.label.text = @"Scan canceled";
                    [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
                 break;
              }
+             /* if an error occurs during capture, display the error string in the label */
              case DSResultStatusException: {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                   weakSelf.label.hidden = NO;
+                   weakSelf.label.isHidden = NO;
                    weakSelf.label.text = result.errorString;
                    [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
@@ -315,7 +339,7 @@ Continuing from Step 4:
                 break;
           }
    };
-   self.label.hidden = YES;
+   self.label.isHidden = YES;
    dispatch_async(dispatch_get_main_queue(), ^{
           [weakSelf.navigationController pushViewController:vc animated:YES];
    });
@@ -323,46 +347,48 @@ Continuing from Step 4:
 ```
 2. 
 ```swift
-/* CONTINUATION OF STEP 4 — add buttonTapped method */
+/* ViewController.swift — continue the buttonTapped method from Step 5 */
 @objc func buttonTapped() {
    let vc = MRZScannerViewController()
+   let config = MRZScannerConfig()
+   config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
    vc.config = config
    vc.onScannedResult = { [weak self] result in
-          guard let self = self else { return }
-          switch result.resultStatus {
-          /* if the result is valid, navigate to ResultViewController */
-          case .finished:
-             if let data = result.data {
-                DispatchQueue.main.async {
-                   let resultVC = ResultViewController()
-                   resultVC.mrzData = data
-                   resultVC.portraitImage = try? result.getPortraitImage()?.toUIImage()
-                   resultVC.primaryDocumentImage = try? result.getDocumentImage(.mrz)?.toUIImage()
-                   resultVC.primaryOriginalImage = try? result.getOriginalImage(.mrz)?.toUIImage()
-                   resultVC.secondaryDocumentImage = try? result.getDocumentImage(.opposite)?.toUIImage()
-                   resultVC.secondaryOriginalImage = try? result.getOriginalImage(.opposite)?.toUIImage()
-                   self.navigationController?.pushViewController(resultVC, animated: true)
-                }
-             }
-          /* if the scan operation is canceled by the user */
-          case .canceled:
-             DispatchQueue.main.async {
-                self.label.isHidden = false
-                self.label.text = "Scan canceled"
-                self.navigationController?.popViewController(animated: true)
-             }
-          /* if an error occurs during capture, display the error string in the label */
-          case .exception:
-             DispatchQueue.main.async {
-                self.label.isHidden = false
-                self.label.text = result.errorString
-                self.navigationController?.popViewController(animated: true)
-             }
-          @unknown default:
-             break
-          }
+      guard let self = self else { return }
+      switch result.resultStatus {
+         /* if the result is valid, navigate to ResultViewController */
+         case .finished:
+            if let data = result.data {
+               DispatchQueue.main.async {
+                  let resultVC = ResultViewController()
+                  resultVC.mrzData = data
+                  resultVC.portraitImage = try? result.getPortraitImage()?.toUIImage()
+                  resultVC.primaryDocumentImage = try? result.getDocumentImage(.mrz)?.toUIImage()
+                  resultVC.primaryOriginalImage = try? result.getOriginalImage(.mrz)?.toUIImage()
+                  resultVC.secondaryDocumentImage = try? result.getDocumentImage(.opposite)?.toUIImage()
+                  resultVC.secondaryOriginalImage = try? result.getOriginalImage(.opposite)?.toUIImage()
+                  self.navigationController?.pushViewController(resultVC, animated: true)
+               }
+            }
+         /* if the scan operation is canceled by the user */
+         case .canceled:
+            DispatchQueue.main.async {
+               self.label.isHidden = false
+               self.label.text = "Scan canceled"
+               self.navigationController?.popViewController(animated: true)
+            }
+         /* if an error occurs during capture, display the error string in the label */
+         case .exception:
+            DispatchQueue.main.async {
+               self.label.isHidden = false
+               self.label.text = result.errorString
+               self.navigationController?.popViewController(animated: true)
+            }
+         default:
+            break
+      }
    }
-   label.isHidden = true
+   self.label.isHidden = true
    DispatchQueue.main.async {
           self.navigationController?.pushViewController(vc, animated: true)
    }
@@ -374,9 +400,11 @@ Continuing from Step 4:
 > - `DocumentSide.mrz` refers to the side of the document containing the machine-readable zone. `DocumentSide.opposite` refers to the reverse side, which is relevant for two-sided documents such as TD1 ID cards.
 > - Image retrieval methods on `MRZScanResult` (`getDocumentImage()`, `getOriginalImage()`, `getPortraitImage()`) return `nil` if the corresponding option was disabled in the config or if no image was captured for that side.
 
-### Step 6: Display the Results
+### Step 7: Display the Results
 
-Create `ResultViewController` to receive and display the scan result. The *canceled* and *exception* statuses are already handled inline in Step 5's callback, so `ResultViewController` only needs to handle the *finished* status. It provides **Re-scan** and **Return Home** actions.
+In Xcode, add a new file to your project (**File > New > File**), choose **Swift File** (or **Objective-C File** for an Objective-C project), name it `ResultViewController`, and save it in the same group as `ViewController.swift`.
+
+`ResultViewController` receives and displays the scan result. The *canceled* and *exception* statuses are already handled inline in Step 6's callback, so `ResultViewController` only needs to handle the *finished* status. It provides **Re-scan** and **Return Home** actions.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -388,6 +416,7 @@ Create `ResultViewController` to receive and display the scan result. The *cance
 #import <UIKit/UIKit.h>
 #import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle-Swift.h>
 @interface ResultViewController : UIViewController
+// Data properties — set by ViewController before pushing
 @property (nonatomic, strong) DSMRZData *mrzData;
 @property (nonatomic, strong) UIImage *portraitImage;
 @property (nonatomic, strong) UIImage *primaryDocumentImage;
@@ -398,12 +427,15 @@ Create `ResultViewController` to receive and display the scan result. The *cance
 /* ResultViewController.m */
 #import "ResultViewController.h"
 @interface ResultViewController ()
+// UI components
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *subInfoLabel;
 @property (nonatomic, strong) UIImageView *portraitImageView;
 @property (nonatomic, strong) UIImageView *primaryImageView;
 @property (nonatomic, strong) UIImageView *secondaryImageView;
 @property (nonatomic, strong) UILabel *mrzTextLabel;
+@property (nonatomic, strong) UIButton *rescanButton;
+@property (nonatomic, strong) UIButton *returnHomeButton;
 @end
 @implementation ResultViewController
 - (void)viewDidLoad {
@@ -415,14 +447,18 @@ Create `ResultViewController` to receive and display the scan result. The *cance
 }
 - (void)populateData {
    if (!self.mrzData) return;
+   // Personal info header
    self.nameLabel.text = [NSString stringWithFormat:@"%@ %@", self.mrzData.firstName, self.mrzData.lastName];
    self.subInfoLabel.text = [NSString stringWithFormat:@"%@, %ld years old\nExpiry: %@",
-      self.mrzData.sex, (long)self.mrzData.age, self.mrzData.dateOfExpire];
+      [self.mrzData.sex capitalizedString], (long)self.mrzData.age, self.mrzData.dateOfExpire];
+   // Portrait image
    if (self.portraitImage) {
       self.portraitImageView.image = self.portraitImage;
    }
+   // Document images
    self.primaryImageView.image = self.primaryDocumentImage;
    self.secondaryImageView.image = self.secondaryDocumentImage;
+   // Raw MRZ text
    self.mrzTextLabel.text = self.mrzData.mrzText;
 }
 - (void)rescanTapped {
@@ -487,15 +523,21 @@ class ResultViewController: UIViewController {
 
 > [!NOTE]
 >
-> - `primaryDocumentImage` and `secondaryDocumentImage` correspond to the MRZ side and opposite side of the document respectively, as retrieved via `getDocumentImage(.mrz)` and `getDocumentImage(.opposite)` in Step 5.
+> - `primaryDocumentImage` and `secondaryDocumentImage` correspond to the MRZ side and opposite side of the document respectively, as retrieved via `getDocumentImage(.mrz)` and `getDocumentImage(.opposite)` in Step 6.
 > - When no portrait image is available, use a placeholder — the sample uses a bundled asset named `"user"`. Add your own placeholder image to your asset catalog and reference it as `UIImage(named: "yourPlaceholder")` / `[UIImage imageNamed:@"yourPlaceholder"]`.
 > - For the complete `ResultViewController` implementation including the full UI layout, segmented image switcher, and info sections, refer to the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
 
 For the full list of fields available on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
 
-### Step 7: Run the Project
+### Step 8: Run the Project
 
-Connect a physical iOS device, configure **Signing & Capabilities**, and add the "Privacy - Camera Usage Description" key in the **Info** section of the project settings. Select your device from the top bar and click **Run**. When the scanner finishes, the result is passed to `ResultViewController`, where the extracted MRZ data and any captured images are displayed.
+Before running, complete these two required configuration steps in Xcode:
+
+1. **Configure Signing** — In the project navigator, select your project, go to the **Signing & Capabilities** tab, and set a valid **Team**. Without this the project will fail to build.
+
+2. **Add Camera Permission** — Select your target, go to the **Info** tab, and add the **Privacy - Camera Usage Description** key with a description string (e.g. `"This app uses the camera to scan MRZ documents."`). Without this the app will crash immediately when the camera is opened, even on a successful build.
+
+Once both are configured, connect a physical iOS device, select it from the top bar, and click **Run**. When the scanner finishes, the result is passed to `ResultViewController`, where the extracted MRZ data and any captured images are displayed.
 
 > [!NOTE]
 > If you try running the project on a simulator, you will encounter errors as this sample uses the device camera which is unavailable when using the simulator.
