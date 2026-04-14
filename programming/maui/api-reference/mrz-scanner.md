@@ -1,16 +1,16 @@
 ---
 layout: default-layout
 title: MRZScanner Class - Dynamsoft MRZ Scanner MAUI Edition
-description: MRZScanner of DynamsoftMRZScanner MAUI is an activity class that implements MRZ scanning features.
+description: MRZScanner of DynamsoftMRZScanner MAUI is the class that implements MRZ scanning features.
 keywords: MRZ, scanner, activity
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
 breadcrumbText: MRZScanner
 ---
 
-# Class MRZScanner
+# MRZScanner
 
-`MRZScanner` is an activity class that implements MRZ scanning features.
+`MRZScanner` is the class that provides the ready-to-use MRZ scanning component.
 
 ## Definition
 
@@ -22,30 +22,46 @@ breadcrumbText: MRZScanner
 class MRZScanner
 ```
 
-## Start
+## Methods
 
-Starts the MRZ scanning process.
+| Method | Description |
+| ------ | ----------- |
+| [`Start`](#start) | Launches the MRZ scanner and returns the scan result. |
+
+### Start
+
+Launches the MRZ scanning UI with the provided configuration and returns the result once the scanner closes.
 
 ```csharp
 static async Task<MRZScanResult> Start(MRZScannerConfig config);
 ```
 
-## How to Use
+**Parameter(s)**
+
+`config`: An [`MRZScannerConfig`](mrz-scanner-config.md) object that defines the scanner settings. The `License` property must be set.
+
+**Return Value**
+
+An [`MRZScanResult`](mrz-scan-result.md) containing the scan outcome. Check `ResultStatus` to determine whether the scan finished successfully, was canceled, or encountered an error.
+
+**Usage Example**
 
 ```csharp
-using System.Collections.ObjectModel;
 using Dynamsoft.MRZScannerBundle.Maui;
 
-namespace ScanMRZ;
+var config = new MRZScannerConfig("YOUR-LICENSE-KEY");
+var result = await MRZScanner.Start(config);
 
-public partial class MainPage : ContentPage
+if (result.ResultStatus == EnumResultStatus.Finished && result.Data is not null)
 {
-    private async void OnScanMRZ(object sender, EventArgs e)
-    {
-        // The string "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9" here grants a time-limited free trial which requires network connection to work.
-        // You can request a 30-day trial license via the Request a Trial License page https://www.dynamsoft.com/customer/license/trialLicense?product=dbr&utm_source=guide&package=maui.
-        var config = new MRZScannerConfig("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-        var result = await MRZScanner.Start(config);
-    }
+    // Use result.Data to access MRZ fields
+}
+else if (result.ResultStatus == EnumResultStatus.Canceled)
+{
+    // User closed the scanner
+}
+else
+{
+    // Handle error via result.ErrorString
 }
 ```
