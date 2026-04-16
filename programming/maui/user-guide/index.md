@@ -37,7 +37,7 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
 
 ### iOS
 
-- Supported OS: **iOS 13.0** or higher
+- Supported OS: **iOS 15.0** or higher
 - Supported ABI: **arm64** and **x86_64**
 
 ### Development Environment
