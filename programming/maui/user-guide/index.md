@@ -28,7 +28,7 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
 
 ### .NET
 
-- 8.0 / 9.0 / 10.0
+- 10.0
 
 ### Android
 
@@ -37,13 +37,13 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
 
 ### iOS
 
-- Supported OS: **iOS 15.0** or higher
+- Supported OS: **iOS 13.0** or higher
 - Supported ABI: **arm64** and **x86_64**
 
 ### Development Environment
 
 - **Windows**: Visual Studio 2022 (v17.8 or higher) with the **.NET MAUI** workload installed.
-- **Mac**: Visual Studio Code with the **.NET MAUI** extension.
+- **Mac**: Visual Studio Code with the **.NET MAUI** extension (Xcode 26 or higher required for iOS builds with .NET 10)
 
 > [!NOTE]
 > Visual Studio for Mac is deprecated and no longer supported. Mac users should use Visual Studio Code with the .NET MAUI extension.
