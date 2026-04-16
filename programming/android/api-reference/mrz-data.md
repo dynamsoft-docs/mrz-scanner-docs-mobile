@@ -37,8 +37,8 @@ class MRZData
 | [`getDocumentNumber`](#getdocumentnumber) | Returns the MRZ document number. |
 | [`getAge`](#getage) | Returns the age of the user of the MRZ document. |
 | [`getMrzText`](#getmrztext) | Returns the raw text of the MRZ. |
-| [`getIssuingStateRaw`](#getissuingstateraw) | Returns the raw issuing state value as encoded in the MRZ. |
-| [`getNationalityRaw`](#getnationalityraw) | Returns the raw nationality value as encoded in the MRZ. |
+| [`getIssuingStateRaw`](#getissuingstateraw) | Returns the raw ICAO issuing state code as it appears in the MRZ. |
+| [`getNationalityRaw`](#getnationalityraw) | Returns the raw ICAO nationality code as it appears in the MRZ. |
 | [`getOptionalData1`](#getoptionaldata1) | Returns the first optional data field from the MRZ. |
 | [`getOptionalData2`](#getoptionaldata2) | Returns the second optional data field from the MRZ. |
 | [`getPersonalNumber`](#getpersonalnumber) | Returns the personal number from the MRZ. |
@@ -177,7 +177,7 @@ The raw text of the MRZ.
 
 ### getIssuingStateRaw
 
-Returns the raw issuing state value exactly as encoded in the MRZ, before any standardization or lookup.
+Returns the raw ICAO issuing state code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
 
 ```java
 String getIssuingStateRaw();
@@ -185,11 +185,11 @@ String getIssuingStateRaw();
 
 **Return Value**
 
-The raw issuing state string from the MRZ.
+The raw ICAO issuing state code.
 
 ### getNationalityRaw
 
-Returns the raw nationality value exactly as encoded in the MRZ, before any standardization or lookup.
+Returns the raw ICAO nationality code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
 
 ```java
 String getNationalityRaw();
@@ -197,7 +197,7 @@ String getNationalityRaw();
 
 **Return Value**
 
-The raw nationality string from the MRZ.
+The raw ICAO nationality code.
 
 ### getOptionalData1
 
