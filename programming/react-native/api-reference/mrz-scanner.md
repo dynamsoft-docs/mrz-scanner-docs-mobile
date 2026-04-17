@@ -14,11 +14,13 @@ breadcrumbText: MRZScanner
 
 ## Definition
 
-*Assembly:* dynamsoft-capture-vision-react-native
+*Assembly:* dynamsoft-mrz-scanner-bundle-react-native
 
 ```ts
 class MRZScanner
 ```
+
+`MRZScanner` has a private constructor and exposes a single static entry point, [`launch`](#launch). Invoke it directly via `MRZScanner.launch(config)`.
 
 ## Methods
 
@@ -38,23 +40,19 @@ launch(config?: MRZScanConfig): Promise<MRZScanResult>
 
 ```ts
 const ScanMRZ = async () => {
-    let mrzScanConfig = {
+    const mrzScanConfig = {
         license: 'DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9',
     } as MRZScanConfig;
-    let mrzResult = await MRZScanner.launch(mrzScanConfig);
-    let displayString: string;
+    const mrzResult = await MRZScanner.launch(mrzScanConfig);
     if (mrzResult.resultStatus === EnumResultStatus.RS_FINISHED) {
-        let mrzData = mrzResult?.data!;
-        displayString = Object.entries(mrzData)
-        .map(([fieldName, fieldValue]) => `${fieldName} : \t${fieldValue}`)
-        .join('\n\n');
+        const mrzData = mrzResult.data!;
+        // Use the parsed fields (mrzData.firstName, mrzData.dateOfExpire, etc.)
+        // and the captured images (mrzResult.portraitImage, mrzResult.mrzSideDocumentImage, ...).
     } else if (mrzResult.resultStatus === EnumResultStatus.RS_CANCELED) {
-        displayString = 'Scan cancelled.';
+        // User closed the scanner before it finished.
     } else {
-        displayString = `ErrorCode: ${mrzResult.errorCode}\n\nErrorMessage: ${mrzResult.errorString}`;
+        // RS_EXCEPTION — inspect mrzResult.errorCode / mrzResult.errorString.
     }
-    setDisplayText(displayString);
-    setIsError(mrzResult.resultStatus === EnumResultStatus.RS_EXCEPTION);
 };
 ```
 

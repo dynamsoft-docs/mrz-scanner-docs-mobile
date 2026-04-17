@@ -2,250 +2,356 @@
 layout: default-layout
 title: User Guide - Dynamsoft MRZ Scanner for React Native (Ready to Use UI edition)
 description: This is the user guide of Dynamsoft MRZ Scanner for React Native SDK demonstrating the Ready to Use UI.
-keywords: user guide, dart, React Native, ready to use, mrz
+keywords: user guide, React Native, typescript, ready to use, mrz
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
 noTitleIndex: true
-multiProgrammingLanguage: true
-enableLanguageSelection: true
 ---
 
 # MRZ Scanner User Guide (React Native Edition)
 
-This user guide will explore using the Dynamsoft MRZ Scanner (React Native Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
+The Dynamsoft MRZ Scanner (React Native Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScanner` — the built-in component that handles the camera UI, scanning logic, and result delivery.
 
-`MRZScanner` is the ready-to-use component that allows developers to quickly set up an MRZ scanning app. With the built-in component, it streamlines the integration of MRZ scanning functionality into any application.
+> [!IMPORTANT]
+> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ).
 
-## Supported Machine-Readable Travel Document Types
+## Supported Document Types
 
-The Machine Readable Travel Documents (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
-
-Currently, the SDK supports three types of MRTD:
+The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
 
 > [!NOTE]
-> If you need support for other types of MRTDs, our SDK can be easily customized. Please contact our [support team](https://www.dynamsoft.com/contact/).
-
-### ID (TD1 Size)
-
-The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines, each containing 30 characters.
-
-<div>
-   <img src="../../assets/td1-id.png" alt="Example of MRZ in TD1 format" width="60%" />
-</div>
-
-### ID (TD2 Size)
-
-The MRZ (Machine Readable Zone) in TD2 format consists of 2 lines, with each line containing 36 characters.
-
-<div>
-   <img src="../../assets/td2-id.png" alt="Example of MRZ in TD2 format" width="72%" />
-</div>
-
-### Passport (TD3 Size)
-
-The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each line containing 44 characters.
-
-<div>
-   <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
-</div>
+> For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ## System Requirements
 
-* React Native 0.71.0+ (0.79.0+ recommended)
-* Node 18+
-* Android
-  * Supported OS: Android 5.0 (API Level 21) and higher
-  * Supported ABI: armeabi-v7a, arm64-v8a, x86 and x86_64
-  * Development Environment: Android Studio 2022.2.1+ (2025.2.1 recommended); Java 17+; Gradle 8.0+
-* iOS
-  * Supported OS: iOS 13+
-  * Supported ABI: arm64 and x86_64
-  * Development Environment: Xcode 13+ (Xcode 14.1+ recommended)
+- React Native **0.71.0** or higher (**0.79.0+** recommended).
+- Node **18** or higher.
+- Android
+  - Supported OS: **Android 5.0** (API Level 21) or higher.
+  - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
+  - Development Environment: **Android Studio 2022.2.1+** (2025.2.1 recommended), **Java 17+**, **Gradle 8.0+**.
+- iOS
+  - Supported OS: **iOS 13** or higher.
+  - Supported ABI: **arm64** and **x86_64**.
+  - Development Environment: **Xcode 13** and above (**Xcode 14.1+** recommended).
 
-## Including the Library
+## Licensing
 
-Run the following command in the root directory of your React Native project to add `dynamsoft-capture-vision-react-native` to the dependencies:
+A valid license key is required to use the SDK. If you are just getting started, request a free 30-day trial license below:
+
+{% include trialLicense.html %}
+
+> [!NOTE]
+>
+> - The license string above grants a time-limited free trial which requires a network connection.
+> - You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=react-native){:target="_blank"} link.
+
+## Add the SDK
+
+Run the following command from your React Native project root to add `dynamsoft-mrz-scanner-bundle-react-native` to the dependencies:
 
 ```bash
-npm install dynamsoft-capture-vision-react-native
+npm install dynamsoft-mrz-scanner-bundle-react-native@3.4.1200
 ```
 
-Then run this command to install all dependencies:
+For iOS, install the CocoaPods dependencies after the npm install completes. Run the following from the project root:
 
 ```bash
-npm install 
+cd ios && bundle exec pod install --repo-update
 ```
 
-## Building the MRZ Scanner Widget
+## Building the MRZ Scanner Application
 
-Now that the package is added, it's time to start building the `MRZScanner` Widget using the SDK.
+The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ).
 
-### Import
+### Step 1: Create a New Project
 
-To use the MRZScanner API, we have to import the relevant classes from the `dynamsoft-capture-vision-react-native` package. Please import `dynamsoft-capture-vision-react-native` in your dart file:
+Initialize a new React Native project:
 
-```ts
-import { MRZScanner, MRZScanResult, MRZScanConfig } from 'dynamsoft-mrz-scanner-bundle-react-native';
+```bash
+npx @react-native-community/cli init ScanMRZ
 ```
 
-### Quick Start
+Change into the new project directory — all remaining steps run from the project root:
 
-The code below shows the simplest function implementation to initialize and start the MRZ Scanner
+```bash
+cd ScanMRZ
+```
+
+The implementation in this guide lives in `src/App.tsx`. Create the `src` folder, move the generated `App.tsx` into it, and update `index.js` so the registered component resolves to `./src/App`:
+
+```js
+import App from './src/App';
+```
+
+### Step 2: Add the SDK
+
+Follow the instructions in the [Add the SDK](#add-the-sdk) section above to add `dynamsoft-mrz-scanner-bundle-react-native` to your project.
+
+### Step 3: Configure Platform Settings
+
+Before the scanner can open the camera, both platforms need a small amount of configuration.
+
+**iOS** — open `ios/ScanMRZ/Info.plist` and add a camera usage description. Without this the app will crash immediately when the scanner tries to open the camera:
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string>This app uses the camera to scan MRZ documents.</string>
+```
+
+**Android** — no manual permission changes are required. The SDK's manifest merges the `CAMERA` permission automatically. The trial license requires a network connection, so keep the `INTERNET` permission declared in `android/app/src/main/AndroidManifest.xml` (it is present by default in React Native templates):
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+### Step 4: Set Up the UI
+
+Create the initial Home screen with a single **Scan an MRZ** button anchored toward the bottom of the screen. Scan results will be rendered in the same component via conditional rendering, added in [Step 7](#step-7-display-the-results).
+
+Replace the contents of `src/App.tsx` with the following:
 
 ```tsx
-import { MRZScanner, MRZScanResult, MRZScanConfig } from 'dynamsoft-mrz-scanner-bundle-react-native';
-
-async function ScanMRZ() {
-  const config = {
-    license: 'DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9', // 24-hour license key
-  } as MRZScanConfig;
-  const mrzResult = await MRZScanner.launch(config);
-  if (mrzResult.resultStatus === EnumResultStatus.RS_FINISHED) {
-    let mrzData = mrzResult?.data!;
-    // do something with the MRZData object
-  }
-}
-```
-
-You can call the above function anywhere (e.g., when the app starts, on a button click, etc.) to achieve the effect:
-open an MRZ scanning interface, and after scanning is complete, close the interface and return the result.
-
-This next code snippet is the **full Hello World implementation** that uses the above `ScanMRZ` function. This is done in *App.tsx* but can be used as a reference for your own implementation, whether it is in *App.tsx* or any other page.
-
-```tsx
-import React, {useState} from 'react';
-import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {MRZScanner, EnumResultStatus, MRZScanConfig} from 'dynamsoft-mrz-scanner-bundle-react-native';
+import React from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 function App(): React.JSX.Element {
-  const [displayText, setDisplayText] = useState<string>('');
-  const [isError, setIsError] = useState<boolean>(false);
   const ScanMRZ = async () => {
-    let mrzScanConfig = {
-      license: 'DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9',
-    } as MRZScanConfig;
-    let mrzResult = await MRZScanner.launch(mrzScanConfig);
-    let displayString: string;
-    if (mrzResult.resultStatus === EnumResultStatus.RS_FINISHED) {
-      let mrzData = mrzResult?.data!;
-      displayString = Object.entries(mrzData)
-        .map(([fieldName, fieldValue]) => `${fieldName} : \t${fieldValue}`)
-        .join('\n\n');
-    } else if (mrzResult.resultStatus === EnumResultStatus.RS_CANCELED) {
-      displayString = 'Scan cancelled.';
-    } else {
-      displayString = `ErrorCode: ${mrzResult.errorCode}\n\nErrorMessage: ${mrzResult.errorString}`;
-    }
-    setDisplayText(displayString);
-    setIsError(mrzResult.resultStatus === EnumResultStatus.RS_EXCEPTION);
+    // The scanner launch logic is added in Steps 5 and 6.
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <Text style={[styles.text, isError ? styles.errorText : null]}>
-          {displayText}
-        </Text>
-      </ScrollView>
-      <Button title={'Scan MRZ'} onPress={ScanMRZ}/>
+    <View style={styles.idleContainer}>
+      <TouchableOpacity style={styles.scanButton} onPress={ScanMRZ}>
+        <Text style={styles.scanButtonText}>Scan an MRZ</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
+const BG = '#000000';
+const WHITE = '#ffffff';
+const BTN_GREY = '#555555';
+
 const styles = StyleSheet.create({
-  container: {flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20, marginBottom: 50},
-  text: {marginTop: 20, fontSize: 16, color: 'black'},
-  errorText: {color: 'red'},
+  idleContainer: {
+    flex: 1,
+    backgroundColor: BG,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: 24,
+    paddingBottom: 32,
+  },
+  scanButton: {
+    backgroundColor: BTN_GREY,
+    borderRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 48,
+  },
+  scanButtonText: {
+    color: WHITE,
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
 
 export default App;
 ```
 
-> [!NOTE]
->
->- The license string here grants a time-limited free trial which requires network connection to work.
->- You can request a 30-day trial license via the [Trial License portal](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=github&package=mobile).
+### Step 5: Configure the Scanner
 
-### MRZ Result and Data
+Import the SDK and create an `MRZScanConfig` inside the `ScanMRZ` function. The only required setting is the license key — see the [Licensing](#licensing) section above for how to obtain one. For the full list of optional settings such as document-type filtering, UI button visibility, and image-capture options, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 
-Once the scan process completes and the MRZ Scanner successfully recognizes a MRZ, a `MRZScanResult` is produced, representing all of the decrypted data contained within the MRZ.
+```tsx
+/* Add to the import block at the top of App.tsx */
+import {
+  EnumResultStatus,
+  MRZScanConfig,
+  MRZScanner,
+  MRZScanResult,
+} from 'dynamsoft-mrz-scanner-bundle-react-native';
 
-[`MRZScanResult`](../api-reference/mrz-scan-result.md) has the following properties:
-
-- **resultStatus**: The status of the MRZ scan result, of type `EnumResultStatus`.
-    - *finished*: The MRZ scan was successful.
-    - *canceled*: The MRZ scanning activity is closed before the process is finished.
-    - *exception*: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
-- **errorCode**: The error code indicates if something went wrong during the MRZ scanning process (0 means no error). Only defined when `resultStatus` is RS_EXCEPTION.
-- **errorString**: The error message associated with the error code if an error occurs during MRZ scanning process. Only defined when `resultStatus` is RS_EXCEPTION.
-- **data**: The parsed MRZ data as a `MRZData` object.
-  
-[`MRZData`](../api-reference/mrz-data.md) holds the actual decrypted data of the MRZ result, and it comes with the following fields:
-
-- **documentType**: The type of document, which would either be `EnumDocumentType.DT_PASSPORT`, `EnumDocumentType.DT_ID`, or `EnumDocumentType.DT_ALL`.
-- **firstName**: The first name of the user of the MRZ document.
-- **lastName**: The last name of the user of the MRZ document.
-- **sex**: The sex of the user of the MRZ document.
-- **issuingState**: The issuing state of the MRZ document.
-- **nationality**: The nationality of the user of the MRZ document.
-- **dateOfBirth**: The date of birth of the user of the MRZ document.
-- **dateOfExpiry**: The expiry date of the MRZ document.
-- **documentNumber**: The MRZ document number.
-- **age**: The age of the user of the MRZ document.
-- **mrzText**: The raw text of the MRZ.
-
-
-### Customizing the MRZ Scanner (Optional)
-
-Even though the default settings of the ready-to-use MRZ Scanner is sufficient to cover the majority of MRZ scanning scenarios, the `MRZScanConfig` class allows you to change the behaviour of the MRZ Scanner to fit your specific scenario. Using this class can help you customize different UI elements and determine the settings of the scanner engine itself.
-
-To learn of the different ways in which the MRZ scanner can be customized, please refer to the [MRZ Scanner Customization Guide](customize-mrz-scanner.md).
-
-## Run the Project
-
-### iOS
-
-Before the project can be deployed to a *iOS* device, the camera permissions and the developer signature must first be set. To add the camera permissions to the iOS portion of the app, we recommend first installing the **pods** dependencies to generate the **.xcworkspace** project under the ios folder (`ios/<Project Name>.xcworkspace`). Please run the following commands from the root directory:
-
-```bash
-cd ios/
-pod install --repo-update
+/* App.tsx — update the ScanMRZ function from Step 4 */
+const ScanMRZ = async () => {
+  const mrzScanConfig = {
+    // Required: set a valid license key.
+    license: 'DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9',
+  } as MRZScanConfig;
+};
 ```
 
-Once the pods are installed, *<Project Name>.xcworkspace* should now be generated in the *ios* folder. 
+### Step 6: Launch the Scanner
 
-#### Camera Permissions
+Add a `mrzScanResult` state variable, then call `MRZScanner.launch(config)` to open the scanner and await the result. Each result carries a `resultStatus` of `RS_FINISHED` (MRZ decoded), `RS_CANCELED` (user closed the scanner), or `RS_EXCEPTION` (an error occurred).
 
-To add the **camera permissions**, open the generated *<Project Name>.xcworkspace* and navigate to the *Info* section of the project settings. Then you must add the "Privacy - Camera Usage Description" key to the list (where you can also assign a string message to show in the alert box).
+Continuing from Step 5:
 
-#### Deploying to Device
+```tsx
+/* Update the React import to include useState */
+import React, {useState} from 'react';
 
-In order to deploy the app to a iOS device, we recommend doing it via Xcode by using the *<Project Name>.xcworkspace* project that was generated when the pods were installed. Since the camera permissions are taken care of, all you need to do is properly configure the *Signing & Capabilities* section of the project settings. Should the iOS device be connected to the computer, you can now run and deploy the app to the device. 
+/* App.tsx — inside the App component, above the ScanMRZ declaration */
+const [mrzScanResult, setMrzScanResult] = useState<MRZScanResult | null>(null);
 
-If everything is set up correctly, you should see the app running on your device.
+/* App.tsx — update the ScanMRZ function from Step 5 */
+const ScanMRZ = async () => {
+  const mrzScanConfig = {
+    license: 'DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9',
+  } as MRZScanConfig;
+  const mrzResult = await MRZScanner.launch(mrzScanConfig);
+  setMrzScanResult(mrzResult);
+};
+```
 
-### Android
+> [!NOTE]
+>
+> - `mrzScanResult.data` holds the parsed MRZ fields (`firstName`, `lastName`, `dateOfBirth`, etc.). See the [MRZData API reference](../api-reference/mrz-data.md) for the full field list.
+> - `mrzScanResult.portraitImage`, `mrzSideDocumentImage`, `oppositeSideDocumentImage`, `mrzSideOriginalImage`, and `oppositeSideOriginalImage` are `undefined` when the corresponding image option is disabled in `MRZScanConfig` or when no image was captured for that side.
+> - `mrzSideDocumentImage` corresponds to the side of the document containing the machine-readable zone. `oppositeSideDocumentImage` refers to the reverse side, which is relevant for two-sided documents such as TD1 ID cards.
 
-#### Deploying to Device
+### Step 7: Display the Results
 
-Go to the project root folder, open a new terminal and run the following command:
+The `return` statement written in Step 4 only renders the idle Home screen. Now that `mrzScanResult` is populated after a scan, branch on `resultStatus` and render the appropriate view. `RS_CANCELED` shows a short hint, `RS_EXCEPTION` shows the error string, and `RS_FINISHED` shows the parsed fields and captured images.
+
+Replace the single `return` block from Step 4 with the following conditional renders:
+
+```tsx
+/* Add Image and ScrollView to the react-native import */
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+
+/* App.tsx — replace the return block from Step 4 */
+if (mrzScanResult == null) {
+  return (
+    <View style={styles.idleContainer}>
+      <TouchableOpacity style={styles.scanButton} onPress={ScanMRZ}>
+        <Text style={styles.scanButtonText}>Scan an MRZ</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+if (mrzScanResult.resultStatus === EnumResultStatus.RS_CANCELED) {
+  return (
+    <View style={styles.idleContainer}>
+      <Text style={styles.idleHint}>Scan cancelled.</Text>
+      <TouchableOpacity style={styles.scanButton} onPress={ScanMRZ}>
+        <Text style={styles.scanButtonText}>Scan an MRZ</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+if (mrzScanResult.resultStatus === EnumResultStatus.RS_EXCEPTION) {
+  return (
+    <View style={styles.idleContainer}>
+      <Text style={styles.errorText}>{mrzScanResult.errorString}</Text>
+      <TouchableOpacity style={styles.scanButton} onPress={ScanMRZ}>
+        <Text style={styles.scanButtonText}>Scan an MRZ</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+// resultStatus === EnumResultStatus.RS_FINISHED
+const mrzData = mrzScanResult.data!;
+const fullName = `${mrzData.firstName} ${mrzData.lastName}`;
+
+return (
+  <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      {/* Header: name, gender/age, expiry, portrait image */}
+      <View style={styles.headerSection}>
+        <View style={styles.headerTextBlock}>
+          <Text style={styles.fullName}>{fullName}</Text>
+          <Text style={styles.genderAge}>
+            {mrzData.sex}, {mrzData.age} years old
+          </Text>
+          <Text style={styles.expiryShort}>Expiry: {mrzData.dateOfExpire}</Text>
+        </View>
+        <Image
+          style={styles.portraitBox}
+          source={mrzScanResult.portraitImage ?? require('./assets/ic_portrait_placeholder.jpg')}
+          resizeMode="contain"
+        />
+      </View>
+
+      {/* Personal Info */}
+      <Text style={styles.sectionTitle}>Personal Info</Text>
+      <Text style={styles.infoRow}>Given Name: {mrzData.firstName}</Text>
+      <Text style={styles.infoRow}>Surname: {mrzData.lastName}</Text>
+      <Text style={styles.infoRow}>Date of Birth: {mrzData.dateOfBirth}</Text>
+      <Text style={styles.infoRow}>Nationality: {mrzData.nationalityRaw}</Text>
+
+      {/* Document Info */}
+      <Text style={styles.sectionTitle}>Document Info</Text>
+      <Text style={styles.infoRow}>Doc. Number: {mrzData.documentNumber}</Text>
+      <Text style={styles.infoRow}>Expiry Date: {mrzData.dateOfExpire}</Text>
+
+      {/* Raw MRZ Text */}
+      <Text style={styles.sectionTitle}>Raw MRZ Text</Text>
+      <Text style={styles.rawMrz}>{mrzData.mrzText}</Text>
+    </ScrollView>
+
+    {/* Bottom re-scan button */}
+    <View style={styles.bottomButtons}>
+      <TouchableOpacity style={styles.bottomBtn} onPress={ScanMRZ}>
+        <Text style={styles.bottomBtnText}>Scan an MRZ</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+);
+```
+
+Extend the `StyleSheet.create` block with styles for the new views (`container`, `scrollContent`, `headerSection`, `headerTextBlock`, `fullName`, `genderAge`, `expiryShort`, `portraitBox`, `sectionTitle`, `infoRow`, `rawMrz`, `idleHint`, `errorText`, `bottomButtons`, `bottomBtn`, `bottomBtnText`). For brevity, the full style definitions are omitted here — refer to [App.tsx in the ScanMRZ sample](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ/src/App.tsx) for the complete implementation, which also includes a Processed/Original image switcher for the document images and a long-press-to-save-image action.
+
+> [!NOTE]
+>
+> - When no portrait image is available, the sample falls back to a bundled placeholder at `./assets/ic_portrait_placeholder.jpg`. Add your own placeholder image and reference it with `require('./assets/your-placeholder.jpg')`.
+> - For the complete set of fields on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
+
+### Step 8: Run the Project
+
+Both platforms must be run on a physical device — the iOS simulator and most Android emulators do not expose a working camera to the SDK.
+
+#### iOS
+
+Before running, the developer signing must be configured:
+
+1. Open `ios/ScanMRZ.xcworkspace` in Xcode.
+2. Select the project, open the **Signing & Capabilities** tab, and set a valid **Team**. Without this the build will fail.
+
+Connect a physical iOS device, then launch the app using either option below.
+
+**Option A — Run from Xcode.** Select your connected device from the top bar and click **Run**.
+
+**Option B — Run from the command line.** From the project root, target the device with the `--device` flag. Running `npm run ios` or `npx react-native run-ios` without this flag defaults to the simulator, which will not work for this sample:
+
+```bash
+npx react-native run-ios --device
+```
+
+If multiple devices are connected, pass the device name explicitly:
+
+```bash
+npx react-native run-ios --device "DEVICE-NAME"
+```
+
+> [!NOTE]
+> If you try running the project on the iOS simulator, you will encounter errors as the scanner uses the device camera, which is unavailable on the simulator.
+
+#### Android
+
+Connect a physical Android device with USB debugging enabled, then run from the project root:
 
 ```bash
 npm run android
-# or
-yarn android
 ```
 
-You can get the IDs of all connected (physical) devices by running the command `adb devices` in the terminal. 
+You can list connected devices with `adb devices`.
 
-## Full Sample Code
+## Next Steps
 
-The full sample code is available [here](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ).
-
-## License
-
-- You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=github&package=mobile) link.
-
-## Contact
-
-If you have any questions or issues, please contact the [Dynamsoft support team](https://www.dynamsoft.com/company/contact/).
+- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ).
+- **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
+- **API Reference** — Browse the full [React Native API Reference](../api-reference/index.md) for all classes and methods.
+- **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
