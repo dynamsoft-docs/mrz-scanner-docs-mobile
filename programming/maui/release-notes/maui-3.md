@@ -10,7 +10,7 @@ noTitleIndex: true
 
 # Release Notes for MAUI SDK - 3.x
 
-## 3.4.1200 (04/16/2026)
+## 3.4.1200 (04/17/2026)
 
 ### New
 
