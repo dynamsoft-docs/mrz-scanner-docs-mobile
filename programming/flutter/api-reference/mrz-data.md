@@ -36,6 +36,9 @@ class MRZData
 | [`documentType`](#documenttype) | *String* | The type of MRTD that the MRZ document is. |
 | [`documentNumber`](#documentnumber) | *String* | The MRZ document number. |
 | [`age`](#age) | *int* | The age of the MRZ document holder. |
+| [`personalNumber`](#personalnumber) | *String?* | The personal number field of the MRZ document. Typically present on TD3 passports. |
+| [`optionalData1`](#optionaldata1) | *String?* | The first optional data field of the MRZ document. Typically present on TD1 / TD2 ID cards. |
+| [`optionalData2`](#optionaldata2) | *String?* | The second optional data field of the MRZ document. Typically present on TD1 ID cards. |
 | [`mrzText`](#mrztext) | *String* | The raw unparsed text of the MRZ. |
 
 ### firstName
@@ -132,6 +135,30 @@ Represents the age of the MRZ document holder.
 
 ```dart
 int age;
+```
+
+### personalNumber
+
+Represents the personal number field of the MRZ document. This field is typically present on TD3 (passport) MRZs and may be used by the issuing state to store additional identifying information. Returns `null` when the document has no personal number.
+
+```dart
+String? personalNumber;
+```
+
+### optionalData1
+
+Represents the first optional data field of the MRZ document. This field is typically present on TD1 and TD2 (ID card) MRZs and is used by the issuing state to encode additional document-specific data. Returns `null` when the document has no optional data.
+
+```dart
+String? optionalData1;
+```
+
+### optionalData2
+
+Represents the second optional data field of the MRZ document. This field is typically present on TD1 (ID card) MRZs and is used by the issuing state to encode additional document-specific data. Returns `null` when the document has no second optional data field.
+
+```dart
+String? optionalData2;
 ```
 
 ### mrzText
