@@ -26,102 +26,147 @@ class MRZData
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-| [`FirstName`](#firstname) | *string* | Represents the first name of the user of the MRZ document. |
-| [`LastName`](#lastname) | *string* | Represents the last name of the user of the MRZ document. |
-| [`Sex`](#sex) | *string* | Represents the sex of the user of the MRZ document. |
-| [`IssuingState`](#issuingstate) | *string* | Represents the issuing state of the MRZ document. |
-| [`Nationality`](#nationality) | *string* | Represents the nationality of the user of the MRZ document. |
-| [`DateOfBirth`](#dateofbirth) | *string* | Represents the date of birth of the user of the MRZ document. |
-| [`DateOfExpire`](#dateofexpire) | *string* | Represents the expiry date of the MRZ document. |
-| [`DocumentType`](#documenttype) | *string* | Represents the type of MRZ document. |
-| [`DocumentNumber`](#documentnumber) | *string* | Represents the MRZ document number. |
-| [`Age`](#age) | *int* | Represents the age of the user of the MRZ document. |
-| [`MrzText`](#mrztext) | *string* | Represents the raw text of the MRZ. |
+| [`FirstName`](#firstname) | *string* | The first name of the user of the MRZ document. |
+| [`LastName`](#lastname) | *string* | The last name of the user of the MRZ document. |
+| [`Sex`](#sex) | *string* | The sex of the user of the MRZ document. |
+| [`IssuingState`](#issuingstate) | *string* | The issuing state of the MRZ document. |
+| [`IssuingStateRaw`](#issuingstateraw) | *string* | The raw ICAO issuing state code as it appears in the MRZ. |
+| [`Nationality`](#nationality) | *string* | The nationality of the user of the MRZ document. |
+| [`NationalityRaw`](#nationalityraw) | *string* | The raw ICAO nationality code as it appears in the MRZ. |
+| [`DateOfBirth`](#dateofbirth) | *string* | The date of birth of the user of the MRZ document. |
+| [`DateOfExpire`](#dateofexpire) | *string* | The expiry date of the MRZ document. |
+| [`DocumentType`](#documenttype) | *string* | The type of MRZ document. |
+| [`DocumentNumber`](#documentnumber) | *string* | The MRZ document number. |
+| [`PersonalNumber`](#personalnumber) | *string?* | The personal number from the MRZ document, if available. |
+| [`OptionalData1`](#optionaldata1) | *string?* | The first optional data field from the MRZ, if available. |
+| [`OptionalData2`](#optionaldata2) | *string?* | The second optional data field from the MRZ, if available. |
+| [`Age`](#age) | *int* | The age of the user of the MRZ document. |
+| [`MrzText`](#mrztext) | *string* | The raw text of the MRZ. |
 
 ### FirstName
 
-Represents the first name of the user of the MRZ document.
+The first name of the user of the MRZ document.
 
 ```csharp
-string FirstName { get; set; };
+string FirstName { get; }
 ```
 
 ### LastName
 
-Represents the last name of the user of the MRZ document.
+The last name of the user of the MRZ document.
 
 ```csharp
-string LastName { get; set; };
+string LastName { get; }
 ```
 
 ### Sex
 
-Represents the sex of the user of the MRZ document.
+The sex of the user of the MRZ document.
 
 ```csharp
-string Sex { get; set; };
+string Sex { get; }
 ```
 
 ### IssuingState
 
-Represents the issuing state of the MRZ document.
+The issuing state of the MRZ document.
 
 ```csharp
-string IssuingState { get; set; };
+string IssuingState { get; }
+```
+
+### IssuingStateRaw
+
+The raw ICAO issuing state code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
+
+```csharp
+string IssuingStateRaw { get; }
 ```
 
 ### Nationality
 
-Represents the nationality of the user of the MRZ document.
+The nationality of the user of the MRZ document.
 
 ```csharp
-string Nationality { get; set; };
+string Nationality { get; }
+```
+
+### NationalityRaw
+
+The raw ICAO nationality code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
+
+```csharp
+string NationalityRaw { get; }
 ```
 
 ### DateOfBirth
 
-Represents the date of birth of the user of the MRZ document.
+The date of birth of the user of the MRZ document.
 
 ```csharp
-string DateOfBirth { get; set; };
+string DateOfBirth { get; }
 ```
 
 ### DateOfExpire
 
-Represents the expiry date of the MRZ document.
+The expiry date of the MRZ document.
 
 ```csharp
-string DateOfExpire { get; set; };
+string DateOfExpire { get; }
 ```
 
 ### DocumentType
 
-Represents the type of MRZ document.
+The type of MRZ document.
 
 ```csharp
-string DocumentType { get; set; };
+string DocumentType { get; }
 ```
 
 ### DocumentNumber
 
-Represents the MRZ document number.
+The MRZ document number.
 
 ```csharp
-string DocumentNumber { get; set; };
+string DocumentNumber { get; }
+```
+
+### PersonalNumber
+
+The personal number from the MRZ document. This field is typically found on TD3 (passport) documents. Returns `null` if not present.
+
+```csharp
+string? PersonalNumber { get; }
+```
+
+### OptionalData1
+
+The first optional data field from the MRZ. The content depends on the document type and issuing authority. Returns `null` if not present.
+
+```csharp
+string? OptionalData1 { get; }
+```
+
+### OptionalData2
+
+The second optional data field from the MRZ. The content depends on the document type and issuing authority. Returns `null` if not present.
+
+```csharp
+string? OptionalData2 { get; }
 ```
 
 ### Age
 
-Represents the age of the user of the MRZ document.
+The age of the user of the MRZ document.
 
 ```csharp
-int Age { get; set; };
+int Age { get; }
 ```
 
 ### MrzText
 
-Represents the raw text of the MRZ.
+The raw text of the MRZ.
 
 ```csharp
-string MrzText { get; set; };
+string MrzText { get; }
 ```

@@ -10,6 +10,35 @@ noTitleIndex: true
 
 # Release Notes for MAUI SDK - 3.x
 
+## 3.4.1200 (04/17/2026)
+
+### New
+
+- **Image results**: `MRZScanResult` now returns captured images alongside the parsed MRZ data. Three types of images can be retrieved from the result:
+  - **Document image**: A cropped and perspective-corrected image of the document, available via `GetDocumentImage(EnumDocumentSide)`. Returned by default.
+  - **Original image**: The raw full-frame camera image captured at the moment of scanning, available via `GetOriginalImage(EnumDocumentSide)`. Disabled by default.
+  - **Portrait image**: The detected portrait extracted from the document, available via `GetPortraitImage()`. Returned by default.
+  - For two-sided ID cards, images for both sides are accessible by passing `EnumDocumentSide.MRZ` or `EnumDocumentSide.Opposite` to `GetDocumentImage()` and `GetOriginalImage()`.
+
+- **New `EnumDocumentSide` enumeration**: Added [`EnumDocumentSide`]({{ site.maui_api }}document-side.html) with values `MRZ` (the side containing the MRZ) and `Opposite` (the reverse side) to identify which side of a document an image belongs to.
+
+- **Image return configuration**: Added three new `MRZScannerConfig` properties to control which images are included in the scan result:
+  - `ReturnDocumentImage` (default: `true`)
+  - `ReturnOriginalImage` (default: `false`)
+  - `ReturnPortraitImage` (default: `true`)
+
+- **Additional MRZ data fields**: `MRZData` now exposes the following additional parsed fields:
+  - `IssuingStateRaw` — the raw issuing state value as encoded in the MRZ, before standardization.
+  - `NationalityRaw` — the raw nationality value as encoded in the MRZ, before standardization.
+  - `OptionalData1` — the first optional data field (nullable).
+  - `OptionalData2` — the second optional data field (nullable).
+  - `PersonalNumber` — the personal number field, typically present on TD3 passport documents (nullable).
+
+- **New UI button visibility controls**: Added three new `MRZScannerConfig` properties to control the visibility of toggle buttons in the scanning UI:
+  - `IsBeepButtonVisible` — shows or hides the beep sound toggle button (default: `true`).
+  - `IsVibrateButtonVisible` — shows or hides the vibration toggle button (default: `true`).
+  - `IsFormatSelectorVisible` — shows or hides the document format selector at the bottom of the scanning UI (default: `true`).
+
 ## 3.2.5000 (12/18/2025)
 
 ### Fixes & Improvements

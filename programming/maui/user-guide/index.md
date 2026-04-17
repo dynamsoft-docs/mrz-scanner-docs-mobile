@@ -12,61 +12,53 @@ enableLanguageSelection: true
 
 # MRZ Scanner User Guide (MAUI Edition)
 
-This user guide will explore using the Dynamsoft MRZ Scanner (MAUI Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
+The Dynamsoft MRZ Scanner (MAUI Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScanner` — the built-in component that handles the camera UI, scanning logic, and result delivery.
 
-`MRZScanner` is the ready-to-use component that allows developers to quickly set up an MRZ scanning app. With the built-in component, it streamlines the integration of MRZ scanning functionality into any application.
+> [!IMPORTANT]
+> For the full sample code, visit the [ScanMRZ-Maui sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ).
 
-## Supported Machine-Readable Travel Document Types
+## Supported Document Types
 
-The Machine Readable Travel Documents (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
+The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
 
-Currently, the SDK supports three types of MRTD:
-
-> [!Note]
-> If you need support for other types of MRTDs, our SDK can be easily customized. Please contact our [support team](https://www.dynamsoft.com/contact/).
-
-### ID (TD1 Size)
-
-The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines, each containing 30 characters.
-
-<div>
-   <img src="../../assets/td1-id.png" alt="Example of MRZ in TD1 format" width="60%" />
-</div>
-
-### ID (TD2 Size)
-
-The MRZ (Machine Readable Zone) in TD2 format  consists of 2 lines, with each line containing 36 characters.
-
-<div>
-   <img src="../../assets/td2-id.png" alt="Example of MRZ in TD2 format" width="72%" />
-</div>
-
-### Passport (TD3 Size)
-
-The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each line containing 44 characters.
-
-<div>
-   <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
-</div>
+> [!NOTE]
+> For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ## System Requirements
 
 ### .NET
 
-- 8.0 / 9.0 / 10.0
+- 10.0
 
 ### Android
 
 - Supported OS: **Android 5.0** (API Level 21) or higher
 - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**
-- Development Environment: Visual Studio 2022 recommended
-- JDK: 1.8+
 
 ### iOS
 
-- Supported OS: **iOS 13.0** or higher
+- Supported OS: **iOS 15.0** or higher
 - Supported ABI: **arm64** and **x86_64**
-- Development Environment: Xcode 14.3+
+
+### Development Environment
+
+- **Windows**: Visual Studio 2022 (v17.8 or higher) with the **.NET MAUI** workload installed.
+- **Mac**: Visual Studio Code with the **.NET MAUI** extension (Xcode 26 or higher required for iOS builds with .NET 10)
+
+> [!NOTE]
+> Visual Studio for Mac is deprecated and no longer supported. Mac users should use Visual Studio Code with the .NET MAUI extension.
+
+## Licensing
+
+A valid license key is required to use the SDK. If you are just getting started, request a free 30-day trial license below:
+
+{% include trialLicense.html %}
+
+> [!NOTE]
+>
+> - The license string above grants a time-limited free trial which requires a network connection.
+> - You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=maui){:target="_blank"} link.
+> - For production license setup, see the [License Activation](license-activation.md) guide.
 
 ## Including the Library
 
@@ -76,12 +68,12 @@ Once the MAUI app is initialized in Visual Studio Code, the easiest way to inclu
 
 1. Open the Terminal in Visual Studio Code
 2. Navigate to the project root directory (please note this is the folder that is in the same directory as <Project Name>.sln)
-3. Run the following command `dotnet add package Dynamsoft.MRZScannerBundle.Maui --version 3.2.5000`
+3. Run the following command `dotnet add package Dynamsoft.MRZScannerBundle.Maui --version 3.4.1200`
 
 If the installation is successful, you should see the following line in the *.csproj* file
 
 ```xml
-<PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.2.5000" />
+<PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.4.1200" />
 ```
 
 When the project is built, the package will be downloaded and installed.
@@ -108,7 +100,7 @@ You need to add the library via the project file and complete additional steps f
         ...
         <ItemGroup>
             ...
-            <PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.2.5000" />
+            <PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.4.1200" />
         </ItemGroup>
     </Project>
     ```
@@ -128,242 +120,383 @@ You need to add the library via the project file and complete additional steps f
 > 
 > The library only support the iOS and Android platforms. Be sure that you remove the other platforms like Windows, maccatalyst, etc.
 
-## Building the MRZ Scanner Component
+## Building the MRZ Scanner Application
 
-Now that the package is added, it's time to start building the `MRZScanner` component.
+The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ).
 
-> [!NOTE]
->
-> You can get the full source code of the ScanMRZ app from this [Github repo](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ){:target="_blank"}.
+### Step 1: Create a New Project
 
-### Set up the Development Environment
-
-If you are a beginner with MAUI, please follow the guide on the <a href="https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation" target="_blank">.NET MAUI official website</a> to set up the development environment.
-
-> [!TIP]
-> On Mac, you need to use Visual Studio Code with the .NET MAUI extension in order to create .NET MAUI apps.
-
-### Initialize the Project
+If you are new to .NET MAUI, follow the [.NET MAUI installation guide](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation) to set up your development environment first.
 
 #### Visual Studio (Windows)
 
-1. Open the Visual Studio and select **Create a new project**.
+1. Open Visual Studio and select **Create a new project**.
 2. Select **.NET MAUI App** and click **Next**.
-3. Name the project **ScanMRZ**. Select a location for the project and click **Next**.
+3. Name the project **ScanMRZ**, choose a location, and click **Next**.
 4. Select **.NET 10.0** and click **Create**.
 
-#### Visual Studio Code (MacOS)
+#### Visual Studio Code (Mac)
 
-To set up a new .NET MAUI app on Visual Studio Code for Mac, please follow the instructions provided by Microsoft [here](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-10.0&tabs=visual-studio-code&pivots=devices-ios#create-an-app-1).
+Follow the instructions provided by Microsoft [here](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-10.0&tabs=visual-studio-code&pivots=devices-ios#create-an-app-1) to create a new .NET MAUI app in Visual Studio Code.
 
 > [!NOTE]
-> ScanMRZ is the project name that we use throughout this guide, but of course it is not a requirement.
+> **ScanMRZ** is the project name used throughout this guide, but it is not a requirement.
 
 > [!TIP]
-> Please note that this guide uses .NET 10, but you can use .NET 8 or 9 if you wish. Before doing so, please check that the version of .NET that you want to use is currently supported on this [page](https://learn.microsoft.com/en-us/dotnet/core/releases-and-support).
+> This guide uses .NET 10, but you can use .NET 8 or 9. Check which versions are currently supported on the [.NET releases page](https://learn.microsoft.com/en-us/dotnet/core/releases-and-support).
 
+### Step 2: Add the SDK
 
-### Importing the Library
+Follow the instructions in the [Including the Library](#including-the-library) section above to add `Dynamsoft.MRZScannerBundle.Maui` to your project.
 
-With the package now added to the project, you can import the library by adding the following code at the top of the **App.xaml.cs** file:
+### Step 3: Set Up the UI
 
-```c#
-using Dynamsoft.MRZScannerBundle.Maui;
+Edit **MainPage.xaml** to create the main page layout. It contains a **Scan MRZ** button anchored to the bottom, a status label shown on cancel or error, and a scrollable result view (hidden initially) that displays the scan results.
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ScanMRZ.MainPage"
+             BackgroundColor="#1A1A1A">
+
+    <Grid RowDefinitions="*,Auto" Padding="0">
+
+        <!-- Result content, hidden initially -->
+        <ScrollView Grid.Row="0" x:Name="ResultView" IsVisible="False">
+            <VerticalStackLayout Padding="20,20,20,10" Spacing="0">
+
+                <!-- Header: Name, Info, Portrait -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+                    <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="4">
+                        <Label x:Name="LblName" FontSize="22" FontAttributes="Bold" TextColor="White" />
+                        <Label x:Name="LblSexAge" FontSize="14" TextColor="#AAAAAA" />
+                        <Label x:Name="LblExpiry" FontSize="14" TextColor="#AAAAAA" />
+                    </VerticalStackLayout>
+                    <Border Grid.Column="1" StrokeShape="RoundRectangle 8"
+                            Stroke="#333333" BackgroundColor="#2A2A2A"
+                            WidthRequest="70" HeightRequest="70">
+                        <Image x:Name="ImgPortrait" Aspect="AspectFill">
+                            <Image.GestureRecognizers>
+                                <PointerGestureRecognizer PointerPressed="OnImagePointerPressed" PointerReleased="OnImagePointerReleased" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Border>
+                </Grid>
+
+                <!-- Tabs: Processed / Original -->
+                <Grid ColumnDefinitions="*,*" Margin="0,0,0,16">
+                    <Button x:Name="BtnProcessed" Text="Processed"
+                            Clicked="OnProcessedTab"
+                            BackgroundColor="Transparent" TextColor="White"
+                            FontAttributes="Bold" FontSize="14"
+                            BorderWidth="0" CornerRadius="0" />
+                    <Button x:Name="BtnOriginal" Text="Original" Grid.Column="1"
+                            Clicked="OnOriginalTab"
+                            BackgroundColor="Transparent" TextColor="#888888"
+                            FontAttributes="None" FontSize="14"
+                            BorderWidth="0" CornerRadius="0" />
+                </Grid>
+                <!-- Tab underline -->
+                <Grid ColumnDefinitions="*,*" HeightRequest="2" Margin="0,0,0,16">
+                    <Border x:Name="UnderlineProcessed" BackgroundColor="White" StrokeThickness="0" />
+                    <Border x:Name="UnderlineOriginal" Grid.Column="1" BackgroundColor="Transparent" StrokeThickness="0" />
+                </Grid>
+
+                <!-- Document Images (Processed) -->
+                <Grid x:Name="ProcessedImages" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,0,0,20"
+                      HeightRequest="140" IsVisible="True">
+                    <Border x:Name="BorderMrzProcessed" StrokeThickness="0" BackgroundColor="Transparent">
+                        <Image x:Name="ImgMrzProcessed" Aspect="AspectFit">
+                            <Image.GestureRecognizers>
+                                <PointerGestureRecognizer PointerPressed="OnImagePointerPressed" PointerReleased="OnImagePointerReleased" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Border>
+                    <Border x:Name="BorderOppositeProcessed" Grid.Column="1" StrokeThickness="0" BackgroundColor="Transparent">
+                        <Image x:Name="ImgOppositeProcessed" Aspect="AspectFit">
+                            <Image.GestureRecognizers>
+                                <PointerGestureRecognizer PointerPressed="OnImagePointerPressed" PointerReleased="OnImagePointerReleased" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Border>
+                </Grid>
+
+                <!-- Document Images (Original) -->
+                <Grid x:Name="OriginalImages" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,0,0,20"
+                      HeightRequest="140" IsVisible="False">
+                    <Border x:Name="BorderMrzOriginal" StrokeThickness="0" BackgroundColor="Transparent">
+                        <Image x:Name="ImgMrzOriginal" Aspect="AspectFit">
+                            <Image.GestureRecognizers>
+                                <PointerGestureRecognizer PointerPressed="OnImagePointerPressed" PointerReleased="OnImagePointerReleased" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Border>
+                    <Border x:Name="BorderOppositeOriginal" Grid.Column="1" StrokeThickness="0" BackgroundColor="Transparent">
+                        <Image x:Name="ImgOppositeOriginal" Aspect="AspectFit">
+                            <Image.GestureRecognizers>
+                                <PointerGestureRecognizer PointerPressed="OnImagePointerPressed" PointerReleased="OnImagePointerReleased" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Border>
+                </Grid>
+
+                <!-- Personal Info -->
+                <Label Text="Personal Info" TextColor="White" FontSize="16" FontAttributes="Bold" Margin="0,0,0,10" />
+                <BoxView HeightRequest="1" BackgroundColor="#333333" />
+                <Grid ColumnDefinitions="*,*" Padding="0,10">
+                    <Label Text="Given Name" TextColor="#AAAAAA" FontSize="14" />
+                    <Label x:Name="ValGivenName" Grid.Column="1" TextColor="White" FontSize="14" />
+                </Grid>
+                <BoxView HeightRequest="1" BackgroundColor="#333333" />
+                <Grid ColumnDefinitions="*,*" Padding="0,10">
+                    <Label Text="Surname" TextColor="#AAAAAA" FontSize="14" />
+                    <Label x:Name="ValSurname" Grid.Column="1" TextColor="White" FontSize="14" />
+                </Grid>
+                <BoxView HeightRequest="1" BackgroundColor="#333333" />
+                <Grid ColumnDefinitions="*,*" Padding="0,10">
+                    <Label Text="Date of Birth" TextColor="#AAAAAA" FontSize="14" />
+                    <Label x:Name="ValDob" Grid.Column="1" TextColor="White" FontSize="14" />
+                </Grid>
+                <BoxView HeightRequest="1" BackgroundColor="#333333" />
+                <Grid ColumnDefinitions="*,*" Padding="0,10">
+                    <Label Text="Gender" TextColor="#AAAAAA" FontSize="14" />
+                    <Label x:Name="ValGender" Grid.Column="1" TextColor="White" FontSize="14" />
+                </Grid>
+                <BoxView HeightRequest="1" BackgroundColor="#333333" />
+                <Grid ColumnDefinitions="*,*" Padding="0,10">
+                    <Label Text="Nationality" TextColor="#AAAAAA" FontSize="14" />
+                    <Label x:Name="ValNationality" Grid.Column="1" TextColor="White" FontSize="14" />
+                </Grid>
+                <BoxView HeightRequest="1" BackgroundColor="#333333" Margin="0,0,0,20" />
+
+                <!-- Document Info -->
+                <Label Text="Document Info" TextColor="White" FontSize="16" FontAttributes="Bold" Margin="0,0,0,10" />
+                <BoxView HeightRequest="1" BackgroundColor="#333333" />
+                <Grid ColumnDefinitions="*,*" Padding="0,10">
+                    <Label Text="Doc. Type" TextColor="#AAAAAA" FontSize="14" />
+                    <Label x:Name="ValDocType" Grid.Column="1" TextColor="White" FontSize="14" />
+                </Grid>
+                <BoxView HeightRequest="1" BackgroundColor="#333333" />
+                <Grid ColumnDefinitions="*,*" Padding="0,10">
+                    <Label Text="Doc. Number" TextColor="#AAAAAA" FontSize="14" />
+                    <Label x:Name="ValDocNumber" Grid.Column="1" TextColor="White" FontSize="14" />
+                </Grid>
+                <BoxView HeightRequest="1" BackgroundColor="#333333" />
+                <Grid ColumnDefinitions="*,*" Padding="0,10">
+                    <Label Text="Expiry Date" TextColor="#AAAAAA" FontSize="14" />
+                    <Label x:Name="ValExpiry" Grid.Column="1" TextColor="White" FontSize="14" />
+                </Grid>
+                <BoxView HeightRequest="1" BackgroundColor="#333333" Margin="0,0,0,20" />
+
+                <!-- Raw MRZ Text -->
+                <Label Text="Raw MRZ Text" TextColor="White" FontSize="16" FontAttributes="Bold" Margin="0,0,0,10" />
+                <Label x:Name="ValMrzText" TextColor="#CCCCCC" FontSize="13"
+                       FontFamily="{OnPlatform Android=monospace, iOS='Courier New', MacCatalyst='Courier New', WinUI=Consolas}"
+                       Margin="0,0,0,20" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Status Label (centered, shown on cancel or error) -->
+        <Label x:Name="LblStatus"
+               Grid.Row="0"
+               IsVisible="False"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               HorizontalTextAlignment="Center"
+               TextColor="#AAAAAA"
+               FontSize="16"
+               Padding="20" />
+
+        <!-- Bottom Button -->
+        <Button Grid.Row="1"
+                x:Name="ScanBtn"
+                Text="Scan MRZ"
+                Clicked="OnScanMRZ"
+                HorizontalOptions="Fill"
+                Margin="20,10,20,20" />
+    </Grid>
+</ContentPage>
 ```
 
-### Quick Start
+### Step 4: Configure the Scanner
 
-In this section we will take you through the full *Hello World* implementation in **MainPage.xaml.cs** as well as **MainPage.xaml**.
+In **MainPage.xaml.cs**, implement the `OnScanMRZ` handler wired to the button. Create an `MRZScannerConfig` with your license key — see the [Licensing](#licensing) section above. For the full list of optional settings, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 
-1. First, let's edit **MainPage.xaml.cs** in order to define the operation of the MRZ Scanner
+```csharp
+using Dynamsoft.MRZScannerBundle.Maui;
 
-    ```c#
-    using System.Collections.ObjectModel;
-    using Dynamsoft.MRZScannerBundle.Maui;
+namespace ScanMRZ;
 
-    namespace ScanMRZ;
-
-    public partial class MainPage : ContentPage
+public partial class MainPage : ContentPage
+{
+    public MainPage()
     {
-        public ObservableCollection<TableItem> TableItems { get; set; } = new();
-
-        public MainPage()
-        {
-            InitializeComponent();
-            BindingContext = this;
-        }
-
-        private async void OnScanMRZ(object sender, EventArgs e)
-        {
-            // The string "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9" here grants a time-limited free trial which requires network connection to work.
-            // You can request a 30-day trial license via the Request a Trial License page https://www.dynamsoft.com/customer/license/trialLicense?product=dbr&utm_source=guide&package=maui.
-            var config = new MRZScannerConfig("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-            var result = await MRZScanner.Start(config);
-
-            TableItems.Clear();
-
-            if (result.ResultStatus == EnumResultStatus.Finished && result.Data is not null)
-            {
-                var data = result.Data;
-
-                TableItems.Add(new TableItem { Key = "Name", Value = $"{data.FirstName} {data.LastName}" });
-                TableItems.Add(new TableItem { Key = "Sex", Value = data.Sex.ToUpperInvariant() });
-                TableItems.Add(new TableItem { Key = "Age", Value = data.Age.ToString() });
-                TableItems.Add(new TableItem { Key = "Document Type", Value = data.DocumentType });
-                TableItems.Add(new TableItem { Key = "Document Number", Value = data.DocumentNumber });
-                TableItems.Add(new TableItem { Key = "Issuing State", Value = data.IssuingState });
-                TableItems.Add(new TableItem { Key = "Nationality", Value = data.Nationality });
-                TableItems.Add(new TableItem { Key = "Date Of Birth (YYYY-MM-DD)", Value = data.DateOfBirth });
-                TableItems.Add(new TableItem { Key = "Date Of Expire (YYYY-MM-DD)", Value = data.DateOfExpire });
-            }
-            else
-            {
-                var msg = result.ResultStatus == EnumResultStatus.Canceled
-                    ? "Scanning canceled"
-                    : result.ErrorString ?? "Unknown error";
-
-                TableItems.Add(new TableItem { Key = "Result", Value = msg });
-            }
-        }
+        InitializeComponent();
     }
 
-    public class TableItem
+    private async void OnScanMRZ(object sender, EventArgs e)
     {
-        public string Key { get; set; }
-        public string Value { get; set; }
+        // Initialize the license.
+        // The license string here is a trial license. Note that network connection is required for this license to work.
+        // You can request an extension via the following link: https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=maui
+        var config = new MRZScannerConfig("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
+        var result = await MRZScanner.Start(config);
+        // ... handle result (see Step 5)
     }
-    ```
+}
+```
 
-2. Edit **MainPage.xaml** to setup the UI portion of the app
+### Step 5: Handle the Scan Result
 
-   ```xml
-   <?xml version="1.0" encoding="utf-8" ?>
-   <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-               x:Class="ScanMRZ.MainPage">
+`MRZScanner.Start()` returns an `MRZScanResult` once the scanner closes. Each result carries a `ResultStatus` of *Finished* (MRZ decoded), *Canceled* (user closed the scanner), or *Exception* (an error occurred).
 
-       <Grid RowDefinitions="*,Auto" Padding="10">
-           <CollectionView Grid.Row="0"
-                           ItemsSource="{Binding TableItems}">
-               <CollectionView.ItemTemplate>
-                   <DataTemplate>
-                       <VerticalStackLayout Padding="5">
-                           <Label Text="{Binding Key}"
-                               FontAttributes="Bold"
-                               FontSize="16"
-                               TextColor="Black" />
-                           <BoxView HeightRequest="1"
-                                   BackgroundColor="LightGray"
-                                   Margin="0,3"/>
-                           <Label Text="{Binding Value}"
-                               FontSize="14"
-                               TextColor="Gray" />
-                           <BoxView HeightRequest="1"
-                                   BackgroundColor="LightGray"
-                                   Margin="0,3"/>
-                       </VerticalStackLayout>
-                   </DataTemplate>
-               </CollectionView.ItemTemplate>
-           </CollectionView>
+Continuing from Step 4:
 
-           <Button Grid.Row="1"
-                   x:Name="ScanBtn"
-                   Text="Scan MRZ"
-                   Clicked="OnScanMRZ"
-                   HorizontalOptions="Fill"
-                   VerticalOptions="End"
-                   Margin="0,10,0,0" />
-       </Grid>
-   </ContentPage>
-   ```
+```csharp
+private async void OnScanMRZ(object sender, EventArgs e)
+{
+    var config = new MRZScannerConfig("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
+    var result = await MRZScanner.Start(config);
+
+    if (result.ResultStatus == EnumResultStatus.Finished && result.Data is not null)
+    {
+        LblStatus.IsVisible = false;
+        PopulateResult(result);
+    }
+    else if (result.ResultStatus == EnumResultStatus.Canceled)
+    {
+        ResultView.IsVisible = false;
+        LblStatus.Text = "Scan canceled";
+        LblStatus.IsVisible = true;
+    }
+    else
+    {
+        ResultView.IsVisible = false;
+        LblStatus.Text = result.ErrorString ?? "Unknown error";
+        LblStatus.IsVisible = true;
+    }
+}
+```
+
+### Step 6: Display the Results
+
+Implement `PopulateResult` to populate the result view with the scanned data and captured images. The result provides a portrait image, processed and original document images for both sides of the document, and the parsed MRZ fields.
+
+```csharp
+private void PopulateResult(MRZScanResult result)
+{
+    var data = result.Data!;
+
+    // Header
+    LblName.Text = $"{data.FirstName} {data.LastName}";
+    LblSexAge.Text = $"{char.ToUpper(data.Sex[0])}{data.Sex[1..].ToLower()}, {data.Age} years old";
+    LblExpiry.Text = $"Expiry: {data.DateOfExpire}";
+
+    // Portrait
+    var portrait = result.GetPortraitImage();
+    ImgPortrait.Source = portrait?.ToImageSource() ?? ImageSource.FromFile("portrait_placeholder.jpg");
+
+    // Document images — MRZ side and opposite side, processed and original
+    ImgMrzProcessed.Source = result.GetDocumentImage(EnumDocumentSide.MRZ)?.ToImageSource();
+    ImgOppositeProcessed.Source = result.GetDocumentImage(EnumDocumentSide.Opposite)?.ToImageSource();
+    ImgMrzOriginal.Source = result.GetOriginalImage(EnumDocumentSide.MRZ)?.ToImageSource();
+    ImgOppositeOriginal.Source = result.GetOriginalImage(EnumDocumentSide.Opposite)?.ToImageSource();
+
+    // Personal Info
+    ValGivenName.Text = data.FirstName;
+    ValSurname.Text = data.LastName;
+    ValDob.Text = data.DateOfBirth;
+    ValGender.Text = data.Sex;
+    ValNationality.Text = data.NationalityRaw;
+
+    // Document Info
+    ValDocType.Text = data.DocumentType switch
+    {
+        "MRTD_TD1_ID"       => "ID (TD1)",
+        "MRTD_TD2_ID"       => "ID (TD2)",
+        "MRTD_TD3_PASSPORT" => "Passport (TD3)",
+        _                   => data.DocumentType
+    };
+    ValDocNumber.Text = data.DocumentNumber;
+    ValExpiry.Text = data.DateOfExpire;
+
+    // Raw MRZ Text
+    ValMrzText.Text = data.MrzText;
+
+    ResultView.IsVisible = true;
+}
+```
+
 > [!NOTE]
 >
->- The license string here grants a time-limited free trial which requires network connection to work.
->- You can request a 30-day trial license via the [Trial License portal](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=github&package=mobile).
+> - `EnumDocumentSide.MRZ` refers to the side of the document containing the machine-readable zone. `EnumDocumentSide.Opposite` refers to the reverse side, relevant for two-sided documents such as TD1 ID cards.
+> - Image retrieval methods (`GetDocumentImage()`, `GetOriginalImage()`, `GetPortraitImage()`) return `null` if the corresponding option was disabled in the config or if no image was captured for that side.
+> - When no portrait image is available, use a placeholder. The sample uses a bundled asset named `portrait_placeholder.jpg` — add your own placeholder image to the **Resources/Images** folder and reference it via `ImageSource.FromFile("yourPlaceholder.jpg")`.
+> - For the complete `MainPage.xaml.cs` including tab switching and save-to-gallery logic, refer to the [ScanMRZ-Maui sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ).
 
-### MRZ Result and Data
-
-Once the scan process completes and the MRZ Scanner successfully recognizes a MRZ, a `MRZScanResult` is produced, representing all of the decrypted data contained within the MRZ.
-
-[`MRZScanResult`](../api-reference/mrz-scan-result.md) has the following properties:
-
-- **resultStatus**: The status of the MRZ scan result, of type [`EnumResultStatus`](../api-reference/result-status.md).
-    - *Finished*: The MRZ scan was successful.
-    - *Canceled*: The MRZ scanning activity is closed before the process is finished.
-    - *Exception*: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
-- **errorCode**: The error code indicates if something went wrong during the MRZ scanning process (0 means no error). Only defined when the `resultStatus` is `Exception`.
-- **errorString**: The error message associated with the error code if an error occurs during MRZ scanning process. Only defined when the `resultStatus` is `Exception`.
-- **data**: The parsed MRZ data as a `MRZData` object.
-  
-[`MRZData`](../api-reference/mrz-data.md) holds the actual decrypted data of the MRZ result, and it comes with the following fields:
-
-- **documentType**: The type of MRZ document, which would either be `EnumDocumentType.Passport`, `EnumDocumentType.Id`, or `EnumDocumentType.All`. You can check out the [Supported Machine-Readable Travel Document Types](#supported-machine-readable-travel-document-types) to learn more. 
-- **firstName**: The first name of the MRZ document holder.
-- **lastName**: The last name of the MRZ document holder.
-- **sex**: The sex of the MRZ document holder.
-- **issuingState**: The issuing state of the MRZ document.
-- **nationality**: The nationality of the MRZ document holder.
-- **dateOfBirth**: The date of birth of the MRZ document holder.
-- **dateOfExpiry**: The expiry date of the MRZ document.
-- **documentNumber**: The MRZ document number.
-- **age**: The age of the MRZ document holder.
-- **mrzText**: The raw text of the MRZ.
+For the full list of fields available on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
 
 ### Customizing the MRZ Scanner (Optional)
 
-Even though the default settings of the ready-to-use MRZ Scanner is sufficient to cover the majority of MRZ scanning scenarios, the [`MRZScannerConfig`](../api-reference/mrz-scanner-config.md) class allows you to change the behaviour of the MRZ Scanner to fit your specific scenario. Using this class can help you customize different UI elements and determine the settings of the scanner engine itself.
+The [`MRZScannerConfig`](../api-reference/mrz-scanner-config.md) class allows you to customize UI elements and scanner engine settings to fit your specific scenario. To learn more, see the [MRZ Scanner Customization Guide](customize-mrz-scanner.md).
 
-To learn of the different ways in which the MRZ scanner can be customized, please refer to the [MRZ Scanner Customization Guide](customize-mrz-scanner.md).
+### Step 7: Run the Project
 
-## Run the Project
+Before running, complete the platform-specific configuration steps below.
 
-### iOS
+#### iOS
 
-#### Configure Camera Permissions
+**Configure Permissions**
 
-Open the **Info.plist** file under the **Platforms/iOS/** folder using a IDE or text editor. Add the following lines towards the bottom (right before to request camera permission on iOS platform:
+Open **Platforms/iOS/Info.plist** and add the following keys. Camera access is required for scanning; photo library access is required for the save-to-gallery feature.
 
 ```xml
 <key>NSCameraUsageDescription</key>
-<string>The APP needs to access your camera.</string>
+<string>Open Camera to Scan MRZ.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Save scanned document images to your photo library.</string>
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>Save scanned document images to your photo library.</string>
 ```
 
-#### Deploying to Device
+**Configure Signing**
 
-In order to deploy the app to your connected iPhone, please make sure that there is valid provisioning profile for the app ID set in the *.csproj* or else you will encounter a general build error on Visual Studio Code.
+Make sure a valid provisioning profile is set for the app ID in the *.csproj*, otherwise you will encounter a build error.
 
 > [!TIP]
-> If you are using automatic signing, one of the easiest ways to ensure that your app has a valid provisioning profile is to **create a project in Xcode with the exact same project name and app ID as the MAUI project**.
->
->
-> Open the project settings, and then go to Signing & Provisioning - where you can configure the team, and make sure that it is set to *Automatically manage signing*. **You must ensure that the bundle identifier in the Xcode project is the same as the MAUI project.**
+> If you are using automatic signing, one of the easiest ways to ensure a valid provisioning profile is to **create a project in Xcode with the same bundle identifier as the MAUI project**. Open the project settings, go to **Signing & Capabilities**, select your team, and enable **Automatically manage signing**.
 
-The app can then be run using the C# Dev Kit extension of Visual Studio Code per the instructions [here](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-10.0&tabs=visual-studio-code&pivots=devices-ios).
+**Deploy to Device**
 
-> [!IMPORTANT]
-> It is highly recommended to use the C# Dev Kit extension when developing for iOS on Visual Studio Code. However, you can also run the app via command-line.
-
-### Android
-
-#### Configure Camera Permissions
-
-On Android, there is no need to configure the camera permissions as that is handled internally by the library.
-
-#### Deploying to Device
-
-If you are running on **Visual Studio**, simply select the target Android phone and run the project.
-
-If you are running on **Visual Studio Code**, use the C# Dev Kit to run the Android target on the selected Android phone, similar to the iOS workflow.
+- **Mac (Visual Studio Code)**: Use the C# Dev Kit extension to select your connected iPhone and run the project, per the instructions [here](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-10.0&tabs=visual-studio-code&pivots=devices-ios).
+- **Windows (Visual Studio)**: iOS builds on Windows require a connected Mac build host. Configure it under **Tools > iOS > Pair to Mac**, then select your connected iPhone and run the project.
 
 > [!NOTE]
-> If you are running Android only on Visual Studio Windows, please manually exclude iOS and Windows platforms. Otherwise, the Visual Studio will report type or namespace not found errors.
+> Running on a simulator is not supported as the scanner requires the device camera.
 
-![Exclude iOS and Windows from targets](../../assets/maui-exclude.png)
+#### Android
 
-## Licensing
+**Configure Permissions**
 
-When getting started with MRZ Scanner, we recommend getting your own 30-day trial license through the following modal:
+No camera permission configuration is required — this is handled internally by the library.
 
-{% include trialLicense.html %}
+**Deploy to Device**
 
-If you have any questions about the trial license or would like to inquire about acquiring a full license, do not hesitate to [contact us](https://www.dynamsoft.com/company/contact/){:target="_blank"}.
+- **Windows (Visual Studio)**: Select the target Android device from the toolbar and run the project.
+
+    > [!NOTE]
+    > If you are targeting Android only, manually remove `net10.0-ios` from `<TargetFrameworks>` in the *.csproj* to avoid type or namespace errors.
+
+    ![Exclude iOS from targets](../../assets/maui-exclude.png)
+
+- **Mac (Visual Studio Code)**: Use the C# Dev Kit to select your connected Android device and run the project.
+
+## Next Steps
+
+- **Samples** — Explore the complete [ScanMRZ-Maui sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/tree/main/ScanMRZ).
+- **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
+- **API Reference** — Browse the full [MAUI API Reference](../api-reference/index.md) for all classes and methods.
+- **License** — See the [License Activation](license-activation.md) guide for production license setup.
+- **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
