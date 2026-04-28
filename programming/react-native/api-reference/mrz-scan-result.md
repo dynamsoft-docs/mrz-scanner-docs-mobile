@@ -14,22 +14,27 @@ breadcrumbText: MRZScanResult
 
 ## Definition
 
-*Assembly:* dynamsoft-capture-vision-react-native
+*Assembly:* dynamsoft-mrz-scanner-bundle-react-native
 
 ```ts
-class MRZScanResult
+interface MRZScanResult
 ```
 
 ## Properties
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-| [`data`](#mrzdata) | [*MRZData*](mrz-data.md) | Represents the parsed MRZ data. |
+| [`data`](#data) | [*MRZData*](mrz-data.md) | Represents the parsed MRZ data. |
 | [`resultStatus`](#resultstatus) | [*EnumResultStatus*](result-status.md) | Represents the status of the result, which can be finished, canceled or exception. |
-| [`errorCode`](#errorcode) | *number?* | Represents the error code should something go wrong during the MRZ scanning process. |
-| [`errorString`](#errorstring) | *string?* | Represents the error message associated with the error code should something go wrong during the MRZ scanning process. |
+| [`errorCode`](#errorcode) | *number* | Represents the error code should something go wrong during the MRZ scanning process. |
+| [`errorString`](#errorstring) | *string* | Represents the error message associated with the error code should something go wrong during the MRZ scanning process. |
+| [`portraitImage`](#portraitimage) | *ImageSourcePropType* | The extracted portrait photo from the document. |
+| [`mrzSideDocumentImage`](#mrzsidedocumentimage) | *ImageSourcePropType* | The cropped, perspective-corrected image of the MRZ side of the document. |
+| [`oppositeSideDocumentImage`](#oppositesidedocumentimage) | *ImageSourcePropType* | The cropped, perspective-corrected image of the opposite (non-MRZ) side of the document. |
+| [`mrzSideOriginalImage`](#mrzsideoriginalimage) | *ImageSourcePropType* | The full camera frame captured for the MRZ side. |
+| [`oppositeSideOriginalImage`](#oppositesideoriginalimage) | *ImageSourcePropType* | The full camera frame captured for the opposite side. |
 
-### mrzData
+### data
 
 Represents the parsed MRZ information as a [`MRZData`](mrz-data.md) object.
 
@@ -67,4 +72,44 @@ Returns the error message associated with the error code when an exception occur
 
 ```ts
 errorString?: string
+```
+
+### portraitImage
+
+Returns the extracted portrait photo from the document as an `ImageSourcePropType` — it can be passed directly to a React Native `<Image>` element via its `source` prop. Returns `undefined` if portrait capture was disabled via `MRZScanConfig.returnPortraitImage` or if no portrait was detected.
+
+```ts
+portraitImage?: ImageSourcePropType
+```
+
+### mrzSideDocumentImage
+
+Returns the cropped, perspective-corrected image of the side containing the MRZ as an `ImageSourcePropType`. Returns `undefined` if document image capture was disabled via `MRZScanConfig.returnDocumentImage`.
+
+```ts
+mrzSideDocumentImage?: ImageSourcePropType
+```
+
+### oppositeSideDocumentImage
+
+Returns the cropped, perspective-corrected image of the opposite (non-MRZ) side of the document as an `ImageSourcePropType`. Relevant for two-sided documents such as TD1 ID cards. Returns `undefined` if document image capture was disabled via `MRZScanConfig.returnDocumentImage` or if no opposite side was captured.
+
+```ts
+oppositeSideDocumentImage?: ImageSourcePropType
+```
+
+### mrzSideOriginalImage
+
+Returns the full camera frame captured for the MRZ side as an `ImageSourcePropType`. Returns `undefined` if original image capture was not enabled via `MRZScanConfig.returnOriginalImage`.
+
+```ts
+mrzSideOriginalImage?: ImageSourcePropType
+```
+
+### oppositeSideOriginalImage
+
+Returns the full camera frame captured for the opposite side as an `ImageSourcePropType`. Returns `undefined` if original image capture was not enabled via `MRZScanConfig.returnOriginalImage` or if no opposite side was captured.
+
+```ts
+oppositeSideOriginalImage?: ImageSourcePropType
 ```
