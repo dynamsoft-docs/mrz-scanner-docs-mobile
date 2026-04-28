@@ -17,7 +17,7 @@ breadcrumbText: MRZScanConfig
 
 ## Definition
 
-*Assembly:* dynamsoft-capture-vision-react-native
+*Assembly:* dynamsoft-mrz-scanner-bundle-react-native
 
 ```ts
 interface MRZScanConfig
@@ -27,15 +27,22 @@ interface MRZScanConfig
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-| [`license`](#license) | *String* | Represents the MRZ Scanner license string. |
-| [`templateFile`](#templatefile) | *String* | Specifies the template configuration that defines the various MRZ Scanner parameters. |
+| [`license`](#license) | *string* | Represents the MRZ Scanner license string. |
+| [`templateFile`](#templatefile) | *string* | Specifies the template configuration that defines the various MRZ Scanner parameters. |
+| [`templateNodeRequire`](#templatenoderequire) | *NodeRequire* | Supplies a `require`-resolved template object when loading the template from a bundled JSON asset. |
 | [`documentType`](#documenttype) | [*EnumDocumentType*](document-type.md) | Specifies the type of document (ID or Passport) that the MRZ Scanner will recognize. |
-| [`isTorchButtonVisible`](#istorchbuttonvisible) | *bool* | Represents the visibility status of the torch button. |
-| [`isBeepEnabled`](#isbeepenabled) | *bool* | Determines whether a beep sound is triggered upon a successful MRZ scan. |
-| [`isCloseButtonVisible`](#isclosebuttonvisible) | *bool* | Represents the visibility status of the close button. |
-| [`isGuideFrameVisible`](#isguideframevisible) | *bool* | Represents the visibility status of the guide frame on the display. |
-| [`isCameraToggleButtonVisible`](#Iscameratogglebuttonvisible) | *bool* | Specifies whether the camera toggle button is displayed or not. |
-| [`isVibrateEnabled`](#isvibrateenabled) | *bool* | Controls the scanner's ability to make the scanning device vibrate upon a successful MRZ scan. |
+| [`isTorchButtonVisible`](#istorchbuttonvisible) | *boolean* | Represents the visibility status of the torch button. |
+| [`isBeepEnabled`](#isbeepenabled) | *boolean* | Determines whether a beep sound is triggered upon a successful MRZ scan. |
+| [`isBeepButtonVisible`](#isbeepbuttonvisible) | *boolean* | Represents the visibility status of the beep toggle button. |
+| [`isCloseButtonVisible`](#isclosebuttonvisible) | *boolean* | Represents the visibility status of the close button. |
+| [`isGuideFrameVisible`](#isguideframevisible) | *boolean* | Represents the visibility status of the guide frame on the display. |
+| [`isCameraToggleButtonVisible`](#iscameratogglebuttonvisible) | *boolean* | Specifies whether the camera toggle button is displayed or not. |
+| [`isVibrateEnabled`](#isvibrateenabled) | *boolean* | Controls the scanner's ability to make the scanning device vibrate upon a successful MRZ scan. |
+| [`isVibrateButtonVisible`](#isvibratebuttonvisible) | *boolean* | Represents the visibility status of the vibrate toggle button. |
+| [`isFormatSelectorVisible`](#isformatselectorvisible) | *boolean* | Represents the visibility status of the document format selector. |
+| [`returnDocumentImage`](#returndocumentimage) | *boolean* | Specifies whether the scanner captures and returns a cropped document image. |
+| [`returnOriginalImage`](#returnoriginalimage) | *boolean* | Specifies whether the scanner captures and returns the full camera frame. |
+| [`returnPortraitImage`](#returnportraitimage) | *boolean* | Specifies whether the scanner extracts and returns a portrait image from the document. |
 
 ### license
 
@@ -59,15 +66,15 @@ The MRZ Scanner comes with a default template file, but you may choose to use a 
 
 ### templateNodeRequire
 
-Provides a Node.js 'require' function to load the template file when running in a Node environment. This facilitates importing external template configuration files.
+Supplies a template configuration as a `require`-resolved object, which is the standard way to load a bundled JSON asset in a React Native app (Metro resolves `require('./my-template.json')` at build time). The MRZ Scanner stringifies the resolved object and uses it as the template when `templateFile` is not set.
 
 ```ts
 templateNodeRequire?: NodeRequire
 ```
 
-Remarks
+**Remarks**
 
-For most typical cases, this 
+Use `templateFile` when you have a template as a JSON string or a file path, and `templateNodeRequire` when you want Metro to bundle a template JSON alongside your app code. If both are provided, `templateFile` takes precedence.
 
 ### documentType
 
@@ -79,7 +86,7 @@ documentType?: EnumDocumentType
 
 **Remarks**
 
-If you would like to learn more about the supported document types, please refer to the [Supported Document Types](../user-guide/index.md#supported-machine-readable-travel-document-types) section of the user guide.
+If you would like to learn more about the supported document types, please refer to the [Supported Document Types](../user-guide/index.md#supported-document-types) section of the user guide.
 
 ### isTorchButtonVisible
 
@@ -95,6 +102,14 @@ Determines whether a beep sound is triggered upon a successful MRZ scan. When en
 
 ```ts
 isBeepEnabled?: boolean
+```
+
+### isBeepButtonVisible
+
+Determines whether the beep toggle button is visible on the scanning interface. When visible, users can enable or disable the beep sound themselves during scanning.
+
+```ts
+isBeepButtonVisible?: boolean
 ```
 
 ### isCloseButtonVisible
@@ -127,4 +142,44 @@ Controls the scanner's ability to make the scanning device vibrate upon a succes
 
 ```ts
 isVibrateEnabled?: boolean
+```
+
+### isVibrateButtonVisible
+
+Determines whether the vibrate toggle button is visible on the scanning interface. When visible, users can enable or disable haptic feedback themselves during scanning.
+
+```ts
+isVibrateButtonVisible?: boolean
+```
+
+### isFormatSelectorVisible
+
+Determines whether the document format selector is visible on the scanning interface. When visible, users can switch between document types (ID / Passport) during scanning.
+
+```ts
+isFormatSelectorVisible?: boolean
+```
+
+### returnDocumentImage
+
+Specifies whether the scanner captures and returns a cropped, perspective-corrected document image in [`MRZScanResult`](mrz-scan-result.md). When enabled, both the MRZ side and opposite side images (where available) are returned via `mrzSideDocumentImage` and `oppositeSideDocumentImage`.
+
+```ts
+returnDocumentImage?: boolean
+```
+
+### returnOriginalImage
+
+Specifies whether the scanner captures and returns the full camera frame in [`MRZScanResult`](mrz-scan-result.md). When enabled, the raw frames for both sides (where available) are returned via `mrzSideOriginalImage` and `oppositeSideOriginalImage`.
+
+```ts
+returnOriginalImage?: boolean
+```
+
+### returnPortraitImage
+
+Specifies whether the scanner extracts and returns a portrait image from the document in [`MRZScanResult`](mrz-scan-result.md), available via `portraitImage`.
+
+```ts
+returnPortraitImage?: boolean
 ```

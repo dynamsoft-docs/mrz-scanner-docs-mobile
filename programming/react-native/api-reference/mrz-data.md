@@ -14,10 +14,10 @@ breadcrumbText: MRZData
 
 ## Definition
 
-*Assembly:* dynamsoft-capture-vision-react-native
+*Assembly:* dynamsoft-mrz-scanner-bundle-react-native
 
 ```ts
-class MRZData
+interface MRZData
 ```
 
 ## Properties
@@ -28,13 +28,18 @@ class MRZData
 | [`lastName`](#lastname) | *string* | The last name of the MRZ document holder. |
 | [`sex`](#sex) | *string* | The sex of the MRZ document holder. |
 | [`issuingState`](#issuingstate) | *string* | The issuing state (represented as the full name of the country/region) of the MRZ document. |
+| [`issuingStateRaw`](#issuingstateraw) | *string* | The raw ICAO issuing state code of the MRZ document. |
 | [`nationality`](#nationality) | *string* | The nationality (represented as the full name of the country/region) of the MRZ document holder. |
+| [`nationalityRaw`](#nationalityraw) | *string* | The raw ICAO nationality code of the MRZ document holder. |
 | [`dateOfBirth`](#dateofbirth) | *string* | The date of birth of the MRZ document holder. |
 | [`dateOfExpire`](#dateofexpire) | *string* | The expiry date of the MRZ document. |
 | [`documentType`](#documenttype) | *string* | The type of MRTD that the MRZ document is. |
 | [`documentNumber`](#documentnumber) | *string* | The MRZ document number. |
 | [`age`](#age) | *number* | The age of the MRZ document holder. |
 | [`mrzText`](#mrztext) | *string* | The raw unparsed text of the MRZ. |
+| [`personalNumber`](#personalnumber) | *string* | The personal number field on the MRZ document. |
+| [`optionalData1`](#optionaldata1) | *string* | The first optional data field on the MRZ document. |
+| [`optionalData2`](#optionaldata2) | *string* | The second optional data field on the MRZ document. |
 
 ### firstName
 
@@ -62,18 +67,34 @@ sex?: string
 
 ### issuingState
 
-Represents the issuing state of the MRZ document.
+Represents the issuing state of the MRZ document, expressed as the full name of the country/region.
 
 ```ts
 issuingState?: string
 ```
 
+### issuingStateRaw
+
+Represents the raw ICAO issuing state code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
+
+```ts
+issuingStateRaw?: string
+```
+
 ### nationality
 
-Represents the nationality of the MRZ document holder.
+Represents the nationality of the MRZ document holder, expressed as the full name of the country/region.
 
 ```ts
 nationality?: string
+```
+
+### nationalityRaw
+
+Represents the raw ICAO nationality code of the MRZ document holder (e.g. `CAN`, `USA`), before conversion to a full country name.
+
+```ts
+nationalityRaw?: string
 ```
 
 ### dateOfBirth
@@ -122,4 +143,28 @@ Represents the raw text of the MRZ.
 
 ```ts
 mrzText?: string
+```
+
+### personalNumber
+
+Represents the personal number field on the MRZ document (where present). This field is encoded on TD1 and TD3 documents and is empty when the document does not carry a personal number.
+
+```ts
+personalNumber?: string
+```
+
+### optionalData1
+
+Represents the first optional data field on the MRZ document. Usage varies by issuing authority.
+
+```ts
+optionalData1?: string
+```
+
+### optionalData2
+
+Represents the second optional data field on the MRZ document. Usage varies by issuing authority.
+
+```ts
+optionalData2?: string
 ```

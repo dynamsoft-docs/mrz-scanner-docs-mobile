@@ -14,7 +14,7 @@ breadcrumbText: EnumResultStatus
 
 ## Definition
 
-*Assembly:* dynamsoft-capture-vision-react-native
+*Assembly:* dynamsoft-mrz-scanner-bundle-react-native
 
 ```ts
 enum EnumResultStatus

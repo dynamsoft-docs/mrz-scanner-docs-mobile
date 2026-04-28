@@ -14,7 +14,7 @@ breadcrumbText: EnumDocumentType
 
 ## Definition
 
-*Assembly:* dynamsoft-capture-vision-react-native
+*Assembly:* dynamsoft-mrz-scanner-bundle-react-native
 
 ```ts
 export enum EnumDocumentType

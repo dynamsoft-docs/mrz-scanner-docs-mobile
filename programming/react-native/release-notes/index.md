@@ -10,6 +10,34 @@ noTitleIndex: true
 
 # Dynamsoft MRZ Scanner React Native SDK - Release Notes
 
+## 3.4.1300 (04/28/2026)
+
+### New
+
+- **Image results**: `MRZScanResult` now returns captured images alongside the parsed MRZ data. Five new properties are exposed on the result, each typed as `ImageSourcePropType` so it can be passed directly to a React Native `<Image>` element via its `source` prop:
+  - `mrzSideDocumentImage` — a cropped and perspective-corrected image of the side containing the MRZ. Returned by default.
+  - `oppositeSideDocumentImage` — a cropped and perspective-corrected image of the reverse side, relevant for two-sided documents such as TD1 ID cards. Returned by default.
+  - `mrzSideOriginalImage` — the raw full-frame camera image captured for the MRZ side. Disabled by default.
+  - `oppositeSideOriginalImage` — the raw full-frame camera image captured for the opposite side. Disabled by default.
+  - `portraitImage` — the detected portrait extracted from the document. Returned by default.
+
+- **Image return configuration**: Added three new `MRZScanConfig` properties to control which images are included in the scan result:
+  - `returnDocumentImage` (default: `true`)
+  - `returnOriginalImage` (default: `false`)
+  - `returnPortraitImage` (default: `true`)
+
+- **Additional MRZ data fields**: `MRZData` now exposes the following additional parsed fields:
+  - `issuingStateRaw` — the raw ICAO issuing state code as encoded in the MRZ, before standardization.
+  - `nationalityRaw` — the raw ICAO nationality code as encoded in the MRZ, before standardization.
+  - `optionalData1` — the first optional data field on the MRZ document.
+  - `optionalData2` — the second optional data field on the MRZ document.
+  - `personalNumber` — the personal number field, typically present on TD1 and TD3 documents.
+
+- **New UI button visibility controls**: Added three new `MRZScanConfig` properties to control the visibility of toggle buttons in the scanning UI:
+  - `isBeepButtonVisible` — shows or hides the beep sound toggle button (default: `true`).
+  - `isVibrateButtonVisible` — shows or hides the vibration toggle button (default: `true`).
+  - `isFormatSelectorVisible` — shows or hides the document format selector at the bottom of the scanning UI (default: `true`).
+
 ## 3.2.5000 (12/18/2025)
 
 ### Fixes & Improvements
