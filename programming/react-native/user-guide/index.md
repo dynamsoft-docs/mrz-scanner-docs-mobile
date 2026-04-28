@@ -51,7 +51,7 @@ A valid license key is required to use the SDK. If you are just getting started,
 Run the following command from your React Native project root to add `dynamsoft-mrz-scanner-bundle-react-native` to the dependencies:
 
 ```bash
-npm install dynamsoft-mrz-scanner-bundle-react-native@3.4.1200
+npm install dynamsoft-mrz-scanner-bundle-react-native@3.4.1300
 ```
 
 For iOS, install the CocoaPods dependencies after the npm install completes. Run the following from the project root:
