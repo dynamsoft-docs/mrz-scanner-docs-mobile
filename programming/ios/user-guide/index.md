@@ -52,7 +52,7 @@ There are two ways in which you can include the `DynamsoftMRZScannerBundle` libr
 
 2. In the top-right section of the window, search "https://github.com/Dynamsoft/mrz-scanner-spm"
 
-3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.4.1200**, then click **Add Package**.
+3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.4.1300**, then click **Add Package**.
 
 4. Check all the **xcframeworks** and add them.
 
@@ -64,7 +64,7 @@ There are two ways in which you can include the `DynamsoftMRZScannerBundle` libr
    target 'TargetName' do
       use_frameworks!
 
-   pod 'DynamsoftMRZScannerBundle','3.4.1200'
+   pod 'DynamsoftMRZScannerBundle','3.4.1300'
 
    end
    ```
