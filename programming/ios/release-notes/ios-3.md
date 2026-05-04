@@ -10,6 +10,12 @@ noTitleIndex: true
 
 # Release Notes for iOS SDK - 3.x
 
+## 3.4.1300 (04/27/2026)
+
+### Fixes & Improvements
+
+- Fixed an issue where the portrait extraction task failed to signal completion on TD2 documents, stalling the transition to the result view despite successful portrait detection.
+
 ## 3.4.1200 (04/02/2026)
 
 ### New
