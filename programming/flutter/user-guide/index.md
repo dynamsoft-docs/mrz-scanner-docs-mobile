@@ -232,9 +232,6 @@ void _launchMrzScanner() async {
 | `nationalityRaw` | `String` | Raw ICAO nationality code (e.g. `CAN`). |
 | `dateOfBirth` | `String` | Date of birth (YYYY-MM-DD). |
 | `dateOfExpire` | `String` | Expiry date (YYYY-MM-DD). |
-| `personalNumber` | `String?` | Personal number (typically on TD3 passports); `null` if not present. |
-| `optionalData1` | `String?` | First optional data field (typically on TD1 / TD2 ID cards); `null` if not present. |
-| `optionalData2` | `String?` | Second optional data field (typically on TD1 ID cards); `null` if not present. |
 | `mrzText` | `String` | Raw unparsed MRZ text. |
 
 For the full field list, see the [MRZData API reference](../api-reference/mrz-data.md). For the complete implementation including image display, portrait fallback, tab switcher between processed and original images, and save-to-gallery support, refer to the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/capture-vision-flutter-samples/tree/main/ScanMRZ).
