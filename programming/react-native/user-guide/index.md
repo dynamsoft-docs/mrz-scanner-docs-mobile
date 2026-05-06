@@ -13,7 +13,7 @@ noTitleIndex: true
 The Dynamsoft MRZ Scanner (React Native Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScanner` — the built-in component that handles the camera UI, scanning logic, and result delivery.
 
 > [!IMPORTANT]
-> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ).
+> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-react-native).
 
 ## Supported Document Types
 
@@ -62,7 +62,7 @@ cd ios && bundle exec pod install --repo-update
 
 ## Building the MRZ Scanner Application
 
-The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ).
+The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile-react-native).
 
 ### Step 1: Create a New Project
 
@@ -302,7 +302,7 @@ return (
 );
 ```
 
-Extend the `StyleSheet.create` block with styles for the new views (`container`, `scrollContent`, `headerSection`, `headerTextBlock`, `fullName`, `genderAge`, `expiryShort`, `portraitBox`, `sectionTitle`, `infoRow`, `rawMrz`, `idleHint`, `errorText`, `bottomButtons`, `bottomBtn`, `bottomBtnText`). For brevity, the full style definitions are omitted here — refer to [App.tsx in the ScanMRZ sample](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ/src/App.tsx) for the complete implementation, which also includes a Processed/Original image switcher for the document images and a long-press-to-save-image action.
+Extend the `StyleSheet.create` block with styles for the new views (`container`, `scrollContent`, `headerSection`, `headerTextBlock`, `fullName`, `genderAge`, `expiryShort`, `portraitBox`, `sectionTitle`, `infoRow`, `rawMrz`, `idleHint`, `errorText`, `bottomButtons`, `bottomBtn`, `bottomBtnText`). For brevity, the full style definitions are omitted here — refer to [App.tsx in the ScanMRZ sample](https://github.com/Dynamsoft/mrz-scanner-mobile-react-native/src/App.tsx) for the complete implementation, which also includes a Processed/Original image switcher for the document images and a long-press-to-save-image action.
 
 > [!NOTE]
 >
@@ -351,7 +351,7 @@ You can list connected devices with `adb devices`.
 
 ## Next Steps
 
-- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ).
+- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-react-native).
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [React Native API Reference](../api-reference/index.md) for all classes and methods.
 - **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
