@@ -37,9 +37,9 @@ class MRZData : NSObject
 | [`lastName`](#lastname) | String | The last name of the user of the MRZ document. |
 | [`sex`](#sex) | String | The sex of the user of the MRZ document. |
 | [`issuingState`](#issuingstate) | String | The issuing state of the MRZ document. |
-| [`issuingStateRaw`](#issuingstateraw) | String | The raw issuing state string as it appears in the MRZ. |
+| [`issuingStateRaw`](#issuingstateraw) | String | The raw ICAO issuing state code as it appears in the MRZ. |
 | [`nationality`](#nationality) | String | The nationality of the user of the MRZ document. |
-| [`nationalityRaw`](#nationalityraw) | String | The raw nationality string as it appears in the MRZ. |
+| [`nationalityRaw`](#nationalityraw) | String | The raw ICAO nationality code as it appears in the MRZ. |
 | [`dateOfBirth`](#dateofbirth) | String | The date of birth of the user of the MRZ document. |
 | [`dateOfExpire`](#dateofexpire) | String | The expiry date of the MRZ document. |
 | [`documentType`](#documenttype) | String | The type of MRZ document. |
@@ -120,7 +120,7 @@ let issuingState: String
 
 ### issuingStateRaw
 
-The raw issuing state string as it appears in the MRZ, before any decoding or normalization.
+The raw ICAO issuing state code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -154,7 +154,7 @@ let nationality: String
 
 ### nationalityRaw
 
-The raw nationality string as it appears in the MRZ, before any decoding or normalization.
+The raw ICAO nationality code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C

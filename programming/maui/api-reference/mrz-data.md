@@ -30,9 +30,9 @@ class MRZData
 | [`LastName`](#lastname) | *string* | The last name of the user of the MRZ document. |
 | [`Sex`](#sex) | *string* | The sex of the user of the MRZ document. |
 | [`IssuingState`](#issuingstate) | *string* | The issuing state of the MRZ document. |
-| [`IssuingStateRaw`](#issuingstateraw) | *string* | The raw issuing state string as it appears in the MRZ. |
+| [`IssuingStateRaw`](#issuingstateraw) | *string* | The raw ICAO issuing state code as it appears in the MRZ. |
 | [`Nationality`](#nationality) | *string* | The nationality of the user of the MRZ document. |
-| [`NationalityRaw`](#nationalityraw) | *string* | The raw nationality string as it appears in the MRZ. |
+| [`NationalityRaw`](#nationalityraw) | *string* | The raw ICAO nationality code as it appears in the MRZ. |
 | [`DateOfBirth`](#dateofbirth) | *string* | The date of birth of the user of the MRZ document. |
 | [`DateOfExpire`](#dateofexpire) | *string* | The expiry date of the MRZ document. |
 | [`DocumentType`](#documenttype) | *string* | The type of MRZ document. |
@@ -77,7 +77,7 @@ string IssuingState { get; }
 
 ### IssuingStateRaw
 
-The raw issuing state string exactly as encoded in the MRZ, before any standardization or lookup.
+The raw ICAO issuing state code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
 
 ```csharp
 string IssuingStateRaw { get; }
@@ -93,7 +93,7 @@ string Nationality { get; }
 
 ### NationalityRaw
 
-The raw nationality string exactly as encoded in the MRZ, before any standardization or lookup.
+The raw ICAO nationality code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
 
 ```csharp
 string NationalityRaw { get; }
