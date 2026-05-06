@@ -10,6 +10,30 @@ noTitleIndex: true
 
 # Dynamsoft MRZ Scanner Flutter SDK - Release Notes
 
+## 3.4.1200 (04/02/2026)
+
+### New
+
+- **Image results**: `MRZScanResult` now returns captured images alongside the parsed MRZ data. Three types of images can be retrieved from the result:
+  - **Document image**: A cropped and perspective-corrected image of the document, available via `mrzSideDocumentImage` and `oppositeSideDocumentImage`. Returned by default.
+  - **Original image**: The raw full-frame camera image captured at the moment of scanning, available via `mrzSideOriginalImage` and `oppositeSideOriginalImage`. Disabled by default.
+  - **Portrait image**: The detected portrait extracted from the document, available via `portraitImage`. Returned by default.
+  - For two-sided ID cards, the MRZ side and opposite side images are available via separate properties on `MRZScanResult`.
+
+- **Image return configuration**: Added three new `MRZScannerConfig` properties to control which images are included in the scan result:
+  - `returnDocumentImage` (default: `true`)
+  - `returnOriginalImage` (default: `false`)
+  - `returnPortraitImage` (default: `true`)
+
+- **Additional MRZ data fields**: `MRZData` now exposes the following additional parsed fields:
+  - `issuingStateRaw` — the raw ICAO issuing state code as it appears in the MRZ, before conversion to a full country name.
+  - `nationalityRaw` — the raw ICAO nationality code as it appears in the MRZ, before conversion to a full country name.
+
+- **New UI button visibility controls**: Added three new `MRZScannerConfig` properties to control the visibility of toggle buttons in the scanning UI:
+  - `isBeepButtonVisible` — shows or hides the beep sound toggle button (default: `true`).
+  - `isVibrateButtonVisible` — shows or hides the vibration toggle button (default: `true`).
+  - `isFormatSelectorVisible` — shows or hides the document format selector at the bottom of the scanning UI (default: `true`).
+
 ## 3.2.5000 (12/18/2025)
 
 ### Fixes & Improvements
