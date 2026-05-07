@@ -32,16 +32,10 @@ final class MRZScannerConfig
 | [`documentType`](#documenttype) | [*EnumDocumentType*](document-type.md) | Specifies the type of document (ID or Passport) that the MRZ Scanner will recognize. |
 | [`isTorchButtonVisible`](#istorchbuttonvisible) | *bool* | Represents the visibility status of the torch button. |
 | [`isBeepEnabled`](#isbeepenabled) | *bool* | Determines whether a beep sound is triggered upon a successful MRZ scan. |
-| [`isBeepButtonVisible`](#isbeepbuttonvisible) | *bool* | Represents the visibility status of the beep toggle button. |
 | [`isCloseButtonVisible`](#isclosebuttonvisible) | *bool* | Represents the visibility status of the close button. |
 | [`isGuideFrameVisible`](#isguideframevisible) | *bool* | Represents the visibility status of the guide frame on the display. |
 | [`isCameraToggleButtonVisible`](#iscameratogglebuttonvisible) | *bool* | Specifies whether the camera toggle button is displayed or not. |
 | [`isVibrateEnabled`](#isvibrateenabled) | *bool* | Controls the scanner's ability to make the scanning device vibrate upon a successful MRZ scan. |
-| [`isVibrateButtonVisible`](#isvibrateButtonvisible) | *bool* | Represents the visibility status of the vibrate toggle button. |
-| [`isFormatSelectorVisible`](#isformatselectorvisible) | *bool* | Represents the visibility status of the document format selector. |
-| [`returnDocumentImage`](#returndocumentimage) | *bool* | Specifies whether the scanner captures and returns a cropped document image. |
-| [`returnOriginalImage`](#returnoriginalimage) | *bool* | Specifies whether the scanner captures and returns the full camera frame. |
-| [`returnPortraitImage`](#returnportraitimage) | *bool* | Specifies whether the scanner extracts and returns a portrait image from the document. |
 
 ### license
 
@@ -104,7 +98,7 @@ bool? isCloseButtonVisible;
 Determines the visibility status of the guide frame on the display. If set to true, a visual overlay will be displayed in the centre of the camera view to allow users to easily line up the MRZ document
 
 ```dart
-bool? isGuideFrameVisible;
+bool IsGuideFrameVisible { get; set; };
 ```
 
 ### isCameraToggleButtonVisible
@@ -115,58 +109,10 @@ Specifies whether the camera toggle button is displayed. This button lets users 
 bool? isCameraToggleButtonVisible;
 ```
 
-### isBeepButtonVisible
-
-Determines whether the beep toggle button is visible on the scanning interface. When visible, users can enable or disable the beep sound themselves during scanning. Default value is `true`.
-
-```dart
-bool? isBeepButtonVisible;
-```
-
 ### isVibrateEnabled
 
 Controls the scanner's ability to make the scanning device vibrate upon a successful MRZ scan. When enabled (true), the scanner will vibrate to provide haptic feedback if the device supports it.
 
 ```dart
 bool? isVibrateEnabled;
-```
-
-### isVibrateButtonVisible
-
-Determines whether the vibrate toggle button is visible on the scanning interface. When visible, users can enable or disable haptic feedback themselves during scanning. Default value is `true`.
-
-```dart
-bool? isVibrateButtonVisible;
-```
-
-### isFormatSelectorVisible
-
-Determines whether the document format selector is visible on the scanning interface. When visible, users can switch between document types (ID / Passport) during scanning. Default value is `true`.
-
-```dart
-bool? isFormatSelectorVisible;
-```
-
-### returnDocumentImage
-
-Specifies whether the scanner captures and returns a cropped, perspective-corrected document image in `MRZScanResult`. When enabled, both the MRZ side and opposite side images (where available) are returned via `mrzSideDocumentImage` and `oppositeSideDocumentImage`. Default value is `true`.
-
-```dart
-bool? returnDocumentImage;
-```
-
-### returnOriginalImage
-
-Specifies whether the scanner captures and returns the full camera frame in `MRZScanResult`. When enabled, the raw frames for both sides (where available) are returned via `mrzSideOriginalImage` and `oppositeSideOriginalImage`. Default value is `false`.
-
-```dart
-bool? returnOriginalImage;
-```
-
-### returnPortraitImage
-
-Specifies whether the scanner extracts and returns a portrait image from the document in `MRZScanResult`, available via `portraitImage`. Default value is `true`.
-
-```dart
-bool? returnPortraitImage;
 ```
