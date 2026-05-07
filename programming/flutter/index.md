@@ -36,7 +36,6 @@ Dynamsoft MRZ Scanner SDK Flutter Edition is designed to integrate the ability t
 
 - [MRZ Scanner User Guide](user-guide/index.md)
 - [Customizing the MRZ Scanner](user-guide/customize-mrz-scanner.md)
-- [License Initialization](user-guide/license-activation.md)
 
 ### Samples and Demos
 
@@ -50,9 +49,11 @@ Dynamsoft MRZ Scanner SDK Flutter Edition is designed to integrate the ability t
 
 - [Version 3.x](release-notes/index.md)
 
-## Licensing
+## License Subscription
 
-To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key. See [License Initialization](user-guide/license-activation.md) for details.
+To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key:
+
+- [Request a 30-day free trial license](https://www.dynamsoft.com/customer/license/trialLicense?utm_source=docs&product=mrz&package=flutter){:target="_blank"}
 
 ## Contact Us
 
