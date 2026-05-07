@@ -27,12 +27,7 @@ class MRZScanResult
 | [`mrzData`](#mrzdata) | [*MRZData?*](mrz-data.md) | Represents the parsed MRZ data. |
 | [`status`](#status) | [*EnumResultStatus*](result-status.md) | Represents the status of the result, which can be finished, canceled or exception. |
 | [`errorCode`](#errorcode) | *int?* | Represents the error code should something go wrong during the MRZ scanning process. |
-| [`errorMessage`](#errormessage) | *String?* | Represents the error message associated with the error code should something go wrong during the MRZ scanning process. |
-| [`portraitImage`](#portraitimage) | *Uint8List?* | The extracted portrait photo from the document. |
-| [`mrzSideDocumentImage`](#mrzsidedocumentimage) | *Uint8List?* | The cropped, perspective-corrected image of the MRZ side of the document. |
-| [`oppositeSideDocumentImage`](#oppositesidedocumentimage) | *Uint8List?* | The cropped, perspective-corrected image of the opposite (non-MRZ) side of the document. |
-| [`mrzSideOriginalImage`](#mrzsideoriginalimage) | *Uint8List?* | The full camera frame captured for the MRZ side. |
-| [`oppositeSideOriginalImage`](#oppositesideoriginalimage) | *Uint8List?* | The full camera frame captured for the opposite side. |
+| [`errorString`](#errorstring) | *String?* | Represents the error message associated with the error code should something go wrong during the MRZ scanning process. |
 
 ### mrzData
 
@@ -66,50 +61,10 @@ Returns the error code when an exception occurs. This value is only valid when r
 int? errorCode;
 ```
 
-### errorMessage
+### errorString
 
 Returns the error message associated with the error code when an exception occurs. This value is only valid when resultStatus is `exception`.
 
 ```dart
 String? errorMessage;
-```
-
-### portraitImage
-
-Returns the extracted portrait photo as a raw image byte array. Returns `null` if portrait capture was disabled via `MRZScannerConfig.returnPortraitImage` or if no portrait was detected.
-
-```dart
-Uint8List? portraitImage;
-```
-
-### mrzSideDocumentImage
-
-Returns the cropped, perspective-corrected image of the side containing the MRZ as a raw image byte array. Returns `null` if document image capture was disabled via `MRZScannerConfig.returnDocumentImage`.
-
-```dart
-Uint8List? mrzSideDocumentImage;
-```
-
-### oppositeSideDocumentImage
-
-Returns the cropped, perspective-corrected image of the opposite (non-MRZ) side of the document as a raw image byte array. Relevant for two-sided documents such as TD1 ID cards. Returns `null` if document image capture was disabled via `MRZScannerConfig.returnDocumentImage` or if no opposite side was captured.
-
-```dart
-Uint8List? oppositeSideDocumentImage;
-```
-
-### mrzSideOriginalImage
-
-Returns the full camera frame captured for the MRZ side as a raw image byte array. Returns `null` if original image capture was not enabled via `MRZScannerConfig.returnOriginalImage`.
-
-```dart
-Uint8List? mrzSideOriginalImage;
-```
-
-### oppositeSideOriginalImage
-
-Returns the full camera frame captured for the opposite side as a raw image byte array. Returns `null` if original image capture was not enabled via `MRZScannerConfig.returnOriginalImage` or if no opposite side was captured.
-
-```dart
-Uint8List? oppositeSideOriginalImage;
 ```
