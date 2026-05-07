@@ -14,8 +14,7 @@ enableLanguageSelection: true
 
 This user guide will explore using the Dynamsoft MRZ Scanner (Flutter Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
 
-> [!IMPORTANT]
-> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-flutter).
+`MRZScanner` is a ready-to-use component that allows developers to quickly set up an MRZ scanning app. With the built-in component, it streamlines the integration of MRZ scanning functionality into any application.
 
 ## Supported Machine-Readable Travel Document Types
 
@@ -64,32 +63,7 @@ The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each lin
 
 ## Including the Library
 
-A valid license key is required to use the SDK. If you are just getting started, request a free 30-day trial license below:
-
-{% include trialLicense.html %}
-
-> [!NOTE]
->
-> - The license string above grants a time-limited free trial which requires a network connection.
-> - You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=guide&package=flutter){:target="_blank"} link.
-
-## Building the MRZ Scanner Application
-
-The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile-flutter).
-
-### Step 1: Create a New Project
-
-Create a new Flutter project and open the project in your IDE:
-
-```bash
-flutter create scan_mrz
-```
-
-Navigate to `lib/main.dart` — this is where the implementation will go.
-
-### Step 2: Add the SDK
-
-Run the following command from the project root to add `dynamsoft_mrz_scanner_bundle_flutter`:
+Run the following command in the root directory of your Flutter project to add `dynamsoft_mrz_scanner_bundle_flutter` to the dependencies:
 
 ```bash
 flutter pub add dynamsoft_mrz_scanner_bundle_flutter
@@ -262,7 +236,6 @@ Once the scan process completes and the MRZ Scanner successfully recognizes a MR
 - **age**: The age of the MRZ document holder.
 - **mrzText**: The raw text of the MRZ.
 
-For the full field list, see the [MRZData API reference](../api-reference/mrz-data.md).
 
 ### Customizing the MRZ Scanner (Optional)
 
@@ -287,15 +260,7 @@ Once the pods are installed, *Runner.xcworkspace* should now be generated in the
 
 To add the **camera permissions**, open the generated *Runner.xcworkspace* and navigate to the *Info* section of the project settings. Then you must add the "Privacy - Camera Usage Description" key to the list (where you can also assign a string message to show in the alert box).
 
-Connect a physical iOS device, then either select it from the top bar in Xcode and click **Run**, or run from the project root with:
-
-```bash
-flutter run
-# or
-flutter run -d <your_device_id>
-```
-
-You can get the IDs of all connected (physical) devices by running the command `flutter devices` in the terminal. 
+#### Deploying to Device
 
 In order to deploy the app to a iOS device, we recommend doing it via Xcode by using the `Runner.xcworkspace` project that was generated when the pods were installed. Since the camera permissions are taken care of, all you need to do is properly configure the *Signing & Capabilities* section of the project settings. Should the iOS device be connected to the computer, you can now run and deploy the app to the device. 
 
@@ -319,7 +284,10 @@ You can get the IDs of all connected (physical) devices by running the command `
 
 The full sample code is available [here](https://github.com/Dynamsoft/capture-vision-flutter-samples/tree/main/ScanMRZ).
 
-- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-flutter).
-- **Customize** — Learn how to configure document type, UI elements, and image capture in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
-- **API Reference** — Browse the full [Flutter API Reference](../api-reference/index.md) for all classes and methods.
-- **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
+## License
+
+- You can request a 30-day trial license via the [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=github&package=mobile) link.
+
+## Contact
+
+https://www.dynamsoft.com/company/contact/

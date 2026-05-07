@@ -68,12 +68,12 @@ Once the MAUI app is initialized in Visual Studio Code, the easiest way to inclu
 
 1. Open the Terminal in Visual Studio Code
 2. Navigate to the project root directory (please note this is the folder that is in the same directory as <Project Name>.sln)
-3. Run the following command `dotnet add package Dynamsoft.MRZScannerBundle.Maui --version 3.4.1310`
+3. Run the following command `dotnet add package Dynamsoft.MRZScannerBundle.Maui --version 3.4.1300`
 
 If the installation is successful, you should see the following line in the *.csproj* file
 
 ```xml
-<PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.4.1310" />
+<PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.4.1300" />
 ```
 
 When the project is built, the package will be downloaded and installed.
@@ -100,7 +100,7 @@ You need to add the library via the project file and complete additional steps f
         ...
         <ItemGroup>
             ...
-            <PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.4.1310" />
+            <PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.4.1300" />
         </ItemGroup>
     </Project>
     ```
