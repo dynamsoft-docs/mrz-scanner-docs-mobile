@@ -19,4 +19,4 @@ noTitleIndex: false
 
 Scan the MRZ code from a passport or ID card and extract the information using the ready-to-use component(`MRZScanner`)
 
-[Check the code on GitHub!](https://github.com/Dynamsoft/capture-vision-react-native-samples/tree/main/ScanMRZ)
+[Check the code on GitHub!](https://github.com/Dynamsoft/mrz-scanner-mobile-react-native)
