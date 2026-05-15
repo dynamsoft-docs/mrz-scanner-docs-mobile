@@ -103,3 +103,26 @@ void _launchMrzScanner() async {
   }
 }
 ```
+
+Once configured, access the images from the `MRZScanResult`:
+
+- `mrzSideDocumentImage` - the cropped document image of the MRZ side.
+- `oppositeSideDocumentImage` - the cropped document image of the opposite side.
+- `mrzSideOriginalImage` - the original full-frame image of the MRZ side.
+- `oppositeSideOriginalImage` - the original full-frame image of the opposite side.
+- `portraitImage` - the detected portrait image.
+
+**Related APIs**
+
+- [`returnDocumentImage`](../api-reference/mrz-scanner-config.md#returndocumentimage)
+- [`returnPortraitImage`](../api-reference/mrz-scanner-config.md#returnportraitimage)
+- [`returnOriginalImage`](../api-reference/mrz-scanner-config.md#returnoriginalimage)
+- [`mrzSideDocumentImage`](../api-reference/mrz-scan-result.md#mrzsidedocumentimage)
+- [`oppositeSideDocumentImage`](../api-reference/mrz-scan-result.md#oppositesidedocumentimage)
+- [`mrzSideOriginalImage`](../api-reference/mrz-scan-result.md#mrzsideoriginalimage)
+- [`oppositeSideOriginalImage`](../api-reference/mrz-scan-result.md#oppositesideoriginalimage)
+- [`portraitImage`](../api-reference/mrz-scan-result.md#portraitimage)
+
+## Further Customization
+
+If you have other customization requirements on the `MRZScanner` component, please contact the [Dynamsoft support team](https://www.dynamsoft.com/company/contact/).
