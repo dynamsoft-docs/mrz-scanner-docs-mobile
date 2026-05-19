@@ -11,15 +11,15 @@ needAutoGenerateSidebar: true
 
 # Customizing the MRZ Scanner
 
-When developing with `MRZScanner` component (see the [User Guide](index.md)), you can add extra configurations via the `MRZScannerConfig` class. Before diving into the different ways in which you can customize the MRZ Scanner, let's first break down the different properties of the `MRZScannerConfig` class.
+When developing with `MRZScanner` (see the [User Guide](index.md)), you can add configurations via the `MRZScannerConfig` class. This page will guide you on how to configure the settings.
 
-## `MRZScannerConfig` Overview
+## MRZScannerConfig Overview
 
 The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is capable of configuring almost all customization options applicable to MRZ scanning use cases with the MRZ Scanner. The MRZ Scanner uses passes an `MRZScannerConfig` object to the constructor when creating an MRZ Scanner instance. `MRZScannerConfig` contains the following properties:
 
 1. **`license`** - the license key is the only property whose ***value must be specified when instantiating the MRZ Scanner instance***. If the license is undefined, invalid, or expired, the MRZ Scanner cannot proceed with scanning, and instead displays a pop-up error message instructing the user to contact the app administrator to resolve this license issue.
 
-2. **`documentType`** - specifies the type of document that the MRZ Scanner will recognize. This property accepts values defined in the EnumDocumentType such as `EnumDocumentType.all`, `EnumDocumentType.id`, or `EnumDocumentType.passport`. It helps the scanner to optimize its processing based on the expected document type. To learn more about the different document types that are supported, please refer to the [Supported Document Types](index.md#supported-machine-readable-travel-document-types) section of the user guide.
+2. **`documentType`** - specifies the type of document that the MRZ Scanner will recognize. This property accepts values defined in the EnumDocumentType such as `EnumDocumentType.all`, `EnumDocumentType.id`, or `EnumDocumentType.passport`. It helps the scanner to optimize its processing based on the expected document type. To learn more about the different document types that are supported, please refer to the [Supported Document Types](index.md#supported-document-types) section of the user guide.
 
 3. **`templateFile`** - a template file is a JSON file or JSON string that contains a series of algorithm parameter settings (called Capture Vision templates) that is usually used for very specific and customized scanning and parsing scenarios. The `templateFile` points to the location of the JSON file. The MRZ Scanner comes with a default template file, but you may choose to use a custom template to target specialized use cases. We recommend contacting the [Dynamsoft Technical Support Team](https://www.dynamsoft.com/company/contact/) for assistance with template customization.
 
@@ -29,79 +29,122 @@ The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is ca
 
 6. **`isCloseButtonVisible`** (default value `true`) - a boolean to control the visibility of the close button on the scanner's UI. If true, a close button will be displayed allowing users to exit the MRZ scanning interface.
 
-7. **`isGuideFrameVisible`** (default value `true`) -  serves as a toggle to show or hide the guide frame in the UI during scanning. The guide frame assists users in properly aligning the document for optimal MRZ detection. When set to true, a visual overlay is displayed on the scanning interface.
+7. **`isGuideFrameVisible`** (default value `true`) - serves as a toggle to show or hide the guide frame in the UI during scanning. The guide frame assists users in properly aligning the document for optimal MRZ detection. When set to true, a visual overlay is displayed on the scanning interface.
 
 8. **`isTorchButtonVisible`** (default value `true`) - determines whether the torch (flashlight) toggle button is visible on the scanning interface. Set to true to allow users to switch the device's flashlight on or off during MRZ scanning.
 
 9. **`isVibrateEnabled`** (default value `false`) - controls the scanner's ability to make the scanning device vibrate upon a successful MRZ scan. When enabled (true), the scanner will vibrate to provide haptic feedback if the device supports it.
 
-Next, we go over the different ways that these properties can be used to customize the scanner with a few examples.
+10. **`isBeepButtonVisible`** (default value `true`) - controls whether the beep toggle button is visible in the scanning UI. When visible, users can tap this button to enable or disable the beep sound directly from the scanner interface.
 
+11. **`isVibrateButtonVisible`** (default value `true`) - controls whether the vibrate toggle button is visible in the scanning UI. When visible, users can tap this button to enable or disable vibration feedback directly from the scanner interface.
+
+12. **`isFormatSelectorVisible`** (default value `true`) - controls whether the document format selector is displayed at the bottom of the scanning UI. The format selector allows users to switch between scanning ID cards, passports, or both.
+
+13. **`returnDocumentImage`** (default value `true`) - controls whether a cropped document image is included in the scan result. When enabled, `MRZScanResult.mrzSideDocumentImage` and `MRZScanResult.oppositeSideDocumentImage` will contain the document images.
+
+14. **`returnOriginalImage`** (default value `false`) - controls whether the original full-frame camera image is included in the scan result. When enabled, `MRZScanResult.mrzSideOriginalImage` and `MRZScanResult.oppositeSideOriginalImage` will contain the raw camera frames.
+
+15. **`returnPortraitImage`** (default value `true`) - controls whether the detected portrait image is included in the scan result. When enabled, `MRZScanResult.portraitImage` will contain the portrait extracted from the document.
+
+Next, we go over the different ways that these properties can be used to customize the scanner with a few examples.
 
 ## Setting the MRZ Document Type
 
-The MRZ Scanner reads all three MRZ formats, but it can optionally restrict the MRZ format that it reads. For example, you may want to configure MRZ scanner to only read **TD1** and passport (**TD3**) document types, while **ignoring TD2** documents. Here is a simple edit to the launchMrzScanner function that we implemented in the [User Guide](index.md) that sets the specific MRZ formats to read using the `documentType` property:
+Specifies the type of document to scan, such as ID cards or passports. It also improves the processing speed and accuracy.
 
 ```dart
-void _launchMrzScanner() async {
-  var config = MRZScannerConfig(
-    license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
-    documentType: EnumDocumentType.passport, // configuring the scanner to just recognize passports
-  );
-  MRZScanResult mrzScanResult = await MRZScanner.launch(config);
-  if(mrzScanResult.status == EnumResultStatus.finished) {
-    MRZData data = mrzScanResult.mrzData!;
-    // do something with the data
-  }
-}
+var config = MRZScannerConfig(
+  license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
+  documentType: EnumDocumentType.passport,
+);
+MRZScanResult result = await MRZScanner.launch(config);
 ```
 
-## Customizing the UI Elements
+**Related APIs**
+
+- [`documentType`](../api-reference/mrz-scanner-config.md#documenttype)
+- [`templateFile`](../api-reference/mrz-scanner-config.md#templatefile)
+
+## Configure the UI Elements
 
 <div align="center">
-    <p><img src="../../assets/mrz-scanner-ui.png" width="70%" alt="mrz-scanner"></p>
+    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="80%" alt="mrz-scanner"></p>
     <p>MRZ Scanner UI</p>
 </div>
 
-The MRZ Scanner UI comes with three main elements that you can configure:
+The MRZ Scanner UI includes the following configurable elements:
 
-- *Close button*: Stop MRZ scanning and go back to the previous activity.
-- *Torch button*: A clickable button that can turn on/off the torch.
-- *Guide Frame*: A visual overlap to assist users in lining up the MRZ document in the camera frame.
+- **Close button**: Dismisses the scanner and returns the user to the previous screen.
+- **Torch button**: Turns the device flashlight on or off to improve scanning in low-light conditions.
+- **Camera toggle button**: Switches between the front and rear cameras for flexible document placement.
+- **Beep button**: Lets users enable or disable the audible beep that plays on a successful scan.
+- **Vibrate button**: Lets users enable or disable haptic vibration feedback on a successful scan.
+- **Prompt text**: A status label that updates dynamically to guide users through each step of the scanning process.
+- **Guide frame**: A viewfinder overlay that guides users in positioning the document within the camera frame.
+- **Format selector**: A bottom control bar for selecting the target document type — ID card, passport, or both.
+
+All UI elements are visible by default. Use the following configuration to hide any elements that are not needed for your use case:
 
 ```dart
-void _launchMrzScanner() async {
-  var config = MRZScannerConfig(
-    license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
-    isCloseButtonVisible: false, // hiding the close button
-    isTorchButtonVisible: false, // hiding the torch button
-    isGuideFrameVisible: false, // hiding the guide frame
-  );
-  MRZScanResult mrzScanResult = await MRZScanner.launch(config);
-  if(mrzScanResult.status == EnumResultStatus.finished) {
-    MRZData data = mrzScanResult.mrzData!;
-    // do something with the data
-  }
-}
+var config = MRZScannerConfig(
+  license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
+  isCloseButtonVisible: false,
+  isTorchButtonVisible: false,
+  isCameraToggleButtonVisible: false,
+  isBeepButtonVisible: false,
+  isVibrateButtonVisible: false,
+  isFormatSelectorVisible: false,
+  isGuideFrameVisible: false,
+);
+MRZScanResult result = await MRZScanner.launch(config);
 ```
 
-## Enabling Audio and Haptic Feedback
+**Related APIs**
 
-The MRZ Scanner library also offers the option to enable audio and haptic feedback upon a successful MRZ scan. Through the `isBeepEnabled` and `isVibrateEnabled` properties, you can choose to play a sound or make the device vibrate once the MRZ is recognized.
+- [`isCloseButtonVisible`](../api-reference/mrz-scanner-config.md#isclosebuttonvisible)
+- [`isTorchButtonVisible`](../api-reference/mrz-scanner-config.md#istorchbuttonvisible)
+- [`isCameraToggleButtonVisible`](../api-reference/mrz-scanner-config.md#iscameratogglebuttonvisible)
+- [`isBeepButtonVisible`](../api-reference/mrz-scanner-config.md#isbeepbuttonvisible)
+- [`isVibrateButtonVisible`](../api-reference/mrz-scanner-config.md#isvibrateButtonvisible)
+- [`isFormatSelectorVisible`](../api-reference/mrz-scanner-config.md#isformatselectorvisible)
+- [`isGuideFrameVisible`](../api-reference/mrz-scanner-config.md#isguideframevisible)
+
+## Enabling Haptic and Audio Feedback
+
+The MRZ Scanner can play a beep sound or vibrate the device upon a successful scan. Both are disabled by default.
+
+> [!NOTE]
+> The `isBeepEnabled` and `isVibrateEnabled` settings control the feedback *behavior*. To hide the buttons that allow users to toggle these behaviors from the scanning UI, use `isBeepButtonVisible` and `isVibrateButtonVisible`.
 
 ```dart
-void _launchMrzScanner() async {
-  var config = MRZScannerConfig(
-    license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
-    isBeepEnabled: true, // play a beep upon a successful MRZ scan
-    isVibrateEnabled: true, // make the phone vibrate upon a successful MRZ scan
-  );
-  MRZScanResult mrzScanResult = await MRZScanner.launch(config);
-  if(mrzScanResult.status == EnumResultStatus.finished) {
-    MRZData data = mrzScanResult.mrzData!;
-    // do something with the data
-  }
-}
+var config = MRZScannerConfig(
+  license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
+  isBeepEnabled: true,
+  isVibrateEnabled: true,
+);
+MRZScanResult result = await MRZScanner.launch(config);
+```
+
+**Related APIs**
+
+- [`isBeepEnabled`](../api-reference/mrz-scanner-config.md#isbeepenabled)
+- [`isVibrateEnabled`](../api-reference/mrz-scanner-config.md#isvibrateenabled)
+- [`isBeepButtonVisible`](../api-reference/mrz-scanner-config.md#isbeepbuttonvisible)
+- [`isVibrateButtonVisible`](../api-reference/mrz-scanner-config.md#isvibrateButtonvisible)
+
+## Configure Scan Result Images
+
+By default, the scan result includes a cropped document image and a portrait image. You can control which images are returned to reduce memory usage or processing overhead for your use case.
+
+```dart
+var config = MRZScannerConfig(
+  license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
+  returnDocumentImage: true,   // Cropped document image (default: true).
+  returnPortraitImage: true,   // Portrait image (default: true).
+  returnOriginalImage: false,  // Original full-frame image (default: false).
+);
+MRZScanResult result = await MRZScanner.launch(config);
 ```
 
 Once configured, access the images from the `MRZScanResult`:
@@ -125,4 +168,4 @@ Once configured, access the images from the `MRZScanResult`:
 
 ## Further Customization
 
-If you have other customization requirements on the `MRZScanner` component, please contact the [Dynamsoft support team](https://www.dynamsoft.com/company/contact/).
+If you have other customization requirements on the `MRZScanner` component, you can modify it with the [open source code on GitHub](https://github.com/Dynamsoft/capture-vision-flutter-samples).
