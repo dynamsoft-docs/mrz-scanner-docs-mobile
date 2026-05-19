@@ -168,4 +168,4 @@ Once configured, access the images from the `MRZScanResult`:
 
 ## Further Customization
 
-If you have other customization requirements on the `MRZScanner` component, please contact the [Dynamsoft support team](https://www.dynamsoft.com/company/contact/).
+If you have other customization requirements on the `MRZScanner` component, you can modify it with the [open source code on GitHub](https://github.com/Dynamsoft/capture-vision-flutter-samples).
