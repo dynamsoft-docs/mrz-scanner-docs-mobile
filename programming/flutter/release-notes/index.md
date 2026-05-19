@@ -2,7 +2,7 @@
 layout: default-layout
 title: Flutter Release Notes v3.x - Dynamsoft MRZ Scanner
 description: This is the release notes page of Dynamsoft MRZ Scanner for Flutter SDK v3.x.
-keywords: release notes, flutter, version 3.x,
+keywords: release notes, MAUI, version 3.x,
 needAutoGenerateSidebar: true
 needGenerateH3Content: false
 noTitleIndex: true
@@ -10,7 +10,7 @@ noTitleIndex: true
 
 # Dynamsoft MRZ Scanner Flutter SDK - Release Notes
 
-## 3.4.1200 (04/02/2026)
+## 3.4.1200 (05/18/2026)
 
 ### New
 

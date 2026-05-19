@@ -169,4 +169,4 @@ Once configured, use the following methods on `MRZScanResult` to access the imag
 
 ## Further Customization
 
-If you have other customization requirements on the `MRZScanner` component, you can modify it with the [open source code on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-maui/).
+If you have other customization requirements on the `MRZScanner` component, please contact the [Dynamsoft support team](https://www.dynamsoft.com/company/contact/).
