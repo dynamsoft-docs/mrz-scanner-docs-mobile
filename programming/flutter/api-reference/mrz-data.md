@@ -28,7 +28,9 @@ class MRZData
 | [`lastName`](#lastname) | *String* | The last name of the MRZ document holder. |
 | [`sex`](#sex) | *String* | The sex of the MRZ document holder. |
 | [`issuingState`](#issuingstate) | *String* | The issuing state (represented as the full name of the country/region) of the MRZ document. |
+| [`issuingStateRaw`](#issuingstateraw) | *String* | The raw ICAO issuing state code of the MRZ document. |
 | [`nationality`](#nationality) | *String* | The nationality (represented as the full name of the country/region) of the MRZ document holder. |
+| [`nationalityRaw`](#nationalityraw) | *String* | The raw ICAO nationality code of the MRZ document holder. |
 | [`dateOfBirth`](#dateofbirth) | *String* | The date of birth of the MRZ document holder. |
 | [`dateOfExpire`](#dateofexpire) | *String* | The expiry date of the MRZ document. |
 | [`documentType`](#documenttype) | *String* | The type of MRTD that the MRZ document is. |
@@ -68,12 +70,28 @@ Represents the issuing state of the MRZ document.
 String issuingState;
 ```
 
+### issuingStateRaw
+
+Represents the raw ICAO issuing state code as it appears in the MRZ (e.g. `CAN`, `USA`), before conversion to a full country name.
+
+```dart
+String issuingStateRaw;
+```
+
 ### nationality
 
-Represents the nationality of the MRZ document holder.
+Represents the nationality of the MRZ document holder, expressed as the full name of the country/region.
 
 ```dart
 String nationality;
+```
+
+### nationalityRaw
+
+Represents the raw ICAO nationality code of the MRZ document holder (e.g. `CAN`, `USA`), before conversion to a full country name.
+
+```dart
+String nationalityRaw;
 ```
 
 ### dateOfBirth
