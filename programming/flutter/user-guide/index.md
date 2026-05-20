@@ -13,7 +13,7 @@ noTitleIndex: true
 The Dynamsoft MRZ Scanner (Flutter Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScanner` — the built-in component that handles the camera UI, scanning logic, and result delivery.
 
 > [!IMPORTANT]
-> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/capture-vision-flutter-samples/tree/main/ScanMRZ).
+> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-flutter).
 
 ## Supported Document Types
 
@@ -41,7 +41,7 @@ A valid license key is required to use the SDK. If you are just getting started,
 
 ## Building the MRZ Scanner Application
 
-The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/capture-vision-flutter-samples/tree/main/ScanMRZ).
+The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile-flutter).
 
 ### Step 1: Create a New Project
 
@@ -234,7 +234,7 @@ void _launchMrzScanner() async {
 | `dateOfExpire` | `String` | Expiry date (YYYY-MM-DD). |
 | `mrzText` | `String` | Raw unparsed MRZ text. |
 
-For the full field list, see the [MRZData API reference](../api-reference/mrz-data.md). For the complete implementation including image display, portrait fallback, tab switcher between processed and original images, and save-to-gallery support, refer to the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/capture-vision-flutter-samples/tree/main/ScanMRZ).
+For the full field list, see the [MRZData API reference](../api-reference/mrz-data.md).
 
 ### Step 7: Run the Project
 
@@ -280,7 +280,7 @@ You can list connected device IDs with `flutter devices`.
 
 ## Next Steps
 
-- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/capture-vision-flutter-samples/tree/main/ScanMRZ).
+- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-flutter).
 - **Customize** — Learn how to configure document type, UI elements, and image capture in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [Flutter API Reference](../api-reference/index.md) for all classes and methods.
 - **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
