@@ -6,29 +6,63 @@ keywords: user guide, dart, Flutter, ready to use, mrz
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
 noTitleIndex: true
+multiProgrammingLanguage: true
+enableLanguageSelection: true
 ---
 
 # MRZ Scanner User Guide (Flutter Edition)
 
-The Dynamsoft MRZ Scanner (Flutter Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScanner` — the built-in component that handles the camera UI, scanning logic, and result delivery.
+This user guide will explore using the Dynamsoft MRZ Scanner (Flutter Edition) to easily integrate the ability to read MRZ data from identity documents such as passports and ID cards. The Dynamsoft MRZ Scanner comes with a ready-to-use setup that simplifies the development process, allowing you to focus on other aspects of the application.
 
 > [!IMPORTANT]
 > For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-flutter).
 
-## Supported Document Types
+## Supported Machine-Readable Travel Document Types
 
-The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
+The Machine Readable Travel Documents (MRTD) standard specified by the International Civil Aviation Organization (ICAO) defines how to encode information for optical character recognition on official travel documents.
+
+Currently, the SDK supports three types of MRTD:
 
 > [!NOTE]
-> For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
+> If you need support for other types of MRTDs, our SDK can be easily customized. Please contact our [support team](https://www.dynamsoft.com/contact/).
+
+### ID (TD1 Size)
+
+The MRZ (Machine Readable Zone) in TD1 format consists of 3 lines, each containing 30 characters.
+
+<div>
+   <img src="../../assets/td1-id.png" alt="Example of MRZ in TD1 format" width="60%" />
+</div>
+
+### ID (TD2 Size)
+
+The MRZ (Machine Readable Zone) in TD2 format consists of 2 lines, with each line containing 36 characters.
+
+<div>
+   <img src="../../assets/td2-id.png" alt="Example of MRZ in TD2 format" width="72%" />
+</div>
+
+### Passport (TD3 Size)
+
+The MRZ (Machine Readable Zone) in TD3 format consists of 2 lines, with each line containing 44 characters.
+
+<div>
+   <img src="../../assets/td3-passport.png" alt="Example of MRZ in TD2 format" width="88%" />
+</div>
 
 ## System Requirements
 
-- Latest [Flutter SDK](https://flutter.dev/)
-- **Android**: Android 5.0 (API Level 21) or higher; armeabi-v7a, arm64-v8a, x86, x86_64; Android Studio Meerkat (2024.3.1); Java 17+; Gradle 8.0+
-- **iOS**: iOS 13 or higher; arm64 and x86_64; Xcode 13+ (Xcode 14.1+ recommended)
+* Latest [Flutter SDK](https://flutter.dev/)
+* Android
+  * Supported OS: Android 5.0 (API Level 21) and higher
+  * Supported ABI: armeabi-v7a, arm64-v8a, x86 and x86_64
+  * Development Environment: Android Studio Meerkat (2024.3.1); Java 17+; Gradle 8.0+
+* iOS
+  * Supported OS: iOS 13+
+  * Supported ABI: arm64 and x86_64
+  * Development Environment: Xcode 13+ (Xcode 14.1+ recommended)
 
-## Licensing
+## Including the Library
 
 A valid license key is required to use the SDK. If you are just getting started, request a free 30-day trial license below:
 
@@ -61,15 +95,47 @@ Run the following command from the project root to add `dynamsoft_mrz_scanner_bu
 flutter pub add dynamsoft_mrz_scanner_bundle_flutter
 ```
 
-Then install all dependencies:
+Then run the command to install all dependencies:
 
 ```bash
 flutter pub get
 ```
 
-### Step 3: Set Up the UI
+## Building the MRZ Scanner Widget
 
-Replace the contents of `lib/main.dart` with a `StatefulWidget` that contains a **Scan MRZ** button at the bottom and a display area for the result. The `_launchMrzScanner` method will be added in the next step.
+Now that the package is added, it's time to start building the `MRZScanner` Widget using the SDK.
+
+### Importing the Library
+
+To use the MRZScanner API, please import `dynamsoft_mrz_scanner_bundle_flutter` in your dart file:
+
+```dart
+import 'package:dynamsoft_mrz_scanner_bundle_flutter/dynamsoft_mrz_scanner_bundle_flutter.dart';
+```
+
+### Quick Start
+
+The code below shows the simplest function implementation to initialize and start the MRZ Scanner
+
+```dart
+import 'package:dynamsoft_mrz_scanner_bundle_flutter/dynamsoft_mrz_scanner_bundle_flutter.dart';
+
+void _launchMrzScanner() async {
+  var config = MRZScannerConfig(
+    license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
+  );
+  MRZScanResult mrzScanResult = await MRZScanner.launch(config);
+  if(mrzScanResult.status == EnumResultStatus.finished) {
+    MRZData data = mrzScanResult.mrzData!;
+    // do something with the data
+  }
+}
+```
+
+You can call the above function anywhere (e.g., when the app starts, on a button click, etc.) to achieve the effect:
+open an MRZ scanning interface, and after scanning is complete, close the interface and return the result.
+
+This next code snippet is the **full Hello World implementation** that uses the above `_launchMrzScanner` function. This is done in *main.dart* but can be used as a reference for your own implementation, whether it is in *main.dart* or any other page.
 
 ```dart
 import 'package:dynamsoft_mrz_scanner_bundle_flutter/dynamsoft_mrz_scanner_bundle_flutter.dart';
@@ -82,6 +148,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -89,14 +156,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
       ),
-      home: const MyHomePage(),
+      home: const MyHomePage(title: 'Scan MRZ'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
+  final String title;
+  const MyHomePage({super.key, required this.title});
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -104,154 +171,121 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String _displayString = "";
 
+  void _launchMrzScanner() async {
+    var config = MRZScannerConfig(
+      license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
+    );
+    MRZScanResult mrzScanResult = await MRZScanner.launch(config);
+
+    setState(() {
+      if(mrzScanResult.status == EnumResultStatus.canceled) {
+        _displayString = "Scan canceled";
+      } else if(mrzScanResult.status == EnumResultStatus.exception) {
+        _displayString = "ErrorCode: ${mrzScanResult.errorCode}\n\nErrorString: ${mrzScanResult.errorMessage}";
+      } else { //EnumResultStatus.finished
+        MRZData data = mrzScanResult.mrzData!;
+        _displayString = "Name:\t${data.firstName} ${data.lastName}\n\n"
+            "Sex: ${data.sex.substring(0,1).toUpperCase() + data.sex.substring(1)}\n\n"
+            "Age: ${data.age}\n\n"
+            "Document Type: ${data.documentType}\n\n"
+            "Document Number: ${data.documentNumber}\n\n"
+            "Issuing State: ${data.issuingState}\n\n"
+            "Nationality: ${data.nationality}\n\n"
+            "Date of Birth(YYYY-MM-DD): ${data.dateOfBirth}\n\n"
+            "Date of Expiry(YYYY-MM-DD): ${data.dateOfExpire}";
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Center(
-                child: Text(
-                  _displayString,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: _launchMrzScanner,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text("Scan MRZ"),
-                ),
-              ),
-            ),
-          ],
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
         ),
-      ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                _displayString,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              SizedBox(height: 20), // Add a spacing of 20
+              TextButton(
+                onPressed: _launchMrzScanner,
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text("Scan an MRZ"),
+              ),
+            ],
+          ),
+        )
     );
-  }
-}
-```
-
-### Step 4: Configure the Scanner
-
-Add the `_launchMrzScanner` method to `_MyHomePageState`. Create an `MRZScannerConfig` with your license key and pass it to `MRZScanner.launch()`.
-
-The only required setting is the license key — see the [Licensing](#licensing) section above for how to obtain one. For the full list of optional settings such as document type filtering, UI button visibility, and image capture options, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
-
-```dart
-/* Add to _MyHomePageState */
-void _launchMrzScanner() async {
-  var config = MRZScannerConfig(
-    license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
-  );
-  MRZScanResult mrzScanResult = await MRZScanner.launch(config);
-}
-```
-
-### Step 5: Launch the Scanner and Handle Results
-
-`MRZScanner.launch()` returns an `MRZScanResult` when the scanner closes. Each result carries a `status` of *finished* (MRZ decoded), *canceled* (user closed the scanner), or *exception* (an error occurred).
-
-Extend `_launchMrzScanner` to handle all three cases. When the scan succeeds, access the parsed data and any captured images from the result:
-
-```dart
-/* _MyHomePageState — complete _launchMrzScanner */
-void _launchMrzScanner() async {
-  var config = MRZScannerConfig(
-    license: "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9",
-  );
-  MRZScanResult mrzScanResult = await MRZScanner.launch(config);
-
-  if (mrzScanResult.status == EnumResultStatus.finished &&
-      mrzScanResult.mrzData != null) {
-    MRZData data = mrzScanResult.mrzData!;
-
-    // Captured images (Uint8List? — null if not captured or disabled in config)
-    final portrait    = mrzScanResult.portraitImage;
-    final mrzDoc      = mrzScanResult.mrzSideDocumentImage;
-    final oppDoc      = mrzScanResult.oppositeSideDocumentImage;
-    final mrzOriginal = mrzScanResult.mrzSideOriginalImage;
-    final oppOriginal = mrzScanResult.oppositeSideOriginalImage;
-
-    setState(() {
-      _displayString = "Name: ${data.firstName} ${data.lastName}\n"
-          "DOB: ${data.dateOfBirth}\nExpiry: ${data.dateOfExpire}";
-    });
-  } else if (mrzScanResult.status == EnumResultStatus.canceled) {
-    /* The user closed the scanner before a result was produced */
-    setState(() => _displayString = "Scan canceled");
-  } else {
-    /* An error occurred during scanning */
-    setState(() => _displayString =
-        "ErrorCode: ${mrzScanResult.errorCode}\n\nErrorString: ${mrzScanResult.errorMessage}");
   }
 }
 ```
 
 > [!NOTE]
 >
-> - `mrzSideDocumentImage` is the cropped, perspective-corrected image of the side containing the MRZ. `oppositeSideDocumentImage` is the reverse side, relevant for two-sided documents such as TD1 ID cards.
-> - Image properties return `null` if the corresponding capture option was disabled in `MRZScannerConfig`, or if no image was captured for that side.
-> - `mrzScanResult.mrzData` is nullable. Always check for `null` before accessing its fields.
+>- The license string here grants a time-limited free trial which requires network connection to work.
+>- You can request a 30-day trial license via the [Trial License portal](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=github&package=mobile).
 
-#### Image Properties on `MRZScanResult`
+### MRZ Result and Data
 
-| Property | Type | Description |
-| -------- | ---- | ----------- |
-| [`portraitImage`](../api-reference/mrz-scan-result.md) | `Uint8List?` | Extracted portrait photo. Enabled by default; control via `returnPortraitImage`. |
-| [`mrzSideDocumentImage`](../api-reference/mrz-scan-result.md) | `Uint8List?` | Cropped document image of the MRZ side. Enabled by default; control via `returnDocumentImage`. |
-| [`oppositeSideDocumentImage`](../api-reference/mrz-scan-result.md) | `Uint8List?` | Cropped document image of the opposite side. Enabled by default; control via `returnDocumentImage`. |
-| [`mrzSideOriginalImage`](../api-reference/mrz-scan-result.md) | `Uint8List?` | Full camera frame of the MRZ side. Disabled by default; enable via `returnOriginalImage`. |
-| [`oppositeSideOriginalImage`](../api-reference/mrz-scan-result.md) | `Uint8List?` | Full camera frame of the opposite side. Disabled by default; enable via `returnOriginalImage`. |
+Once the scan process completes and the MRZ Scanner successfully recognizes a MRZ, a `MRZScanResult` is produced, representing all of the decrypted data contained within the MRZ.
 
-### Step 6: Display the Results
+[`MRZScanResult`](../api-reference/mrz-scan-result.md) has the following properties:
 
-`MRZScanResult.mrzData` is a [`MRZData`](../api-reference/mrz-data.md) object containing the parsed MRZ fields:
+- **resultStatus**: The status of the MRZ scan result, of type [`EnumResultStatus`](../api-reference/result-status.md).
+    - *finished*: The MRZ scan was successful.
+    - *canceled*: The MRZ scanning activity is closed before the process is finished.
+    - *exception*: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
+- **errorCode**: The error code indicates if something went wrong during the MRZ scanning process (0 means no error). Only defined when the `resultStatus` is `exception`.
+- **errorString**: The error message associated with the error code if an error occurs during MRZ scanning process. Only defined when the `resultStatus` is `exception`.
+- **data**: The parsed MRZ data as a `MRZData` object.
+  
+[`MRZData`](../api-reference/mrz-data.md) holds the actual decrypted data of the MRZ result, and it comes with the following fields:
 
-| Property | Type | Description |
-| -------- | ---- | ----------- |
-| `firstName` | `String` | First name of the document holder. |
-| `lastName` | `String` | Last name of the document holder. |
-| `sex` | `String` | Sex of the document holder. |
-| `age` | `int` | Calculated age of the document holder. |
-| `documentType` | `String` | MRTD format (e.g. `MRTD_TD3_PASSPORT`). |
-| `documentNumber` | `String` | Document number. |
-| `issuingState` | `String` | Full name of the issuing country/region. |
-| `issuingStateRaw` | `String` | Raw ICAO issuing state code (e.g. `CAN`). |
-| `nationality` | `String` | Full name of the nationality. |
-| `nationalityRaw` | `String` | Raw ICAO nationality code (e.g. `CAN`). |
-| `dateOfBirth` | `String` | Date of birth (YYYY-MM-DD). |
-| `dateOfExpire` | `String` | Expiry date (YYYY-MM-DD). |
-| `mrzText` | `String` | Raw unparsed MRZ text. |
+- **documentType**: The type of MRZ document, which would either be `EnumDocumentType.passport`, `EnumDocumentType.id`, or `EnumDocumentType.all`. You can check out the [Supported Machine-Readable Travel Document Types](#supported-machine-readable-travel-document-types) to learn more. 
+- **firstName**: The first name of the MRZ document holder.
+- **lastName**: The last name of the MRZ document holder.
+- **sex**: The sex of the MRZ document holder.
+- **issuingState**: The issuing state of the MRZ document.
+- **nationality**: The nationality of the MRZ document holder.
+- **dateOfBirth**: The date of birth of the MRZ document holder.
+- **dateOfExpiry**: The expiry date of the MRZ document.
+- **documentNumber**: The MRZ document number.
+- **age**: The age of the MRZ document holder.
+- **mrzText**: The raw text of the MRZ.
 
 For the full field list, see the [MRZData API reference](../api-reference/mrz-data.md).
 
-### Step 7: Run the Project
+### Customizing the MRZ Scanner (Optional)
 
-#### iOS
+Even though the default settings of the ready-to-use MRZ Scanner is sufficient to cover the majority of MRZ scanning scenarios, the [`MRZScannerConfig`](../api-reference/mrz-scanner-config.md) class allows you to change the behaviour of the MRZ Scanner to fit your specific scenario. Using this class can help you customize different UI elements and determine the settings of the scanner engine itself.
 
-Before deploying to an iOS device, install the pod dependencies from the project root:
+To learn of the different ways in which the MRZ scanner can be customized, please refer to the [MRZ Scanner Customization Guide](customize-mrz-scanner.md).
+
+## Run the Project
+
+### iOS
+
+Before the project can be deployed to a *iOS* device, the camera permissions and the developer signature must first be set. To add the camera permissions to the iOS portion of the app, we recommend first installing the **pods** dependencies to generate the **.xcworkspace** project under the ios folder (`ios/Runner.xcworkspace`). Please run the following commands from the root directory:
 
 ```bash
 cd ios/
 pod install --repo-update
 ```
 
-Once complete, open the generated `Runner.xcworkspace` in Xcode and complete two required configuration steps:
+Once the pods are installed, *Runner.xcworkspace* should now be generated in the *ios* folder. 
 
-1. **Camera Permission** — In the **Info** tab of the project settings, add the **Privacy - Camera Usage Description** key with a description string (e.g. `"This app uses the camera to scan MRZ documents."`). Without this the app will crash when the camera is opened.
+#### Camera Permissions
 
-2. **Signing** — In the **Signing & Capabilities** tab, set a valid **Team**. Without this the project will fail to build.
+To add the **camera permissions**, open the generated *Runner.xcworkspace* and navigate to the *Info* section of the project settings. Then you must add the "Privacy - Camera Usage Description" key to the list (where you can also assign a string message to show in the alert box).
 
 Connect a physical iOS device, then either select it from the top bar in Xcode and click **Run**, or run from the project root with:
 
@@ -263,9 +297,15 @@ flutter run -d <your_device_id>
 
 You can list connected device IDs with `flutter devices`.
 
-#### Android
+In order to deploy the app to a iOS device, we recommend doing it via Xcode by using the `Runner.xcworkspace` project that was generated when the pods were installed. Since the camera permissions are taken care of, all you need to do is properly configure the *Signing & Capabilities* section of the project settings. Should the iOS device be connected to the computer, you can now run and deploy the app to the device. 
 
-From the project root, run:
+If everything is set up correctly, you should see the app running on your device.
+
+### Android
+
+#### Deploying to Device
+
+Go to the project root folder, open a new terminal and run the following command:
 
 ```bash
 flutter run
@@ -273,12 +313,11 @@ flutter run
 flutter run -d <your_device_id>
 ```
 
-You can list connected device IDs with `flutter devices`.
+You can get the IDs of all connected (physical) devices by running the command `flutter devices` in the terminal. 
 
-> [!NOTE]
-> Running on a simulator or emulator is not supported as the scanner requires a physical device camera.
+## Full Sample Code
 
-## Next Steps
+The full sample code is available [here](https://github.com/Dynamsoft/capture-vision-flutter-samples/tree/main/ScanMRZ).
 
 - **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile-flutter).
 - **Customize** — Learn how to configure document type, UI elements, and image capture in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
