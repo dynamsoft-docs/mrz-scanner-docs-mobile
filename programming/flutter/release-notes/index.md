@@ -10,7 +10,7 @@ noTitleIndex: true
 
 # Dynamsoft MRZ Scanner Flutter SDK - Release Notes
 
-## 3.4.1300 (05/21/2026)
+## 3.4.1300 (05/20/2026)
 
 ### New
 

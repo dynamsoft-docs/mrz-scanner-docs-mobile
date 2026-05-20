@@ -10,6 +10,13 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
+## 3.4.1300 (05/20/2026)
+
+### Fixes & Improvements
+
+- Improved compatibility with devices running kernels that use a 16 KB memory page size.
+- Addressed intermittent crash and hang conditions encountered in certain runtime scenarios.
+
 ## 3.4.1200 (04/02/2026)
 
 ### New
