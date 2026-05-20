@@ -253,7 +253,15 @@ Once complete, open the generated `Runner.xcworkspace` in Xcode and complete two
 
 2. **Signing** — In the **Signing & Capabilities** tab, set a valid **Team**. Without this the project will fail to build.
 
-Connect a physical iOS device, select it from the top bar, and click **Run**.
+Connect a physical iOS device, then either select it from the top bar in Xcode and click **Run**, or run from the project root with:
+
+```bash
+flutter run
+# or
+flutter run -d <your_device_id>
+```
+
+You can list connected device IDs with `flutter devices`.
 
 #### Android
 
