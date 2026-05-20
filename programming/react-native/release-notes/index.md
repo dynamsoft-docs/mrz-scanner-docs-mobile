@@ -10,6 +10,13 @@ noTitleIndex: true
 
 # Dynamsoft MRZ Scanner React Native SDK - Release Notes
 
+## 3.4.1310 (05/20/2026)
+
+### Fixes & Improvements
+
+- Improved compatibility with devices running kernels that use a 16 KB memory page size.
+- Addressed intermittent crash and hang conditions encountered in certain runtime scenarios.
+
 ## 3.4.1300 (04/28/2026)
 
 ### New
