@@ -24,16 +24,18 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
 
 ## System Requirements
 
-- React Native **0.71.0** or higher (**0.79.0+** recommended).
-- Node **18** or higher.
+The SDK supports React Native **0.71.0** or higher. The toolchain versions below correspond to the React Native version this guide's sample is pinned to (**0.85.3**). If you target a different React Native version, your Node, JDK, Gradle, Xcode, and iOS deployment-target requirements are dictated by *that* version — check its release requirements rather than the values here.
+
+- React Native **0.71.0** or higher (this guide is pinned to **0.85.3**).
+- Node **20.19.4** or higher.
 - Android
   - Supported OS: **Android 5.0** (API Level 21) or higher.
   - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
-  - Development Environment: **Android Studio 2022.2.1+** (2025.2.1 recommended), **Java 17+**, **Gradle 8.0+**.
+  - Development Environment: **Android Studio 2022.2.1+** (2025.2.1 recommended), **Java 17–20**, **Gradle 9.x**.
 - iOS
-  - Supported OS: **iOS 13** or higher.
+  - Supported OS: **iOS 15.1** or higher.
   - Supported ABI: **arm64** and **x86_64**.
-  - Development Environment: **Xcode 13** and above (**Xcode 14.1+** recommended).
+  - Development Environment: **Xcode 16.1** or higher.
 
 ## Licensing
 
