@@ -170,36 +170,36 @@ import androidx.core.view.WindowInsetsCompat;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
 public class MainActivity extends AppCompatActivity {
-   private ActivityResultLauncher<MRZScannerConfig> launcher;
-   private final MRZScannerConfig config = new MRZScannerConfig();
-   @Override
-   protected void onCreate(@Nullable Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      EdgeToEdge.enable(this);
-      setContentView(R.layout.activity_main);
-      ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-         Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-         return insets;
-      });
-      config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-      launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
-         Intent intent = new Intent(this, ResultActivity.class);
-         intent.putExtra(ResultActivity.EXTRA_RESULT, result);
-         startActivityForResult(intent, ResultActivity.REQUEST_CODE);
-      });
-      findViewById(R.id.btn_start).setOnClickListener(v -> launcher.launch(config));
-   }
-   @Override
-   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-      if (requestCode == ResultActivity.REQUEST_CODE && resultCode == RESULT_OK) {
-         int action = data.getIntExtra(ResultActivity.EXTRA_ACTION, ResultActivity.ACTION_RETURN_HOME);
-         if (action == ResultActivity.ACTION_RESCAN) {
-            launcher.launch(config);
-         }
-      }
-   }
+       private ActivityResultLauncher<MRZScannerConfig> launcher;
+       private final MRZScannerConfig config = new MRZScannerConfig();
+       @Override
+       protected void onCreate(@Nullable Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          EdgeToEdge.enable(this);
+          setContentView(R.layout.activity_main);
+          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+             return insets;
+          });
+          config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
+          launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
+             Intent intent = new Intent(this, ResultActivity.class);
+             intent.putExtra(ResultActivity.EXTRA_RESULT, result);
+             startActivityForResult(intent, ResultActivity.REQUEST_CODE);
+          });
+          findViewById(R.id.btn_start).setOnClickListener(v -> launcher.launch(config));
+       }
+       @Override
+       protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+          super.onActivityResult(requestCode, resultCode, data);
+          if (requestCode == ResultActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+             int action = data.getIntExtra(ResultActivity.EXTRA_ACTION, ResultActivity.ACTION_RETURN_HOME);
+             if (action == ResultActivity.ACTION_RESCAN) {
+                launcher.launch(config);
+             }
+          }
+       }
 }
 ```
 2. 
@@ -217,37 +217,37 @@ import androidx.core.view.WindowInsetsCompat
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
 class MainActivity : AppCompatActivity() {
-   private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
-   private val config = MRZScannerConfig()
-   override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      enableEdgeToEdge()
-      setContentView(R.layout.activity_main)
-      ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-         insets
-      }
-      config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9")
-      launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
-         val intent = Intent(this, ResultActivity::class.java)
-         intent.putExtra(ResultActivity.EXTRA_RESULT, result)
-         startActivityForResult(intent, ResultActivity.REQUEST_CODE)
-      }
-      findViewById<View>(R.id.btn_start).setOnClickListener {
-         launcher.launch(config)
-      }
-   }
-   @Deprecated("Deprecated in Java")
-   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-      super.onActivityResult(requestCode, resultCode, data)
-      if (requestCode == ResultActivity.REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-         val action = data.getIntExtra(ResultActivity.EXTRA_ACTION, ResultActivity.ACTION_RETURN_HOME)
-         if (action == ResultActivity.ACTION_RESCAN) {
-            launcher.launch(config)
-         }
-      }
-   }
+       private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
+       private val config = MRZScannerConfig()
+       override fun onCreate(savedInstanceState: Bundle?) {
+          super.onCreate(savedInstanceState)
+          enableEdgeToEdge()
+          setContentView(R.layout.activity_main)
+          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+             insets
+          }
+          config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9")
+          launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
+             val intent = Intent(this, ResultActivity::class.java)
+             intent.putExtra(ResultActivity.EXTRA_RESULT, result)
+             startActivityForResult(intent, ResultActivity.REQUEST_CODE)
+          }
+          findViewById<View>(R.id.btn_start).setOnClickListener {
+             launcher.launch(config)
+          }
+       }
+       @Deprecated("Deprecated in Java")
+       override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+          super.onActivityResult(requestCode, resultCode, data)
+          if (requestCode == ResultActivity.REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+             val action = data.getIntExtra(ResultActivity.EXTRA_ACTION, ResultActivity.ACTION_RETURN_HOME)
+             if (action == ResultActivity.ACTION_RESCAN) {
+                launcher.launch(config)
+             }
+          }
+       }
 }
 ```
 
@@ -689,62 +689,62 @@ import androidx.fragment.app.Fragment;
 import com.dynamsoft.core.basic_structures.CoreException;
 import com.dynamsoft.core.basic_structures.ImageData;
 public class ImagesFragment extends Fragment {
-   private final ImageData imageData1;
-   private final ImageData imageData2;
-   public ImagesFragment(ImageData imageData1, ImageData imageData2) {
-      super();
-      this.imageData1 = imageData1;
-      this.imageData2 = imageData2;
-   }
-   @NonNull
-   public static ImagesFragment newInstance(@Nullable ImageData imageData1, @Nullable ImageData imageData2) {
-      return new ImagesFragment(imageData1, imageData2);
-   }
-   @Nullable
-   @Override
-   public View onCreateView(@NonNull android.view.LayoutInflater inflater,
-                            @Nullable ViewGroup container,
-                            @Nullable Bundle savedInstanceState) {
-      LinearLayout root = new LinearLayout(requireContext());
-      root.setLayoutParams(new LinearLayout.LayoutParams(
-              ViewGroup.LayoutParams.MATCH_PARENT,
-              ViewGroup.LayoutParams.MATCH_PARENT
-      ));
-      root.setOrientation(LinearLayout.HORIZONTAL);
-      root.setGravity(Gravity.CENTER_VERTICAL);
-      root.setBaselineAligned(false);
-      root.setClipToPadding(false);
-      root.setClipChildren(false);
-      return root;
-   }
-   @Override
-   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-      LinearLayout root = (LinearLayout) view;
-      ImageData[] imageDatas = new ImageData[]{imageData1, imageData2};
-      for (int i = 0; i < imageDatas.length; i++) {
-         ImageData imageData = imageDatas[i];
-         if (imageData1 != null && imageData2 != null && i == 1) {
-            root.addView(new View(requireContext()),
-                    new LinearLayout.LayoutParams(
-                            (int)(16 * getResources().getDisplayMetrics().density),
-                            ViewGroup.LayoutParams.MATCH_PARENT));
-         }
-         if (imageData != null) {
-            try {
-               Bitmap bmp = imageData.toBitmap();
-               ImageView iv = new ImageView(requireContext());
-               LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-               iv.setLayoutParams(lp);
-               iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
-               iv.setAdjustViewBounds(true);
-               iv.setImageBitmap(bmp);
-               root.addView(iv);
-            } catch (CoreException e) {
-               e.printStackTrace();
-            }
-         }
-      }
-   }
+       private final ImageData imageData1;
+       private final ImageData imageData2;
+       public ImagesFragment(ImageData imageData1, ImageData imageData2) {
+          super();
+          this.imageData1 = imageData1;
+          this.imageData2 = imageData2;
+       }
+       @NonNull
+       public static ImagesFragment newInstance(@Nullable ImageData imageData1, @Nullable ImageData imageData2) {
+          return new ImagesFragment(imageData1, imageData2);
+       }
+       @Nullable
+       @Override
+       public View onCreateView(@NonNull android.view.LayoutInflater inflater,
+                                @Nullable ViewGroup container,
+                                @Nullable Bundle savedInstanceState) {
+          LinearLayout root = new LinearLayout(requireContext());
+          root.setLayoutParams(new LinearLayout.LayoutParams(
+                  ViewGroup.LayoutParams.MATCH_PARENT,
+                  ViewGroup.LayoutParams.MATCH_PARENT
+          ));
+          root.setOrientation(LinearLayout.HORIZONTAL);
+          root.setGravity(Gravity.CENTER_VERTICAL);
+          root.setBaselineAligned(false);
+          root.setClipToPadding(false);
+          root.setClipChildren(false);
+          return root;
+       }
+       @Override
+       public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+          LinearLayout root = (LinearLayout) view;
+          ImageData[] imageDatas = new ImageData[]{imageData1, imageData2};
+          for (int i = 0; i < imageDatas.length; i++) {
+             ImageData imageData = imageDatas[i];
+             if (imageData1 != null && imageData2 != null && i == 1) {
+                root.addView(new View(requireContext()),
+                        new LinearLayout.LayoutParams(
+                                (int)(16 * getResources().getDisplayMetrics().density),
+                                ViewGroup.LayoutParams.MATCH_PARENT));
+             }
+             if (imageData != null) {
+                try {
+                   Bitmap bmp = imageData.toBitmap();
+                   ImageView iv = new ImageView(requireContext());
+                   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+                   iv.setLayoutParams(lp);
+                   iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                   iv.setAdjustViewBounds(true);
+                   iv.setImageBitmap(bmp);
+                   root.addView(iv);
+                } catch (CoreException e) {
+                   e.printStackTrace();
+                }
+             }
+          }
+       }
 }
 ```
 2. 
@@ -761,61 +761,61 @@ import androidx.fragment.app.Fragment
 import com.dynamsoft.core.basic_structures.CoreException
 import com.dynamsoft.core.basic_structures.ImageData
 class ImagesFragment(
-   private val imageData1: ImageData?,
-   private val imageData2: ImageData?
+       private val imageData1: ImageData?,
+       private val imageData2: ImageData?
 ) : Fragment() {
-   companion object {
-      fun newInstance(imageData1: ImageData?, imageData2: ImageData?): ImagesFragment {
-         return ImagesFragment(imageData1, imageData2)
-      }
-   }
-   override fun onCreateView(
-      inflater: android.view.LayoutInflater,
-      container: ViewGroup?,
-      savedInstanceState: Bundle?
-   ): View {
-      val root = LinearLayout(requireContext())
-      root.layoutParams = LinearLayout.LayoutParams(
-         ViewGroup.LayoutParams.MATCH_PARENT,
-         ViewGroup.LayoutParams.MATCH_PARENT
-      )
-      root.orientation = LinearLayout.HORIZONTAL
-      root.gravity = Gravity.CENTER_VERTICAL
-      root.isBaselineAligned = false
-      root.clipToPadding = false
-      root.clipChildren = false
-      return root
-   }
-   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-      val root = view as LinearLayout
-      val imageDatas = arrayOf(imageData1, imageData2)
-      for (i in imageDatas.indices) {
-         val imageData = imageDatas[i]
-         if (imageData1 != null && imageData2 != null && i == 1) {
-            root.addView(
-               View(requireContext()),
-               LinearLayout.LayoutParams(
-                  (16 * resources.displayMetrics.density).toInt(),
-                  ViewGroup.LayoutParams.MATCH_PARENT
-               )
-            )
-         }
-         if (imageData != null) {
-            try {
-               val bmp: Bitmap = imageData.toBitmap()
-               val iv = ImageView(requireContext())
-               val lp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
-               iv.layoutParams = lp
-               iv.scaleType = ImageView.ScaleType.FIT_CENTER
-               iv.adjustViewBounds = true
-               iv.setImageBitmap(bmp)
-               root.addView(iv)
-            } catch (e: CoreException) {
-               e.printStackTrace()
-            }
-         }
-      }
-   }
+       companion object {
+          fun newInstance(imageData1: ImageData?, imageData2: ImageData?): ImagesFragment {
+             return ImagesFragment(imageData1, imageData2)
+          }
+       }
+       override fun onCreateView(
+          inflater: android.view.LayoutInflater,
+          container: ViewGroup?,
+          savedInstanceState: Bundle?
+       ): View {
+          val root = LinearLayout(requireContext())
+          root.layoutParams = LinearLayout.LayoutParams(
+             ViewGroup.LayoutParams.MATCH_PARENT,
+             ViewGroup.LayoutParams.MATCH_PARENT
+          )
+          root.orientation = LinearLayout.HORIZONTAL
+          root.gravity = Gravity.CENTER_VERTICAL
+          root.isBaselineAligned = false
+          root.clipToPadding = false
+          root.clipChildren = false
+          return root
+       }
+       override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+          val root = view as LinearLayout
+          val imageDatas = arrayOf(imageData1, imageData2)
+          for (i in imageDatas.indices) {
+             val imageData = imageDatas[i]
+             if (imageData1 != null && imageData2 != null && i == 1) {
+                root.addView(
+                   View(requireContext()),
+                   LinearLayout.LayoutParams(
+                      (16 * resources.displayMetrics.density).toInt(),
+                      ViewGroup.LayoutParams.MATCH_PARENT
+                   )
+                )
+             }
+             if (imageData != null) {
+                try {
+                   val bmp: Bitmap = imageData.toBitmap()
+                   val iv = ImageView(requireContext())
+                   val lp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
+                   iv.layoutParams = lp
+                   iv.scaleType = ImageView.ScaleType.FIT_CENTER
+                   iv.adjustViewBounds = true
+                   iv.setImageBitmap(bmp)
+                   root.addView(iv)
+                } catch (e: CoreException) {
+                   e.printStackTrace()
+                }
+             }
+          }
+       }
 }
 ```
 
@@ -850,145 +850,145 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 public class ResultActivity extends AppCompatActivity {
-   public static final int REQUEST_CODE = 1024;
-   public static final String EXTRA_RESULT = "RESULT";
-   public static final String EXTRA_ACTION = "ACTION";
-   public static final int ACTION_RESCAN = 0;
-   public static final int ACTION_RETURN_HOME = 1;
-   @Override
-   protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_results);
-      ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-         Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-         return insets;
-      });
-      MRZScanResult scanResult = (MRZScanResult) getIntent().getParcelableExtra(EXTRA_RESULT);
-      if (scanResult != null) {
-         showMRZScanResult(scanResult);
-      }
-      findViewById(R.id.btn_rescan).setOnClickListener(v -> {
-         setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RESCAN));
-         finish();
-      });
-      findViewById(R.id.btn_return_home).setOnClickListener(v -> {
-         setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RETURN_HOME));
-         finish();
-      });
-   }
-   private void showMRZScanResult(MRZScanResult result) {
-      if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
-         setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RETURN_HOME));
-         finish();
-         return;
-      }
-      if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
-         findViewById(R.id.result_view).setVisibility(View.GONE);
-         TextView tvNoResult = findViewById(R.id.no_result_view);
-         tvNoResult.setVisibility(View.VISIBLE);
-         tvNoResult.setText(result.getErrorString());
-         return;
-      }
-      findViewById(R.id.result_view).setVisibility(View.VISIBLE);
-      findViewById(R.id.no_result_view).setVisibility(View.GONE);
-      MRZData data = result.getData();
-      String genderText = data.getSex().substring(0, 1).toUpperCase() + data.getSex().substring(1).toLowerCase();
-      // Main info
-      TextView tvFullName = findViewById(R.id.tv_full_name);
-      tvFullName.setText(data.getFirstName() + " " + data.getLastName());
-      TextView tvGenderAndAge = findViewById(R.id.tv_gender_and_age);
-      tvGenderAndAge.setText(genderText + ", " + data.getAge() + " years old");
-      TextView tvExpiry = findViewById(R.id.tv_expiry);
-      tvExpiry.setText("Expiry: " + data.getDateOfExpire());
-      ImageView ivPortrait = findViewById(R.id.iv_portrait);
-      ImageData portraitImage = result.getPortraitImage();
-      if (portraitImage != null) {
-         try {
-            ivPortrait.setImageBitmap(portraitImage.toBitmap());
-         } catch (CoreException ignored) {
-         }
-      } else {
-         ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder);
-      }
-      // Images view pager
-      showImages(result);
-      // Personal info
-      TextView tvGivenName = findViewById(R.id.tv_given_name);
-      tvGivenName.setText(data.getFirstName());
-      TextView tvSurname = findViewById(R.id.tv_surname);
-      tvSurname.setText(data.getLastName());
-      TextView tvDateOfBirth = findViewById(R.id.tv_date_of_birth);
-      tvDateOfBirth.setText(data.getDateOfBirth());
-      TextView tvGender = findViewById(R.id.tv_gender);
-      tvGender.setText(genderText);
-      TextView tvNationality = findViewById(R.id.tv_nationality);
-      tvNationality.setText(data.getNationality());
-      // Document info
-      TextView tvDocType = findViewById(R.id.tv_doc_type);
-      switch (data.getDocumentType()) {
-         case "MRTD_TD1_ID":
-            tvDocType.setText("ID (TD1)");
-            break;
-         case "MRTD_TD2_ID":
-            tvDocType.setText("ID (TD2)");
-            break;
-         case "MRTD_TD3_PASSPORT":
-            tvDocType.setText("Passport (TD3)");
-            break;
-      }
-      TextView tvDocNumber = findViewById(R.id.tv_doc_number);
-      tvDocNumber.setText(data.getDocumentNumber());
-      TextView tvExpiryDate = findViewById(R.id.tv_expiry_date);
-      tvExpiryDate.setText(data.getDateOfExpire());
-      // Raw MRZ text
-      TextView tvRawMRZ = findViewById(R.id.tv_raw_mrz);
-      tvRawMRZ.setText(data.getMrzText());
-   }
-   private void showImages(MRZScanResult result) {
-      ImageData mrzSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ);
-      ImageData oppositeSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
-      ImageData mrzSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_MRZ);
-      ImageData oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE);
-      TabLayout tabImages = findViewById(R.id.tab_images);
-      ViewPager2 vpImages = findViewById(R.id.vp_images);
-      if (mrzSideDocumentImage == null && mrzSideOriginalImage == null) {
-         tabImages.setVisibility(View.GONE);
-         vpImages.setVisibility(View.GONE);
-         return;
-      } else {
-         tabImages.setVisibility(View.VISIBLE);
-         vpImages.setVisibility(View.VISIBLE);
-      }
-      vpImages.setAdapter(new FragmentStateAdapter(this) {
-         @NonNull
-         @Override
-         public Fragment createFragment(int position) {
-            if (position == 0 && mrzSideDocumentImage != null) {
-               return ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage);
-            } else {
-               return ImagesFragment.newInstance(mrzSideOriginalImage, oppositeSideOriginalImage);
-            }
-         }
-         @Override
-         public int getItemCount() {
-            if (mrzSideDocumentImage != null && mrzSideOriginalImage != null) {
-               return 2;
-            } else {
-               return 1;
-            }
-         }
-      });
-      if (mrzSideOriginalImage != null || oppositeSideOriginalImage != null) {
-         new TabLayoutMediator(tabImages, vpImages, (tab, position) -> {
-            if (position == 0 && mrzSideDocumentImage != null) {
-               tab.setText("Processed");
-            } else {
-               tab.setText("Original");
-            }
-         }).attach();
-      }
-   }
+       public static final int REQUEST_CODE = 1024;
+       public static final String EXTRA_RESULT = "RESULT";
+       public static final String EXTRA_ACTION = "ACTION";
+       public static final int ACTION_RESCAN = 0;
+       public static final int ACTION_RETURN_HOME = 1;
+       @Override
+       protected void onCreate(Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          setContentView(R.layout.activity_results);
+          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+             return insets;
+          });
+          MRZScanResult scanResult = (MRZScanResult) getIntent().getParcelableExtra(EXTRA_RESULT);
+          if (scanResult != null) {
+             showMRZScanResult(scanResult);
+          }
+          findViewById(R.id.btn_rescan).setOnClickListener(v -> {
+             setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RESCAN));
+             finish();
+          });
+          findViewById(R.id.btn_return_home).setOnClickListener(v -> {
+             setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RETURN_HOME));
+             finish();
+          });
+       }
+       private void showMRZScanResult(MRZScanResult result) {
+          if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
+             setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RETURN_HOME));
+             finish();
+             return;
+          }
+          if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
+             findViewById(R.id.result_view).setVisibility(View.GONE);
+             TextView tvNoResult = findViewById(R.id.no_result_view);
+             tvNoResult.setVisibility(View.VISIBLE);
+             tvNoResult.setText(result.getErrorString());
+             return;
+          }
+          findViewById(R.id.result_view).setVisibility(View.VISIBLE);
+          findViewById(R.id.no_result_view).setVisibility(View.GONE);
+          MRZData data = result.getData();
+          String genderText = data.getSex().substring(0, 1).toUpperCase() + data.getSex().substring(1).toLowerCase();
+          // Main info
+          TextView tvFullName = findViewById(R.id.tv_full_name);
+          tvFullName.setText(data.getFirstName() + " " + data.getLastName());
+          TextView tvGenderAndAge = findViewById(R.id.tv_gender_and_age);
+          tvGenderAndAge.setText(genderText + ", " + data.getAge() + " years old");
+          TextView tvExpiry = findViewById(R.id.tv_expiry);
+          tvExpiry.setText("Expiry: " + data.getDateOfExpire());
+          ImageView ivPortrait = findViewById(R.id.iv_portrait);
+          ImageData portraitImage = result.getPortraitImage();
+          if (portraitImage != null) {
+             try {
+                ivPortrait.setImageBitmap(portraitImage.toBitmap());
+             } catch (CoreException ignored) {
+             }
+          } else {
+             ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder);
+          }
+          // Images view pager
+          showImages(result);
+          // Personal info
+          TextView tvGivenName = findViewById(R.id.tv_given_name);
+          tvGivenName.setText(data.getFirstName());
+          TextView tvSurname = findViewById(R.id.tv_surname);
+          tvSurname.setText(data.getLastName());
+          TextView tvDateOfBirth = findViewById(R.id.tv_date_of_birth);
+          tvDateOfBirth.setText(data.getDateOfBirth());
+          TextView tvGender = findViewById(R.id.tv_gender);
+          tvGender.setText(genderText);
+          TextView tvNationality = findViewById(R.id.tv_nationality);
+          tvNationality.setText(data.getNationality());
+          // Document info
+          TextView tvDocType = findViewById(R.id.tv_doc_type);
+          switch (data.getDocumentType()) {
+             case "MRTD_TD1_ID":
+                tvDocType.setText("ID (TD1)");
+                break;
+             case "MRTD_TD2_ID":
+                tvDocType.setText("ID (TD2)");
+                break;
+             case "MRTD_TD3_PASSPORT":
+                tvDocType.setText("Passport (TD3)");
+                break;
+          }
+          TextView tvDocNumber = findViewById(R.id.tv_doc_number);
+          tvDocNumber.setText(data.getDocumentNumber());
+          TextView tvExpiryDate = findViewById(R.id.tv_expiry_date);
+          tvExpiryDate.setText(data.getDateOfExpire());
+          // Raw MRZ text
+          TextView tvRawMRZ = findViewById(R.id.tv_raw_mrz);
+          tvRawMRZ.setText(data.getMrzText());
+       }
+       private void showImages(MRZScanResult result) {
+          ImageData mrzSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ);
+          ImageData oppositeSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
+          ImageData mrzSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_MRZ);
+          ImageData oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE);
+          TabLayout tabImages = findViewById(R.id.tab_images);
+          ViewPager2 vpImages = findViewById(R.id.vp_images);
+          if (mrzSideDocumentImage == null && mrzSideOriginalImage == null) {
+             tabImages.setVisibility(View.GONE);
+             vpImages.setVisibility(View.GONE);
+             return;
+          } else {
+             tabImages.setVisibility(View.VISIBLE);
+             vpImages.setVisibility(View.VISIBLE);
+          }
+          vpImages.setAdapter(new FragmentStateAdapter(this) {
+             @NonNull
+             @Override
+             public Fragment createFragment(int position) {
+                if (position == 0 && mrzSideDocumentImage != null) {
+                   return ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage);
+                } else {
+                   return ImagesFragment.newInstance(mrzSideOriginalImage, oppositeSideOriginalImage);
+                }
+             }
+             @Override
+             public int getItemCount() {
+                if (mrzSideDocumentImage != null && mrzSideOriginalImage != null) {
+                   return 2;
+                } else {
+                   return 1;
+                }
+             }
+          });
+          if (mrzSideOriginalImage != null || oppositeSideOriginalImage != null) {
+             new TabLayoutMediator(tabImages, vpImages, (tab, position) -> {
+                if (position == 0 && mrzSideDocumentImage != null) {
+                   tab.setText("Processed");
+                } else {
+                   tab.setText("Original");
+                }
+             }).attach();
+          }
+       }
 }
 ```
 2. 
@@ -1013,127 +1013,127 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 class ResultActivity : AppCompatActivity() {
-   companion object {
-      const val REQUEST_CODE = 1024
-      const val EXTRA_RESULT = "RESULT"
-      const val EXTRA_ACTION = "ACTION"
-      const val ACTION_RESCAN = 0
-      const val ACTION_RETURN_HOME = 1
-   }
-   override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      setContentView(R.layout.activity_results)
-      ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-         insets
-      }
-      val scanResult = intent.getParcelableExtra<MRZScanResult>(EXTRA_RESULT)
-      scanResult?.let { showMRZScanResult(it) }
-      findViewById<View>(R.id.btn_rescan).setOnClickListener {
-         setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RESCAN))
-         finish()
-      }
-      findViewById<View>(R.id.btn_return_home).setOnClickListener {
-         setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RETURN_HOME))
-         finish()
-      }
-   }
-   private fun showMRZScanResult(result: MRZScanResult) {
-      if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
-         setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RETURN_HOME))
-         finish()
-         return
-      }
-      if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
-         findViewById<View>(R.id.result_view).visibility = View.GONE
-         val tvNoResult = findViewById<TextView>(R.id.no_result_view)
-         tvNoResult.visibility = View.VISIBLE
-         tvNoResult.text = result.errorString
-         return
-      }
-      findViewById<View>(R.id.result_view).visibility = View.VISIBLE
-      findViewById<View>(R.id.no_result_view).visibility = View.GONE
-      val data = result.data
-      val genderText = data.sex.substring(0, 1).uppercase() + data.sex.substring(1).lowercase()
-      // Main info
-      val tvFullName = findViewById<TextView>(R.id.tv_full_name)
-      tvFullName.text = "${data.firstName} ${data.lastName}"
-      val tvGenderAndAge = findViewById<TextView>(R.id.tv_gender_and_age)
-      tvGenderAndAge.text = "$genderText, ${data.age} years old"
-      val tvExpiry = findViewById<TextView>(R.id.tv_expiry)
-      tvExpiry.text = "Expiry: ${data.dateOfExpire}"
-      val ivPortrait = findViewById<ImageView>(R.id.iv_portrait)
-      val portraitImage = result.getPortraitImage()
-      if (portraitImage != null) {
-         try {
-            ivPortrait.setImageBitmap(portraitImage.toBitmap())
-         } catch (ignored: CoreException) {
-         }
-      } else {
-         ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder)
-      }
-      // Images view pager
-      showImages(result)
-      // Personal info
-      val tvGivenName = findViewById<TextView>(R.id.tv_given_name)
-      tvGivenName.text = data.firstName
-      val tvSurname = findViewById<TextView>(R.id.tv_surname)
-      tvSurname.text = data.lastName
-      val tvDateOfBirth = findViewById<TextView>(R.id.tv_date_of_birth)
-      tvDateOfBirth.text = data.dateOfBirth
-      val tvGender = findViewById<TextView>(R.id.tv_gender)
-      tvGender.text = genderText
-      val tvNationality = findViewById<TextView>(R.id.tv_nationality)
-      tvNationality.text = data.nationality
-      // Document info
-      val tvDocType = findViewById<TextView>(R.id.tv_doc_type)
-      when (data.documentType) {
-         "MRTD_TD1_ID" -> tvDocType.text = "ID (TD1)"
-         "MRTD_TD2_ID" -> tvDocType.text = "ID (TD2)"
-         "MRTD_TD3_PASSPORT" -> tvDocType.text = "Passport (TD3)"
-      }
-      val tvDocNumber = findViewById<TextView>(R.id.tv_doc_number)
-      tvDocNumber.text = data.documentNumber
-      val tvExpiryDate = findViewById<TextView>(R.id.tv_expiry_date)
-      tvExpiryDate.text = data.dateOfExpire
-      // Raw MRZ text
-      val tvRawMRZ = findViewById<TextView>(R.id.tv_raw_mrz)
-      tvRawMRZ.text = data.mrzText
-   }
-   private fun showImages(result: MRZScanResult) {
-      val mrzSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ)
-      val oppositeSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
-      val mrzSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_MRZ)
-      val oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE)
-      val tabImages = findViewById<TabLayout>(R.id.tab_images)
-      val vpImages = findViewById<ViewPager2>(R.id.vp_images)
-      if (mrzSideDocumentImage == null && mrzSideOriginalImage == null) {
-         tabImages.visibility = View.GONE
-         vpImages.visibility = View.GONE
-         return
-      } else {
-         tabImages.visibility = View.VISIBLE
-         vpImages.visibility = View.VISIBLE
-      }
-      vpImages.adapter = object : FragmentStateAdapter(this) {
-         override fun createFragment(position: Int): Fragment {
-            return if (position == 0 && mrzSideDocumentImage != null) {
-               ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage)
-            } else {
-               ImagesFragment.newInstance(mrzSideOriginalImage, oppositeSideOriginalImage)
-            }
-         }
-         override fun getItemCount(): Int {
-            return if (mrzSideDocumentImage != null && mrzSideOriginalImage != null) 2 else 1
-         }
-      }
-      if (mrzSideOriginalImage != null || oppositeSideOriginalImage != null) {
-         TabLayoutMediator(tabImages, vpImages) { tab, position ->
-            tab.text = if (position == 0 && mrzSideDocumentImage != null) "Processed" else "Original"
-         }.attach()
-      }
-   }
+       companion object {
+          const val REQUEST_CODE = 1024
+          const val EXTRA_RESULT = "RESULT"
+          const val EXTRA_ACTION = "ACTION"
+          const val ACTION_RESCAN = 0
+          const val ACTION_RETURN_HOME = 1
+       }
+       override fun onCreate(savedInstanceState: Bundle?) {
+          super.onCreate(savedInstanceState)
+          setContentView(R.layout.activity_results)
+          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+             insets
+          }
+          val scanResult = intent.getParcelableExtra<MRZScanResult>(EXTRA_RESULT)
+          scanResult?.let { showMRZScanResult(it) }
+          findViewById<View>(R.id.btn_rescan).setOnClickListener {
+             setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RESCAN))
+             finish()
+          }
+          findViewById<View>(R.id.btn_return_home).setOnClickListener {
+             setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RETURN_HOME))
+             finish()
+          }
+       }
+       private fun showMRZScanResult(result: MRZScanResult) {
+          if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
+             setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RETURN_HOME))
+             finish()
+             return
+          }
+          if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
+             findViewById<View>(R.id.result_view).visibility = View.GONE
+             val tvNoResult = findViewById<TextView>(R.id.no_result_view)
+             tvNoResult.visibility = View.VISIBLE
+             tvNoResult.text = result.errorString
+             return
+          }
+          findViewById<View>(R.id.result_view).visibility = View.VISIBLE
+          findViewById<View>(R.id.no_result_view).visibility = View.GONE
+          val data = result.data
+          val genderText = data.sex.substring(0, 1).uppercase() + data.sex.substring(1).lowercase()
+          // Main info
+          val tvFullName = findViewById<TextView>(R.id.tv_full_name)
+          tvFullName.text = "${data.firstName} ${data.lastName}"
+          val tvGenderAndAge = findViewById<TextView>(R.id.tv_gender_and_age)
+          tvGenderAndAge.text = "$genderText, ${data.age} years old"
+          val tvExpiry = findViewById<TextView>(R.id.tv_expiry)
+          tvExpiry.text = "Expiry: ${data.dateOfExpire}"
+          val ivPortrait = findViewById<ImageView>(R.id.iv_portrait)
+          val portraitImage = result.getPortraitImage()
+          if (portraitImage != null) {
+             try {
+                ivPortrait.setImageBitmap(portraitImage.toBitmap())
+             } catch (ignored: CoreException) {
+             }
+          } else {
+             ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder)
+          }
+          // Images view pager
+          showImages(result)
+          // Personal info
+          val tvGivenName = findViewById<TextView>(R.id.tv_given_name)
+          tvGivenName.text = data.firstName
+          val tvSurname = findViewById<TextView>(R.id.tv_surname)
+          tvSurname.text = data.lastName
+          val tvDateOfBirth = findViewById<TextView>(R.id.tv_date_of_birth)
+          tvDateOfBirth.text = data.dateOfBirth
+          val tvGender = findViewById<TextView>(R.id.tv_gender)
+          tvGender.text = genderText
+          val tvNationality = findViewById<TextView>(R.id.tv_nationality)
+          tvNationality.text = data.nationality
+          // Document info
+          val tvDocType = findViewById<TextView>(R.id.tv_doc_type)
+          when (data.documentType) {
+             "MRTD_TD1_ID" -> tvDocType.text = "ID (TD1)"
+             "MRTD_TD2_ID" -> tvDocType.text = "ID (TD2)"
+             "MRTD_TD3_PASSPORT" -> tvDocType.text = "Passport (TD3)"
+          }
+          val tvDocNumber = findViewById<TextView>(R.id.tv_doc_number)
+          tvDocNumber.text = data.documentNumber
+          val tvExpiryDate = findViewById<TextView>(R.id.tv_expiry_date)
+          tvExpiryDate.text = data.dateOfExpire
+          // Raw MRZ text
+          val tvRawMRZ = findViewById<TextView>(R.id.tv_raw_mrz)
+          tvRawMRZ.text = data.mrzText
+       }
+       private fun showImages(result: MRZScanResult) {
+          val mrzSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ)
+          val oppositeSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
+          val mrzSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_MRZ)
+          val oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE)
+          val tabImages = findViewById<TabLayout>(R.id.tab_images)
+          val vpImages = findViewById<ViewPager2>(R.id.vp_images)
+          if (mrzSideDocumentImage == null && mrzSideOriginalImage == null) {
+             tabImages.visibility = View.GONE
+             vpImages.visibility = View.GONE
+             return
+          } else {
+             tabImages.visibility = View.VISIBLE
+             vpImages.visibility = View.VISIBLE
+          }
+          vpImages.adapter = object : FragmentStateAdapter(this) {
+             override fun createFragment(position: Int): Fragment {
+                return if (position == 0 && mrzSideDocumentImage != null) {
+                   ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage)
+                } else {
+                   ImagesFragment.newInstance(mrzSideOriginalImage, oppositeSideOriginalImage)
+                }
+             }
+             override fun getItemCount(): Int {
+                return if (mrzSideDocumentImage != null && mrzSideOriginalImage != null) 2 else 1
+             }
+          }
+          if (mrzSideOriginalImage != null || oppositeSideOriginalImage != null) {
+             TabLayoutMediator(tabImages, vpImages) { tab, position ->
+                tab.text = if (position == 0 && mrzSideDocumentImage != null) "Processed" else "Original"
+             }.attach()
+          }
+       }
 }
 ```
 
