@@ -47,23 +47,55 @@ A valid license key is required to use the SDK. If you are just getting started,
 
 ## Add the SDK
 
-1. Open the file `[App Project Root Path]\app\build.gradle` and add the Maven repository:
+1. Open **settings.gradle** (Groovy DSL) or **settings.gradle.kts** (Kotlin DSL) at the project root and add the Dynamsoft Maven repository to the `dependencyResolutionManagement` block:
 
+   <div class="sample-code-prefix"></div>
+   >- Groovy
+   >- Kotlin
+   >
+   >1. 
    ```groovy
-   allprojects {
-      repositories {
-         maven {
-            url "https://download2.dynamsoft.com/maven/aar"
-         }
-      }
+   dependencyResolutionManagement {
+       repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+       repositories {
+           google()
+           mavenCentral()
+           maven {
+               url "https://download2.dynamsoft.com/maven/aar"
+           }
+       }
+   }
+   ```
+   2. 
+   ```kotlin
+   dependencyResolutionManagement {
+       repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+       repositories {
+           google()
+           mavenCentral()
+           maven {
+               url = uri("https://download2.dynamsoft.com/maven/aar")
+           }
+       }
    }
    ```
 
-2. Add the dependency:
+2. Open **build.gradle** (Module: app) for Groovy DSL — or **build.gradle.kts** (Module: app) for Kotlin DSL — and add the dependency:
 
+   <div class="sample-code-prefix"></div>
+   >- Groovy
+   >- Kotlin
+   >
+   >1. 
    ```groovy
    dependencies {
-      implementation 'com.dynamsoft:mrzscannerbundle:3.4.1300'
+       implementation 'com.dynamsoft:mrzscannerbundle:3.4.1300'
+   }
+   ```
+   2. 
+   ```kotlin
+   dependencies {
+       implementation("com.dynamsoft:mrzscannerbundle:3.4.1300")
    }
    ```
 
@@ -77,7 +109,8 @@ The following steps build the **ScanMRZ** sample app. You can also download the 
 
 1. Open Android Studio and select **File > New > New Project**.
 2. Choose **Empty Views Activity** as the project template.
-3. Set the app name to *ScanMRZ*, choose a save location and language, and set the **Minimum SDK** to 21.
+3. Set the app name to *ScanMRZ*, choose a save location, and set the **Minimum SDK** to 21.
+4. Choose your preferred **Language** (either **Java** or **Kotlin**) and **Build configuration language** (either **Kotlin DSL** or **Groovy DSL**). The SDK supports all combinations — sample snippets later in this guide cover both languages and both DSLs.
 
 ### Step 2: Add the SDK
 
@@ -85,7 +118,7 @@ Follow the instructions in the [Add the SDK](#add-the-sdk) section above to add 
 
 ### Step 3: Set Up the Layout
 
-Open **activity_main.xml** and replace its contents with the following. The layout contains a single "Scan an MRZ" button centered on the screen. Scan results will be shown in a separate `ResultActivity`, created in [Step 6](#step-6-display-the-results).
+Open **activity_main.xml** and replace its contents with the following. The layout contains a single "Scan an MRZ" button centered on the screen. Scan results will be shown in a separate `ResultActivity`, created in [Step 8](#step-8-implement-resultactivity).
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -112,80 +145,11 @@ Open **activity_main.xml** and replace its contents with the following. The layo
 </androidx.constraintlayout.widget.ConstraintLayout>
 ```
 
-### Step 4: Configure the Scanner
+### Step 4: Configure and Launch the Scanner
 
-All scanner settings are controlled through a single `MRZScannerConfig` object. Declare it as a class field so it can be shared between the launcher and any re-scan calls.
+Provide your license key on `MRZScannerConfig` (see [Licensing](#licensing) for how to obtain one), register an `ActivityResultLauncher` to launch the scanner, and wire it to the scan button. Each result returns a `resultStatus` of *RS_FINISHED* (MRZ decoded), *RS_CANCELED* (user closed the scanner), or *RS_EXCEPTION* (an error occurred); all three are handled inside `ResultActivity`, created in later steps.
 
-The only required setting is the license key — see the [Licensing](#licensing) section above for how to obtain one. For the full list of optional settings such as document type filtering, UI button visibility, and image capture options, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
-
-<div class="sample-code-prefix"></div>
->- Java
->- Kotlin
->
->1. 
-```java
-package com.dynamsoft.scanmrz;
-import android.os.Bundle;
-import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-public class MainActivity extends AppCompatActivity {
-   private ActivityResultLauncher<MRZScannerConfig> launcher;
-   private final MRZScannerConfig config = new MRZScannerConfig();
-   @Override
-   protected void onCreate(@Nullable Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      EdgeToEdge.enable(this);
-      setContentView(R.layout.activity_main);
-      ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-         Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-         return insets;
-      });
-      config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-   }
-}
-```
-2. 
-```kotlin
-package com.dynamsoft.scanmrz
-import android.os.Bundle
-import androidx.activity.EdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
-class MainActivity : AppCompatActivity() {
-   private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
-   private val config = MRZScannerConfig()
-   override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      EdgeToEdge.enable(this)
-      setContentView(R.layout.activity_main)
-      ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-         insets
-      }
-      config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9")
-   }
-}
-```
-
-### Step 5: Launch the Scanner
-
-Register the `ActivityResultLauncher` and wire it to the scan button, still within `onCreate`. Each result carries a `resultStatus` of *RS_FINISHED* (MRZ decoded), *RS_CANCELED* (user closed the scanner), or *RS_EXCEPTION* (an error occurred) — all three are handled inside `ResultActivity` in the next step.
-
-**The code below shows the complete `MainActivity` after Steps 4 and 5:**
+For optional config settings like document type filtering, UI visibility, and image capture, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -244,7 +208,7 @@ package com.dynamsoft.scanmrz
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.EdgeToEdge
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
@@ -257,7 +221,7 @@ class MainActivity : AppCompatActivity() {
    private val config = MRZScannerConfig()
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
-      EdgeToEdge.enable(this)
+      enableEdgeToEdge()
       setContentView(R.layout.activity_main)
       ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
          val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -287,7 +251,13 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-### Step 6: Create the Result Screen Layouts
+> [!NOTE]
+> The Kotlin `enableEdgeToEdge()` extension requires **androidx.activity 1.8.0** or higher (fresh Android Studio projects from Hedgehog onward already meet this). On older versions, replace `enableEdgeToEdge()` with `EdgeToEdge.enable(this)` and update the import to `import androidx.activity.EdgeToEdge`.
+
+> [!NOTE]
+> References to `ResultActivity` (and its constants `EXTRA_RESULT`, `REQUEST_CODE`, `EXTRA_ACTION`, `ACTION_RESCAN`, `ACTION_RETURN_HOME`) will show as unresolved in your IDE at this point. This is expected — `ResultActivity` is created in [Step 8](#step-8-implement-resultactivity), and the errors will clear once that step is complete.
+
+### Step 5: Create the Result Screen Layouts
 
 This step creates all three UI resource files that `ResultActivity` needs.
 
@@ -679,7 +649,7 @@ Create **ic_portrait_placeholder.xml** in **src/main/res/drawable/**. This vecto
 </vector>
 ```
 
-### Step 7: Register ResultActivity in the Manifest
+### Step 6: Register ResultActivity in the Manifest
 
 Open **AndroidManifest.xml** and declare `ResultActivity` inside the `<application>` block:
 
@@ -693,7 +663,7 @@ Open **AndroidManifest.xml** and declare `ResultActivity` inside the `<applicati
 > [!NOTE]
 > `MRZScannerActivity` is already declared in the library manifest with a default `screenOrientation` of `portrait`. If you need to override its orientation, redeclare it in your app manifest with `tools:replace="android:screenOrientation"`.
 
-### Step 8: Create ImagesFragment
+### Step 7: Create ImagesFragment
 
 `ImagesFragment` is a `Fragment` that programmatically renders one or two document images side by side. It is used by the `ViewPager2` adapter in `ResultActivity` to display cropped and original scan images.
 
@@ -849,7 +819,7 @@ class ImagesFragment(
 }
 ```
 
-### Step 9: Implement ResultActivity
+### Step 8: Implement ResultActivity
 
 Create **ResultActivity** in the same package folder using the same steps as above — right-click the package folder and select **New > Java Class** (or **New > Kotlin File/Class**), then name it `ResultActivity`. It receives the `MRZScanResult` passed from `MainActivity`, handles all three result statuses, and populates the result screen with the extracted MRZ data, portrait image, and document images.
 
@@ -1173,7 +1143,7 @@ class ResultActivity : AppCompatActivity() {
 
 For the full list of fields available on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
 
-### Step 10: Run the Project
+### Step 9: Run the Project
 
 Before running, complete these steps on your Android device:
 
