@@ -24,15 +24,15 @@ breadcrumbText: DSDocumentSide
 ```objc
 typedef NS_ENUM(NSInteger, DSDocumentSide)
 {
-    DSDocumentSideMRZ = 0,
-    DSDocumentSideOpposite = 1
+        DSDocumentSideMRZ = 0,
+        DSDocumentSideOpposite = 1
 };
 ```
 2. 
 ```swift
 @objc public enum DocumentSide: Int {
-    case mrz = 0
-    case opposite = 1
+        case mrz = 0
+        case opposite = 1
 }
 ```
 

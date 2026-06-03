@@ -24,16 +24,16 @@ breadcrumbText: DSDocumentType
 ```objc
 typedef NS_ENUM(NSInteger, DSDocumentType)
 {
-    DSDocumentTypeAll = 0
-    DSDocumentTypeId= 1
-    DSDocumentTypePassport = 2
+        DSDocumentTypeAll = 0
+        DSDocumentTypeId= 1
+        DSDocumentTypePassport = 2
 };
 ```
 2. 
 ```swift
 @objc public enum DocumentType: Int {
-    case all = 0
-    case id = 1
-    case passport = 2
+        case all = 0
+        case id = 1
+        case passport = 2
 }
 ```

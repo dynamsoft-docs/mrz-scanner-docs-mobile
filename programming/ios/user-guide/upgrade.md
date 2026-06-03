@@ -66,7 +66,7 @@ NSString *firstName = result.data.firstName;
 
 // After
 if (result.data != nil) {
-    NSString *firstName = result.data.firstName;
+        NSString *firstName = result.data.firstName;
 }
 ```
 2. 
