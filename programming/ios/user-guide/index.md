@@ -133,14 +133,14 @@ Create the main `ViewController` with a single "Scan an MRZ" button and a label 
    [self.view addSubview:self.label];
    UILayoutGuide *safeArea = self.view.safeAreaLayoutGuide;
    [NSLayoutConstraint activateConstraints:@[
-          [self.button.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-          [self.button.bottomAnchor constraintEqualToAnchor:safeArea.bottomAnchor constant:-10],
-          [self.button.heightAnchor constraintEqualToConstant:50],
-          [self.button.widthAnchor constraintEqualToConstant:150],
-          [self.label.centerXAnchor constraintEqualToAnchor:safeArea.centerXAnchor],
-          [self.label.centerYAnchor constraintEqualToAnchor:safeArea.centerYAnchor],
-          [self.label.leadingAnchor constraintEqualToAnchor:safeArea.leadingAnchor constant:30],
-          [self.label.trailingAnchor constraintEqualToAnchor:safeArea.trailingAnchor constant:-30]
+              [self.button.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+              [self.button.bottomAnchor constraintEqualToAnchor:safeArea.bottomAnchor constant:-10],
+              [self.button.heightAnchor constraintEqualToConstant:50],
+              [self.button.widthAnchor constraintEqualToConstant:150],
+              [self.label.centerXAnchor constraintEqualToAnchor:safeArea.centerXAnchor],
+              [self.label.centerYAnchor constraintEqualToAnchor:safeArea.centerYAnchor],
+              [self.label.leadingAnchor constraintEqualToAnchor:safeArea.leadingAnchor constant:30],
+              [self.label.trailingAnchor constraintEqualToAnchor:safeArea.trailingAnchor constant:-30]
    ]];
 }
 - (void)setupAppearance {
@@ -163,48 +163,48 @@ class ViewController: UIViewController {
    let button = UIButton()
    let label = UILabel()
    override func viewDidLoad() {
-      super.viewDidLoad()
-      navigationController?.navigationBar.isHidden = true
-      view.backgroundColor = .white
-      setup()
-      setupAppearance()
+          super.viewDidLoad()
+          navigationController?.navigationBar.isHidden = true
+          view.backgroundColor = .white
+          setup()
+          setupAppearance()
    }
    func setup() {
-      button.backgroundColor = .black
-      button.setTitle("Scan an MRZ", for: .normal)
-      button.setTitleColor(.white, for: .normal)
-      button.layer.cornerRadius = 8
-      button.clipsToBounds = true
-      button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-      button.translatesAutoresizingMaskIntoConstraints = false
-      view.addSubview(button)
-      label.numberOfLines = 0
-      label.textColor = .black
-      label.textAlignment = .center
-      label.font = UIFont.systemFont(ofSize: 20)
-      label.translatesAutoresizingMaskIntoConstraints = false
-      view.addSubview(label)
-      let safeArea = view.safeAreaLayoutGuide
-      NSLayoutConstraint.activate([
-         button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-         button.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10),
-         button.heightAnchor.constraint(equalToConstant: 50),
-         button.widthAnchor.constraint(equalToConstant: 150),
-         label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-         label.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
-         label.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 30),
-         label.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -30)
-      ])
+          button.backgroundColor = .black
+          button.setTitle("Scan an MRZ", for: .normal)
+          button.setTitleColor(.white, for: .normal)
+          button.layer.cornerRadius = 8
+          button.clipsToBounds = true
+          button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+          button.translatesAutoresizingMaskIntoConstraints = false
+          view.addSubview(button)
+          label.numberOfLines = 0
+          label.textColor = .black
+          label.textAlignment = .center
+          label.font = UIFont.systemFont(ofSize: 20)
+          label.translatesAutoresizingMaskIntoConstraints = false
+          view.addSubview(label)
+          let safeArea = view.safeAreaLayoutGuide
+          NSLayoutConstraint.activate([
+             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+             button.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10),
+             button.heightAnchor.constraint(equalToConstant: 50),
+             button.widthAnchor.constraint(equalToConstant: 150),
+             label.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+             label.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
+             label.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 30),
+             label.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -30)
+          ])
    }
    func setupAppearance() {
-      let appearance = UINavigationBarAppearance()
-      appearance.configureWithOpaqueBackground()
-      appearance.backgroundColor = .black
-      appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-      navigationController?.navigationBar.standardAppearance = appearance
-      navigationController?.navigationBar.scrollEdgeAppearance = appearance
-      navigationController?.navigationBar.compactAppearance = appearance
-      navigationController?.navigationBar.tintColor = UIColor.white
+          let appearance = UINavigationBarAppearance()
+          appearance.configureWithOpaqueBackground()
+          appearance.backgroundColor = .black
+          appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+          navigationController?.navigationBar.standardAppearance = appearance
+          navigationController?.navigationBar.scrollEdgeAppearance = appearance
+          navigationController?.navigationBar.compactAppearance = appearance
+          navigationController?.navigationBar.tintColor = UIColor.white
    }
 }
 ```
@@ -299,49 +299,49 @@ Continuing from Step 5:
    vc.config = config;
    __weak typeof(self) weakSelf = self;
    vc.onScannedResult = ^(DSMRZScanResult *result) {
-          switch (result.resultStatus) {
-             /* if the result is valid, navigate to ResultViewController */
-             case DSResultStatusFinished: {
-                if (result.data) {
-                   dispatch_async(dispatch_get_main_queue(), ^{
-                      ResultViewController *resultVC = [[ResultViewController alloc] init];
-                      resultVC.mrzData = result.data;
-                      NSError *error = nil;
-                      resultVC.portraitImage = [[result getPortraitImage] toUIImageAndReturnError:&error];
-                      resultVC.primaryDocumentImage = [[result getDocumentImage:DSDocumentSideMrz] toUIImageAndReturnError:&error];
-                      resultVC.primaryOriginalImage = [[result getOriginalImage:DSDocumentSideMrz] toUIImageAndReturnError:&error];
-                      resultVC.secondaryDocumentImage = [[result getDocumentImage:DSDocumentSideOpposite] toUIImageAndReturnError:&error];
-                      resultVC.secondaryOriginalImage = [[result getOriginalImage:DSDocumentSideOpposite] toUIImageAndReturnError:&error];
-                      [weakSelf.navigationController pushViewController:resultVC animated:YES];
-                   });
-                }
-                break;
-             }
-             /* if the scan operation is canceled by the user */
-             case DSResultStatusCanceled: {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                   weakSelf.label.isHidden = NO;
-                   weakSelf.label.text = @"Scan canceled";
-                   [weakSelf.navigationController popViewControllerAnimated:YES];
-                });
-                break;
-             }
-             /* if an error occurs during capture, display the error string in the label */
-             case DSResultStatusException: {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                   weakSelf.label.isHidden = NO;
-                   weakSelf.label.text = result.errorString;
-                   [weakSelf.navigationController popViewControllerAnimated:YES];
-                });
-                break;
-             }
-             default:
-                break;
-          }
+              switch (result.resultStatus) {
+                 /* if the result is valid, navigate to ResultViewController */
+                 case DSResultStatusFinished: {
+                    if (result.data) {
+                       dispatch_async(dispatch_get_main_queue(), ^{
+                          ResultViewController *resultVC = [[ResultViewController alloc] init];
+                          resultVC.mrzData = result.data;
+                          NSError *error = nil;
+                          resultVC.portraitImage = [[result getPortraitImage] toUIImageAndReturnError:&error];
+                          resultVC.primaryDocumentImage = [[result getDocumentImage:DSDocumentSideMrz] toUIImageAndReturnError:&error];
+                          resultVC.primaryOriginalImage = [[result getOriginalImage:DSDocumentSideMrz] toUIImageAndReturnError:&error];
+                          resultVC.secondaryDocumentImage = [[result getDocumentImage:DSDocumentSideOpposite] toUIImageAndReturnError:&error];
+                          resultVC.secondaryOriginalImage = [[result getOriginalImage:DSDocumentSideOpposite] toUIImageAndReturnError:&error];
+                          [weakSelf.navigationController pushViewController:resultVC animated:YES];
+                       });
+                    }
+                    break;
+                 }
+                 /* if the scan operation is canceled by the user */
+                 case DSResultStatusCanceled: {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                       weakSelf.label.isHidden = NO;
+                       weakSelf.label.text = @"Scan canceled";
+                       [weakSelf.navigationController popViewControllerAnimated:YES];
+                    });
+                    break;
+                 }
+                 /* if an error occurs during capture, display the error string in the label */
+                 case DSResultStatusException: {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                       weakSelf.label.isHidden = NO;
+                       weakSelf.label.text = result.errorString;
+                       [weakSelf.navigationController popViewControllerAnimated:YES];
+                    });
+                    break;
+                 }
+                 default:
+                    break;
+              }
    };
    self.label.isHidden = YES;
    dispatch_async(dispatch_get_main_queue(), ^{
-          [weakSelf.navigationController pushViewController:vc animated:YES];
+              [weakSelf.navigationController pushViewController:vc animated:YES];
    });
 }
 ```
@@ -354,43 +354,43 @@ Continuing from Step 5:
    config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
    vc.config = config
    vc.onScannedResult = { [weak self] result in
-      guard let self = self else { return }
-      switch result.resultStatus {
-         /* if the result is valid, navigate to ResultViewController */
-         case .finished:
-            if let data = result.data {
-               DispatchQueue.main.async {
-                  let resultVC = ResultViewController()
-                  resultVC.mrzData = data
-                  resultVC.portraitImage = try? result.getPortraitImage()?.toUIImage()
-                  resultVC.primaryDocumentImage = try? result.getDocumentImage(.mrz)?.toUIImage()
-                  resultVC.primaryOriginalImage = try? result.getOriginalImage(.mrz)?.toUIImage()
-                  resultVC.secondaryDocumentImage = try? result.getDocumentImage(.opposite)?.toUIImage()
-                  resultVC.secondaryOriginalImage = try? result.getOriginalImage(.opposite)?.toUIImage()
-                  self.navigationController?.pushViewController(resultVC, animated: true)
-               }
-            }
-         /* if the scan operation is canceled by the user */
-         case .canceled:
-            DispatchQueue.main.async {
-               self.label.isHidden = false
-               self.label.text = "Scan canceled"
-               self.navigationController?.popViewController(animated: true)
-            }
-         /* if an error occurs during capture, display the error string in the label */
-         case .exception:
-            DispatchQueue.main.async {
-               self.label.isHidden = false
-               self.label.text = result.errorString
-               self.navigationController?.popViewController(animated: true)
-            }
-         default:
-            break
-      }
+          guard let self = self else { return }
+          switch result.resultStatus {
+             /* if the result is valid, navigate to ResultViewController */
+             case .finished:
+                if let data = result.data {
+                   DispatchQueue.main.async {
+                      let resultVC = ResultViewController()
+                      resultVC.mrzData = data
+                      resultVC.portraitImage = try? result.getPortraitImage()?.toUIImage()
+                      resultVC.primaryDocumentImage = try? result.getDocumentImage(.mrz)?.toUIImage()
+                      resultVC.primaryOriginalImage = try? result.getOriginalImage(.mrz)?.toUIImage()
+                      resultVC.secondaryDocumentImage = try? result.getDocumentImage(.opposite)?.toUIImage()
+                      resultVC.secondaryOriginalImage = try? result.getOriginalImage(.opposite)?.toUIImage()
+                      self.navigationController?.pushViewController(resultVC, animated: true)
+                   }
+                }
+             /* if the scan operation is canceled by the user */
+             case .canceled:
+                DispatchQueue.main.async {
+                   self.label.isHidden = false
+                   self.label.text = "Scan canceled"
+                   self.navigationController?.popViewController(animated: true)
+                }
+             /* if an error occurs during capture, display the error string in the label */
+             case .exception:
+                DispatchQueue.main.async {
+                   self.label.isHidden = false
+                   self.label.text = result.errorString
+                   self.navigationController?.popViewController(animated: true)
+                }
+             default:
+                break
+          }
    }
    self.label.isHidden = true
    DispatchQueue.main.async {
-          self.navigationController?.pushViewController(vc, animated: true)
+              self.navigationController?.pushViewController(vc, animated: true)
    }
 }
 ```
@@ -450,10 +450,10 @@ In Xcode, add a new file to your project (**File > New > File**), choose **Swift
    // Personal info header
    self.nameLabel.text = [NSString stringWithFormat:@"%@ %@", self.mrzData.firstName, self.mrzData.lastName];
    self.subInfoLabel.text = [NSString stringWithFormat:@"%@, %ld years old\nExpiry: %@",
-      [self.mrzData.sex capitalizedString], (long)self.mrzData.age, self.mrzData.dateOfExpire];
+          [self.mrzData.sex capitalizedString], (long)self.mrzData.age, self.mrzData.dateOfExpire];
    // Portrait image
    if (self.portraitImage) {
-      self.portraitImageView.image = self.portraitImage;
+          self.portraitImageView.image = self.portraitImage;
    }
    // Document images
    self.primaryImageView.image = self.primaryDocumentImage;
@@ -491,32 +491,32 @@ class ResultViewController: UIViewController {
    let rescanButton = UIButton(type: .system)
    let returnHomeButton = UIButton(type: .system)
    override func viewDidLoad() {
-          super.viewDidLoad()
-          view.backgroundColor = .black
-          title = "Result"
-          setupUI()
-          populateData()
+              super.viewDidLoad()
+              view.backgroundColor = .black
+              title = "Result"
+              setupUI()
+              populateData()
    }
    private func populateData() {
-          guard let data = mrzData else { return }
-          // Personal info header
-          nameLabel.text = "\(data.firstName) \(data.lastName)"
-          subInfoLabel.text = "\(data.sex.capitalized), \(data.age) years old\nExpiry: \(data.dateOfExpire)"
-          // Portrait image
-          if let portrait = portraitImage {
-             portraitImageView.image = portrait
-          }
-          // Document images
-          primaryImageView.image = primaryDocumentImage
-          secondaryImageView.image = secondaryDocumentImage
-          // Raw MRZ text
-          mrzTextLabel.text = data.mrzText
+              guard let data = mrzData else { return }
+              // Personal info header
+              nameLabel.text = "\(data.firstName) \(data.lastName)"
+              subInfoLabel.text = "\(data.sex.capitalized), \(data.age) years old\nExpiry: \(data.dateOfExpire)"
+              // Portrait image
+              if let portrait = portraitImage {
+                 portraitImageView.image = portrait
+              }
+              // Document images
+              primaryImageView.image = primaryDocumentImage
+              secondaryImageView.image = secondaryDocumentImage
+              // Raw MRZ text
+              mrzTextLabel.text = data.mrzText
    }
    @objc private func rescanTapped() {
-          navigationController?.popViewController(animated: true)
+              navigationController?.popViewController(animated: true)
    }
    @objc private func returnHomeTapped() {
-          navigationController?.popToRootViewController(animated: true)
+              navigationController?.popToRootViewController(animated: true)
    }
 }
 ```

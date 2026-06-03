@@ -24,16 +24,16 @@ breadcrumbText: EnumResultStatus
 ```objc
 typedef NS_ENUM(NSInteger, DSResultStatus)
 {
-    DSResultStatusFinished = 0
-    DSResultStatusCanceled = 1
-    DSResultStatusException = 2
+        DSResultStatusFinished = 0
+        DSResultStatusCanceled = 1
+        DSResultStatusException = 2
 };
 ```
 2. 
 ```swift
 @objc public enum ResultStatus: Int {
-    case finished = 0
-    case canceled = 1
-    case exception = 2
+        case finished = 0
+        case canceled = 1
+        case exception = 2
 }
 ```
