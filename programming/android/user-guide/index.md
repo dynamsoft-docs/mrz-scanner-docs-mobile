@@ -56,27 +56,27 @@ A valid license key is required to use the SDK. If you are just getting started,
    >1. 
    ```groovy
    dependencyResolutionManagement {
-       repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-       repositories {
-           google()
-           mavenCentral()
-           maven {
-               url "https://download2.dynamsoft.com/maven/aar"
+           repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+           repositories {
+               google()
+               mavenCentral()
+               maven {
+                   url "https://download2.dynamsoft.com/maven/aar"
+               }
            }
-       }
    }
    ```
    2. 
    ```kotlin
    dependencyResolutionManagement {
-       repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-       repositories {
-           google()
-           mavenCentral()
-           maven {
-               url = uri("https://download2.dynamsoft.com/maven/aar")
+           repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+           repositories {
+               google()
+               mavenCentral()
+               maven {
+                   url = uri("https://download2.dynamsoft.com/maven/aar")
+               }
            }
-       }
    }
    ```
 
@@ -89,13 +89,13 @@ A valid license key is required to use the SDK. If you are just getting started,
    >1. 
    ```groovy
    dependencies {
-       implementation 'com.dynamsoft:mrzscannerbundle:3.4.1300'
+           implementation 'com.dynamsoft:mrzscannerbundle:3.4.1300'
    }
    ```
    2. 
    ```kotlin
    dependencies {
-       implementation("com.dynamsoft:mrzscannerbundle:3.4.1300")
+           implementation("com.dynamsoft:mrzscannerbundle:3.4.1300")
    }
    ```
 
