@@ -295,7 +295,7 @@ flutter run
 flutter run -d <your_device_id>
 ```
 
-You can list connected device IDs with `flutter devices`.
+You can get the IDs of all connected (physical) devices by running the command `flutter devices` in the terminal. 
 
 In order to deploy the app to a iOS device, we recommend doing it via Xcode by using the `Runner.xcworkspace` project that was generated when the pods were installed. Since the camera permissions are taken care of, all you need to do is properly configure the *Signing & Capabilities* section of the project settings. Should the iOS device be connected to the computer, you can now run and deploy the app to the device. 
 
