@@ -259,7 +259,7 @@ class MainActivity : AppCompatActivity() {
 
 ### Step 5: Create the Result Screen Layouts
 
-This step creates all three UI resource files that `ResultActivity` needs.
+This step creates the three UI resource files that `ResultActivity` needs, and adds one color to the project's existing **colors.xml**.
 
 **activity_results.xml**
 
@@ -583,50 +583,22 @@ Create **activity_results.xml** in **src/main/res/layout/**. This layout contain
             android:layout_weight="1"
             android:text="Re-Scan" />
 
+        <!-- Hidden by default. Takes the Re-Scan slot when the scan failed because
+             camera access is unavailable — see Step 8. -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_open_settings"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:text="Open Settings" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_return_home"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:text="Return Home" />
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-```
-
-**image_view_pager.xml**
-
-Create **image_view_pager.xml** in **src/main/res/layout/**. This layout defines the tab bar and pager used to display scanned document images:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_images"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            app:tabMode="fixed" />
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vp_images"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:overScrollMode="never" />
 
     </LinearLayout>
 
@@ -648,6 +620,34 @@ Create **ic_portrait_placeholder.xml** in **src/main/res/drawable/**. This vecto
         android:fillColor="#000000"/>
 </vector>
 ```
+
+**colors.xml**
+
+Open **colors.xml** in **src/main/res/values/** and add the amber used to flag MRZ fields that fail validation. Both the error icon below and `ResultActivity` ([Step 8](#step-8-implement-resultactivity)) reference it:
+
+```xml
+<color name="warning_amber">#FFC107</color>
+```
+
+**ic_error_circle.xml**
+
+Create **ic_error_circle.xml** in **src/main/res/drawable/**. This vector drawable is the Material *error* glyph, displayed next to any field whose check digit fails validation:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/warning_amber"
+        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM13,17h-2v-2h2v2zM13,13h-2V7h2v6z" />
+</vector>
+```
+
+> [!NOTE]
+> A circle-exclamation is used rather than a warning triangle because a failed check digit is an invalid-data state, not a caution. This matches Material's convention of reserving the triangle for warnings.
 
 ### Step 6: Register ResultActivity in the Manifest
 
