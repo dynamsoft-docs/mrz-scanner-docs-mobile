@@ -14,9 +14,9 @@ breadcrumbText: MRZScannerConfig
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.aar
+*Assembly:* MRZScannerBundle.aar
 
-*Namespace:* com.dynamsoft.mrzscanner.ui
+*Namespace:* com.dynamsoft.mrzscannerbundle.ui
 
 ```java
 final class MRZScannerConfig
@@ -56,6 +56,8 @@ final class MRZScannerConfig
 | [`isReturnOriginalImage`](#isreturnoriginalimage) | Returns whether the original full-frame image is returned after scanning. |
 | [`setReturnPortraitImage`](#setreturnportraitimage) | Sets whether to return the detected portrait image after scanning. |
 | [`isReturnPortraitImage`](#isreturnportraitimage) | Returns whether the detected portrait image is returned after scanning. |
+| [`setCameraPermissionPromptEnabled`](#setcamerapermissionpromptenabled) | Sets whether the scanner presents its own dialog when camera access is unavailable. |
+| [`isCameraPermissionPromptEnabled`](#iscamerapermissionpromptenabled) | Returns whether the scanner presents its own dialog when camera access is unavailable. |
 
 The following methods are deprecated:
 
@@ -423,6 +425,35 @@ boolean isReturnPortraitImage();
 **Return Value**
 
 A boolean value that determines whether the portrait image is returned.
+
+### setCameraPermissionPromptEnabled
+
+Sets whether the scanner offers its own way out when camera access is unavailable. Enabled by default.
+
+When enabled, the scanner presents a dialog offering to allow the permission or open Settings before reporting, so you get a usable flow without writing any permission handling of your own. Disable it to suppress the dialog and handle the denial entirely from the returned [`MRZScanResult`](mrz-scan-result.md), which reports `EC_CAMERA_PERMISSION_DENIED` or `EC_CAMERA_PERMISSION_RESTRICTED` either way.
+
+```java
+void setCameraPermissionPromptEnabled(boolean cameraPermissionPromptEnabled);
+```
+
+**Parameter(s)**
+
+`cameraPermissionPromptEnabled`: A boolean value that determines whether the scanner presents its own camera-permission dialog.
+
+> [!IMPORTANT]
+> The camera is never started without access, regardless of this setting. Disabling the prompt changes who presents the explanation, not whether the permission is enforced.
+
+### isCameraPermissionPromptEnabled
+
+Returns whether the scanner presents its own dialog when camera access is unavailable.
+
+```java
+boolean isCameraPermissionPromptEnabled();
+```
+
+**Return Value**
+
+A boolean value that determines whether the scanner presents its own camera-permission dialog.
 
 ### setTemplateFilePath
 

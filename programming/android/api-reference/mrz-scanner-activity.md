@@ -14,9 +14,9 @@ breadcrumbText: MRZScannerActivity
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.aar
+*Assembly:* MRZScannerBundle.aar
 
-*Namespace:* com.dynamsoft.mrzscanner.ui
+*Namespace:* com.dynamsoft.mrzscannerbundle.ui
 
 ```java
 class MRZScannerActivity extends AppCompatActivity
