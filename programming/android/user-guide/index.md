@@ -89,13 +89,13 @@ A valid license key is required to use the SDK. If you are just getting started,
    >1. 
    ```groovy
    dependencies {
-           implementation 'com.dynamsoft:mrzscannerbundle:3.4.1300'
+           implementation 'com.dynamsoft:mrzscannerbundle:3.6.2000'
    }
    ```
    2. 
    ```kotlin
    dependencies {
-           implementation("com.dynamsoft:mrzscannerbundle:3.4.1300")
+           implementation("com.dynamsoft:mrzscannerbundle:3.6.2000")
    }
    ```
 
