@@ -47,6 +47,8 @@ The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is ca
 
 15. **`setReturnPortraitImage` / `isReturnPortraitImage`** (default value `true`) - controls whether the detected portrait image is included in the scan result. When enabled, the result's `getPortraitImage()` method will return the portrait extracted from the document.
 
+16. **`setCameraPermissionPromptEnabled` / `isCameraPermissionPromptEnabled`** (default value `true`) - controls whether the scanner presents its own dialog when camera access is unavailable. When enabled, the scanner explains the problem and offers a way forward before reporting. Disable it only if you intend to present your own permission UI. The camera is never started without access either way.
+
 Next, we go over the different ways that these properties can be used to customize the scanner with a few examples.
 
 ## Setting the MRZ Document Type
@@ -138,7 +140,7 @@ config.setVibrateButtonVisible(false);
 config.setFormatSelectorVisible(false);
 config.setGuideFrameVisible(false);
 ```
-1. 
+2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    setCloseButtonVisible(false)
@@ -230,6 +232,51 @@ Once configured, use the following methods on `MRZScanResult` to access the imag
 - [`getDocumentImage`]({{ site.android_api }}mrz-scan-result.html#getdocumentimage)
 - [`getOriginalImage`]({{ site.android_api }}mrz-scan-result.html#getoriginalimage)
 - [`getPortraitImage`]({{ site.android_api }}mrz-scan-result.html#getportraitimage)
+
+## Handling Camera Permission
+
+The MRZ Scanner manages the camera permission for you. The `CAMERA` permission is declared by the SDK and merged into your app at build time, `MRZScannerActivity` requests it on first launch, and the camera is never started without it. For most integrations there is nothing to add.
+
+If access is unavailable, the scanner explains the situation and offers whatever action can actually resolve it:
+
+| State | Dialog action |
+| ----- | ------------- |
+| The permission can be requested again | **Allow camera access** — re-requests in place, no restart needed. |
+| The permission is permanently denied | **Open Settings** — opens the app's page in the system settings. |
+| Camera access is blocked by device policy | Explanation only — there is no action the user can take. |
+
+**Cancel** is available in every case. Whichever route the user takes, the activity finishes and the outcome is reported through the normal result path as `RS_EXCEPTION`, with an error code of `EC_CAMERA_PERMISSION_DENIED` (1001) or `EC_CAMERA_PERMISSION_RESTRICTED` (1002).
+
+### Presenting your own permission UI
+
+To replace the scanner's dialog with your own, disable the prompt:
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+MRZScannerConfig config = new MRZScannerConfig();
+config.setCameraPermissionPromptEnabled(false);
+```
+2. 
+```kotlin
+val config = MRZScannerConfig().apply {
+   setCameraPermissionPromptEnabled(false)
+}
+```
+
+The scanner then suppresses its dialog but still reports the denial through `MRZScanResult`, and still refuses to start the camera without access. Read the error code to decide what to show: `EC_CAMERA_PERMISSION_DENIED` is worth offering a route into Settings, while `EC_CAMERA_PERMISSION_RESTRICTED` is not — device policy withholds the camera, and the per-app camera toggle is absent from Settings in that state, so sending the user there is a dead end.
+
+> [!NOTE]
+> Granting the permission in Settings does not kill the Android process, so a screen showing a denial can re-check the permission in `onResume` and start a new scan in place. [Step 8](index.md#step-8-implement-resultactivity) of the user guide shows this.
+
+**Related APIs**
+
+- [`setCameraPermissionPromptEnabled`]({{ site.android_api }}mrz-scanner-config.html#setcamerapermissionpromptenabled)
+- [`isCameraPermissionPromptEnabled`]({{ site.android_api }}mrz-scanner-config.html#iscamerapermissionpromptenabled)
+- [`EnumErrorCode`]({{ site.android_api }}error-code.html)
 
 ## Further Customization
 
