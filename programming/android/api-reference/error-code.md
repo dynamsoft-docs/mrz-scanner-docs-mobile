@@ -48,4 +48,4 @@ public @interface EnumErrorCode {
 
 Granting the permission in Settings does not kill the Android process, so an activity that is showing a denial can re-check the permission in `onResume` and start a new scan in place. This differs from iOS, where changing the permission in Settings terminates the app and it recovers by relaunching.
 
-See [Step 8](../user-guide/index.md#step-8-implement-resultactivity) of the user guide for a worked example.
+See the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md#resultactivity) for a worked example.
