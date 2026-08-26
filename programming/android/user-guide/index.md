@@ -151,6 +151,11 @@ Provide your license key on `MRZScannerConfig` (see [Licensing](#licensing) for 
 
 For optional config settings like document type filtering, UI visibility, and image capture, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 
+You do not need to write any camera-permission code. The `CAMERA` permission is declared by the SDK and merged into your app at build time, and `MRZScannerActivity` requests it on first launch. If access is unavailable the scanner shows a dialog offering **Allow camera access** or **Open Settings**, never starts the camera, and reports the outcome through the usual result path as `RS_EXCEPTION` — handled in [Step 8](#step-8-implement-resultactivity).
+
+> [!NOTE]
+> To present your own permission UI instead, call `config.setCameraPermissionPromptEnabled(false)`. The scanner then suppresses its dialog but still reports the denial, and still never starts the camera without access. See [Customize MRZ Scanner](customize-mrz-scanner.md#handling-camera-permission) for the full flow.
+
 <div class="sample-code-prefix"></div>
 >- Java
 >- Kotlin
@@ -211,7 +216,6 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
