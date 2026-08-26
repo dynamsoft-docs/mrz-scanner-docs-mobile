@@ -19,7 +19,7 @@ The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning com
 
 ## Supported Document Types
 
-The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](supported-document-types.md).
+The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
 
 > [!NOTE]
 > For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
