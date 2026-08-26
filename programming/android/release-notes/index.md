@@ -9,6 +9,7 @@ breadcrumbText: Release Notes
 
 # Dynamsoft MRZ Scanner Android SDK - Release Notes
 
+- [3.6.2000 (TBD)]({{ site.android_release_notes }}android-3.html#362000-tbd)
 - [3.4.1300 (05/20/2026)]({{ site.android_release_notes }}android-3.html#341300-05202026)
 - [3.4.1200 (04/02/2026)]({{ site.android_release_notes }}android-3.html#341100-04022026)
 - [3.2.3000 (11/05/2025)]({{ site.android_release_notes }}android-3.html#323000-11052025)
