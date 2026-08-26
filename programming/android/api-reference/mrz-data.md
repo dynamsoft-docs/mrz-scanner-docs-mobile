@@ -14,9 +14,9 @@ breadcrumbText: MRZData
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.aar
+*Assembly:* MRZScannerBundle.aar
 
-*Namespace:* com.dynamsoft.mrzscanner.ui
+*Namespace:* com.dynamsoft.mrzscannerbundle.ui
 
 ```java
 class MRZData
@@ -42,6 +42,7 @@ class MRZData
 | [`getOptionalData1`](#getoptionaldata1) | Returns the first optional data field from the MRZ. |
 | [`getOptionalData2`](#getoptionaldata2) | Returns the second optional data field from the MRZ. |
 | [`getPersonalNumber`](#getpersonalnumber) | Returns the personal number from the MRZ. |
+| [`getFieldValidationStatus`](#getfieldvalidationstatus) | Returns the validation status of a single parsed MRZ field. |
 
 ### getFirstName
 
@@ -237,3 +238,51 @@ String getPersonalNumber();
 **Return Value**
 
 The personal number, or `null` if not present.
+
+### getFieldValidationStatus
+
+Returns the validation status of a single parsed MRZ field. Most MRZ fields are protected by a check digit, and this method reports whether the value read from the document matched it.
+
+A status of `VS_FAILED` means the value does not agree with its check digit — the document may be misread, invalid, or altered. The value is still returned by the corresponding getter, so you can choose whether to accept it, prompt for a re-scan, or ask for manual correction.
+
+```java
+int getFieldValidationStatus(String fieldName);
+```
+
+**Parameters**
+
+`fieldName`: The name of the field to query, using the same names as the getters on this class. The accepted values are:
+
+| `fieldName` | Corresponding getter |
+| ----------- | -------------------- |
+| `firstName` | [`getFirstName`](#getfirstname) |
+| `lastName` | [`getLastName`](#getlastname) |
+| `sex` | [`getSex`](#getsex) |
+| `issuingState` | [`getIssuingState`](#getissuingstate) |
+| `nationality` | [`getNationality`](#getnationality) |
+| `dateOfBirth` | [`getDateOfBirth`](#getdateofbirth) |
+| `dateOfExpire` | [`getDateOfExpire`](#getdateofexpire) |
+| `documentNumber` | [`getDocumentNumber`](#getdocumentnumber) |
+| `mrzText` | [`getMrzText`](#getmrztext) |
+| `optionalData1` | [`getOptionalData1`](#getoptionaldata1) |
+| `optionalData2` | [`getOptionalData2`](#getoptionaldata2) |
+| `personalNumber` | [`getPersonalNumber`](#getpersonalnumber) |
+
+**Return Value**
+
+An integer representing an `EnumValidationStatus` value:
+
+| Member | Value | Description |
+| ------ | ----- | ----------- |
+| `VS_NONE` | 0 | The field has no validation specified. |
+| `VS_SUCCEEDED` | 1 | The validation for the field succeeded. |
+| `VS_FAILED` | 2 | The validation for the field failed. |
+
+`EnumValidationStatus` belongs to Dynamsoft Code Parser rather than to this SDK, and is imported from `com.dynamsoft.dcp`. See the [EnumValidationStatus reference](https://www.dynamsoft.com/code-parser/docs/mobile/programming/android/api-reference/enum/validation-status.html?lang=android){:target="_blank"} for its full definition.
+
+> [!NOTE]
+> `dateOfBirth`, `dateOfExpire` and `mrzText` are composites of several underlying MRZ fields. Each returns the worst status among its components: `VS_FAILED` if any component failed, otherwise `VS_SUCCEEDED` if any component passed, otherwise `VS_NONE`.
+>
+> Because `mrzText` aggregates whole MRZ lines, it can report `VS_FAILED` when no individual field does. This happens when the corruption falls in a field that carries no check digit of its own, such as name, nationality, or sex.
+
+An unrecognized `fieldName` returns `VS_NONE` rather than raising an error, as does any `MRZData` instance deserialized from a bundle older than 3.6.2000.
