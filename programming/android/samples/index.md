@@ -20,4 +20,12 @@ Scan the MRZ code from a passport or ID card and extract the information using t
 
 Check code on GitHub
 
-- [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ)
+- [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ){:target="_blank"}
+- [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZKt){:target="_blank"}
+
+The two samples are equivalent. `ScanMRZKt` is a direct translation of `ScanMRZ` that shares its layouts, resources, and screen flow, so pick whichever language matches your project.
+
+Both are modules of a single Gradle project. Open **`android/samples`** in Android Studio rather than an individual sample folder, then choose the `ScanMRZ` or `ScanMRZKt` run configuration. They declare different application IDs, so both can be installed on the same device and compared side by side.
+
+> [!NOTE]
+> A physical device is required to run either sample. The Android Emulator does not expose a camera.
