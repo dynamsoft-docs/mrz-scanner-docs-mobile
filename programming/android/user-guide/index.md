@@ -15,7 +15,7 @@ enableLanguageSelection: true
 The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScannerActivity` — the built-in activity that handles the camera UI, scanning logic, and result delivery.
 
 > [!IMPORTANT]
-> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ) (Java) or its Kotlin twin, [ScanMRZKt](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZKt).
 
 ## Supported Document Types
 
@@ -103,7 +103,10 @@ A valid license key is required to use the SDK. If you are just getting started,
 
 ## Building the MRZ Scanner Application
 
-The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+The following steps build the **ScanMRZ** sample app. You can also download the complete project from the GitHub repo, in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ) or [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZKt).
+
+> [!NOTE]
+> The Kotlin snippets in this guide use the package `com.dynamsoft.scanmrz`, matching the project name from Step 1. The downloadable Kotlin sample uses `com.dynamsoft.scanmrzkt` instead, so that it can be installed alongside the Java sample for comparison. The code is otherwise identical.
 
 ### Step 1: Create a New Project
 
@@ -1434,7 +1437,7 @@ When the scanner finishes, the result is passed to `ResultActivity`, where the e
 
 ## Next Steps
 
-- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+- **Samples** — Explore the complete sample on GitHub, in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ) or [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZKt), or browse the [Demo and Samples](../samples/index.md) page.
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [Android API Reference](../api-reference/index.md) for all classes and methods.
 - **License** — See the [License Activation](license-activation.md) guide for production license setup.
