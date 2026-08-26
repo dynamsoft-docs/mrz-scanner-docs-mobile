@@ -29,3 +29,5 @@ Both are modules of a single Gradle project. Open **`android/samples`** in Andro
 
 > [!NOTE]
 > A physical device is required to run either sample. The Android Emulator does not expose a camera.
+
+For a section-by-section tour of how the sample builds its result screen — the image pager, the per-field validation display, and camera-permission recovery — see the [ScanMRZ Sample Walkthrough](scanmrz-walkthrough.md).
