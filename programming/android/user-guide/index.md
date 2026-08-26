@@ -904,6 +904,17 @@ class ImagesFragment : Fragment() {
 
 Create **ResultActivity** in the same package folder using the same steps as above — right-click the package folder and select **New > Java Class** (or **New > Kotlin File/Class**), then name it `ResultActivity`. It receives the `MRZScanResult` passed from `MainActivity`, handles all three result statuses, and populates the result screen with the extracted MRZ data, portrait image, and document images.
 
+Two parts of this activity are worth reading closely.
+
+**Per-field validation.** Each MRZ field carries its own validation status, retrieved with [`getFieldValidationStatus`](../api-reference/mrz-data.md). The `applyField` helper renders any field whose status is `VS_FAILED` in amber with a trailing error icon, underlines it to signal that it is tappable, and opens a short explanation when tapped. A failed status means the value does not match its check digit — the document may be invalid or altered — so the value is shown rather than hidden, letting you decide whether to accept it, prompt for a re-scan, or ask for manual correction.
+
+Note that the top summary block is deliberately left unstyled. It combines several values on one line, so flagging it on a single field's status would imply that everything on that line is suspect.
+
+**Camera-permission failures.** When the scanner cannot start because camera access was denied, it returns `RS_EXCEPTION` with an error code of `EC_CAMERA_PERMISSION_DENIED` or `EC_CAMERA_PERMISSION_RESTRICTED`. `showCameraPermissionAction` replaces **Re-Scan** with **Open Settings** for the first of these, and `onResume` re-checks the permission so that granting it in Settings and returning starts a new scan instead of leaving a stale error on screen.
+
+> [!NOTE]
+> **Open Settings** is offered only for `EC_CAMERA_PERMISSION_DENIED`. `EC_CAMERA_PERMISSION_RESTRICTED` means device policy withholds the camera, and the per-app camera toggle is absent from Settings in that state, so sending the user there would be a dead end. See [`MRZScanResult`](../api-reference/mrz-scan-result.md) for both codes.
+
 <div class="sample-code-prefix"></div>
 >- Java
 >- Kotlin
@@ -911,12 +922,24 @@ Create **ResultActivity** in the same package folder using the same steps as abo
 >1. 
 ```java
 package com.dynamsoft.scanmrz;
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -925,6 +948,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import com.dynamsoft.core.basic_structures.CoreException;
 import com.dynamsoft.core.basic_structures.ImageData;
+import com.dynamsoft.dcp.EnumValidationStatus;
 import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentSide;
 import com.dynamsoft.mrzscannerbundle.ui.MRZData;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
@@ -936,6 +960,8 @@ public class ResultActivity extends AppCompatActivity {
        public static final String EXTRA_ACTION = "ACTION";
        public static final int ACTION_RESCAN = 0;
        public static final int ACTION_RETURN_HOME = 1;
+       // True while this screen is showing a camera-permission denial rather than a result.
+       private boolean isShowingCameraPermissionError = false;
        @Override
        protected void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
@@ -958,6 +984,21 @@ public class ResultActivity extends AppCompatActivity {
              finish();
           });
        }
+       @Override
+       protected void onResume() {
+          super.onResume();
+          // The user may have granted camera access in Settings and come straight back.
+          // Leaving a stale "access denied" message on screen would tell them to fix
+          // something they have just fixed, so hand control back for another scan.
+          if (isShowingCameraPermissionError && hasCameraPermission()) {
+             setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RESCAN));
+             finish();
+          }
+       }
+       private boolean hasCameraPermission() {
+          return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                  == PackageManager.PERMISSION_GRANTED;
+       }
        private void showMRZScanResult(MRZScanResult result) {
           if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
              setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RETURN_HOME));
@@ -969,19 +1010,25 @@ public class ResultActivity extends AppCompatActivity {
              TextView tvNoResult = findViewById(R.id.no_result_view);
              tvNoResult.setVisibility(View.VISIBLE);
              tvNoResult.setText(result.getErrorString());
+             showCameraPermissionAction(result.getErrorCode());
              return;
           }
           findViewById(R.id.result_view).setVisibility(View.VISIBLE);
           findViewById(R.id.no_result_view).setVisibility(View.GONE);
           MRZData data = result.getData();
-          String genderText = data.getSex().substring(0, 1).toUpperCase() + data.getSex().substring(1).toLowerCase();
-          // Main info
-          TextView tvFullName = findViewById(R.id.tv_full_name);
-          tvFullName.setText(data.getFirstName() + " " + data.getLastName());
-          TextView tvGenderAndAge = findViewById(R.id.tv_gender_and_age);
-          tvGenderAndAge.setText(genderText + ", " + data.getAge() + " years old");
-          TextView tvExpiry = findViewById(R.id.tv_expiry);
-          tvExpiry.setText("Expiry: " + data.getDateOfExpire());
+          // Sex can be empty when the field was not parsed, so capitalize only if non-empty.
+          String sexText = data.getSex();
+          String genderText = sexText.isEmpty() ? "" : sexText.substring(0, 1).toUpperCase() + sexText.substring(1).toLowerCase();
+          // The top summary is a plain overview with no validation highlighting. Field-level
+          // validation is surfaced by the Personal Info and Document Info sections below;
+          // flagging a compound line such as "gender, age" on one field's status would
+          // imply both values are invalid.
+          ((TextView) findViewById(R.id.tv_full_name)).setText((data.getFirstName() + " " + data.getLastName()).trim());
+          ((TextView) findViewById(R.id.tv_gender_and_age)).setText(
+                  genderText.isEmpty() && data.getAge() == 0
+                          ? ""
+                          : genderText + ", " + data.getAge() + " years old");
+          ((TextView) findViewById(R.id.tv_expiry)).setText(data.getDateOfExpire().isEmpty() ? "" : "Expiry: " + data.getDateOfExpire());
           ImageView ivPortrait = findViewById(R.id.iv_portrait);
           ImageData portraitImage = result.getPortraitImage();
           if (portraitImage != null) {
@@ -995,36 +1042,79 @@ public class ResultActivity extends AppCompatActivity {
           // Images view pager
           showImages(result);
           // Personal info
-          TextView tvGivenName = findViewById(R.id.tv_given_name);
-          tvGivenName.setText(data.getFirstName());
-          TextView tvSurname = findViewById(R.id.tv_surname);
-          tvSurname.setText(data.getLastName());
-          TextView tvDateOfBirth = findViewById(R.id.tv_date_of_birth);
-          tvDateOfBirth.setText(data.getDateOfBirth());
-          TextView tvGender = findViewById(R.id.tv_gender);
-          tvGender.setText(genderText);
-          TextView tvNationality = findViewById(R.id.tv_nationality);
-          tvNationality.setText(data.getNationality());
+          applyField(findViewById(R.id.tv_given_name), data.getFirstName(), data.getFieldValidationStatus("firstName"));
+          applyField(findViewById(R.id.tv_surname), data.getLastName(), data.getFieldValidationStatus("lastName"));
+          applyField(findViewById(R.id.tv_date_of_birth), data.getDateOfBirth(), data.getFieldValidationStatus("dateOfBirth"));
+          applyField(findViewById(R.id.tv_gender), genderText, data.getFieldValidationStatus("sex"));
+          applyField(findViewById(R.id.tv_nationality), data.getNationality(), data.getFieldValidationStatus("nationality"));
           // Document info
-          TextView tvDocType = findViewById(R.id.tv_doc_type);
-          switch (data.getDocumentType()) {
-             case "MRTD_TD1_ID":
-                tvDocType.setText("ID (TD1)");
-                break;
-             case "MRTD_TD2_ID":
-                tvDocType.setText("ID (TD2)");
-                break;
-             case "MRTD_TD3_PASSPORT":
-                tvDocType.setText("Passport (TD3)");
-                break;
+          String docTypeText;
+          switch (data.getDocumentType() == null ? "" : data.getDocumentType()) {
+             case "MRTD_TD1_ID":       docTypeText = "ID (TD1)"; break;
+             case "MRTD_TD2_ID":       docTypeText = "ID (TD2)"; break;
+             case "MRTD_TD3_PASSPORT": docTypeText = "Passport (TD3)"; break;
+             default:                  docTypeText = ""; break;
           }
-          TextView tvDocNumber = findViewById(R.id.tv_doc_number);
-          tvDocNumber.setText(data.getDocumentNumber());
-          TextView tvExpiryDate = findViewById(R.id.tv_expiry_date);
-          tvExpiryDate.setText(data.getDateOfExpire());
-          // Raw MRZ text
-          TextView tvRawMRZ = findViewById(R.id.tv_raw_mrz);
-          tvRawMRZ.setText(data.getMrzText());
+          // documentType comes from the MRZ code type, not an independently validated field.
+          applyField(findViewById(R.id.tv_doc_type), docTypeText, EnumValidationStatus.VS_NONE);
+          applyField(findViewById(R.id.tv_doc_number), data.getDocumentNumber(), data.getFieldValidationStatus("documentNumber"));
+          applyField(findViewById(R.id.tv_expiry_date), data.getDateOfExpire(), data.getFieldValidationStatus("dateOfExpire"));
+          // The raw MRZ text is tappable too: a line-level failure can flag the raw MRZ when
+          // no individual field failed, for example corruption in a field that carries no
+          // check digit of its own such as name, nationality or sex.
+          applyField(findViewById(R.id.tv_raw_mrz), data.getMrzText(), data.getFieldValidationStatus("mrzText"));
+       }
+       // Renders value into tv, appending a circular error icon and colouring the row amber
+       // when validation failed. Empty values render as "N/A" so it is clear which fields the
+       // parser could not extract at all. Failed rows are tappable and open an explanation.
+       private void applyField(TextView tv, String value, int status) {
+          boolean failed = status == EnumValidationStatus.VS_FAILED;
+          boolean empty = value == null || value.isEmpty();
+          String text = empty ? "N/A" : value;
+          if (failed) {
+             SpannableString spannable = new SpannableString(text + "  ￼");
+             Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_error_circle);
+             int iconSize = Math.round(tv.getTextSize() * 1.2f);
+             icon.setBounds(0, 0, iconSize, iconSize);
+             spannable.setSpan(new ImageSpan(icon, ImageSpan.ALIGN_BOTTOM),
+                     spannable.length() - 1, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+             spannable.setSpan(new UnderlineSpan(), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+             tv.setText(spannable);
+          } else {
+             tv.setText(text);
+          }
+          tv.setTextColor(ContextCompat.getColor(this, failed ? R.color.warning_amber : R.color.white));
+          if (failed) {
+             tv.setOnClickListener(v -> showValidationInfoDialog());
+          } else {
+             tv.setOnClickListener(null);
+             tv.setClickable(false);
+          }
+       }
+       private void showValidationInfoDialog() {
+          new AlertDialog.Builder(this)
+                  .setTitle("Field validation warning")
+                  .setMessage("This value doesn't match its check digit. The document may be invalid or altered.")
+                  .setPositiveButton("OK", null)
+                  .show();
+       }
+       // Swaps Re-Scan for Open Settings when the scan failed because camera access was
+       // unavailable. Re-Scan is dropped deliberately: reaching this screen means the user
+       // already saw the scanner's own permission dialog and cancelled it, so retrying would
+       // only replay what they declined, and once the denial is permanent it loops back here.
+       private void showCameraPermissionAction(int errorCode) {
+          // EC_CAMERA_PERMISSION_RESTRICTED means device policy withholds the camera and
+          // Settings has no toggle to offer, so leave both buttons hidden in that case.
+          if (errorCode != MRZScanResult.EnumErrorCode.EC_CAMERA_PERMISSION_DENIED) {
+             return;
+          }
+          isShowingCameraPermissionError = true;
+          findViewById(R.id.btn_rescan).setVisibility(View.GONE);
+          View btnOpenSettings = findViewById(R.id.btn_open_settings);
+          btnOpenSettings.setVisibility(View.VISIBLE);
+          btnOpenSettings.setOnClickListener(v -> startActivity(
+                  new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                          Uri.fromParts("package", getPackageName(), null))));
        }
        private void showImages(MRZScanResult result) {
           ImageData mrzSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ);
@@ -1033,19 +1123,25 @@ public class ResultActivity extends AppCompatActivity {
           ImageData oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE);
           TabLayout tabImages = findViewById(R.id.tab_images);
           ViewPager2 vpImages = findViewById(R.id.vp_images);
-          if (mrzSideDocumentImage == null && mrzSideOriginalImage == null) {
+          // A tab is shown only when its own set of images came back. Original images are off
+          // by default, so normally only "Processed" appears — call
+          // config.setReturnOriginalImage(true) in MainActivity to get both.
+          boolean hasProcessed = mrzSideDocumentImage != null || oppositeSideDocumentImage != null;
+          boolean hasOriginal = mrzSideOriginalImage != null || oppositeSideOriginalImage != null;
+          if (!hasProcessed && !hasOriginal) {
              tabImages.setVisibility(View.GONE);
              vpImages.setVisibility(View.GONE);
              return;
-          } else {
-             tabImages.setVisibility(View.VISIBLE);
-             vpImages.setVisibility(View.VISIBLE);
           }
+          tabImages.setVisibility(View.VISIBLE);
+          vpImages.setVisibility(View.VISIBLE);
           vpImages.setAdapter(new FragmentStateAdapter(this) {
              @NonNull
              @Override
              public Fragment createFragment(int position) {
-                if (position == 0 && mrzSideDocumentImage != null) {
+                // Page 0 is the processed pair whenever processed images exist; otherwise
+                // the single page is the original pair.
+                if (position == 0 && hasProcessed) {
                    return ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage);
                 } else {
                    return ImagesFragment.newInstance(mrzSideOriginalImage, oppositeSideOriginalImage);
@@ -1053,54 +1149,54 @@ public class ResultActivity extends AppCompatActivity {
              }
              @Override
              public int getItemCount() {
-                if (mrzSideDocumentImage != null && mrzSideOriginalImage != null) {
-                   return 2;
-                } else {
-                   return 1;
-                }
+                return hasProcessed && hasOriginal ? 2 : 1;
              }
           });
-          if (mrzSideOriginalImage != null || oppositeSideOriginalImage != null) {
-             new TabLayoutMediator(tabImages, vpImages, (tab, position) -> {
-                if (position == 0 && mrzSideDocumentImage != null) {
-                   tab.setText("Processed");
-                } else {
-                   tab.setText("Original");
-                }
-             }).attach();
-          }
+          // Always attached, so the surviving tab is still labelled when there is only one.
+          new TabLayoutMediator(tabImages, vpImages, (tab, position) -> {
+             if (position == 0 && hasProcessed) {
+                tab.setText("Processed");
+             } else {
+                tab.setText("Original");
+             }
+          }).attach();
        }
 }
 ```
 2. 
 ```kotlin
 package com.dynamsoft.scanmrz
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ImageSpan
+import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.dynamsoft.core.basic_structures.CoreException
-import com.dynamsoft.core.basic_structures.ImageData
+import com.dynamsoft.dcp.EnumValidationStatus
 import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentSide
-import com.dynamsoft.mrzscannerbundle.ui.MRZData
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlin.math.roundToInt
 class ResultActivity : AppCompatActivity() {
-       companion object {
-          const val REQUEST_CODE = 1024
-          const val EXTRA_RESULT = "RESULT"
-          const val EXTRA_ACTION = "ACTION"
-          const val ACTION_RESCAN = 0
-          const val ACTION_RETURN_HOME = 1
-       }
+       // True while this screen is showing a camera-permission denial rather than a result.
+       private var isShowingCameraPermissionError = false
        override fun onCreate(savedInstanceState: Bundle?) {
           super.onCreate(savedInstanceState)
           setContentView(R.layout.activity_results)
@@ -1109,8 +1205,11 @@ class ResultActivity : AppCompatActivity() {
              v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
              insets
           }
+          @Suppress("DEPRECATION")
           val scanResult = intent.getParcelableExtra<MRZScanResult>(EXTRA_RESULT)
-          scanResult?.let { showMRZScanResult(it) }
+          if (scanResult != null) {
+             showMRZScanResult(scanResult)
+          }
           findViewById<View>(R.id.btn_rescan).setOnClickListener {
              setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RESCAN))
              finish()
@@ -1120,6 +1219,19 @@ class ResultActivity : AppCompatActivity() {
              finish()
           }
        }
+       override fun onResume() {
+          super.onResume()
+          // The user may have granted camera access in Settings and come straight back.
+          // Leaving a stale "access denied" message on screen would tell them to fix
+          // something they have just fixed, so hand control back for another scan.
+          if (isShowingCameraPermissionError && hasCameraPermission()) {
+             setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RESCAN))
+             finish()
+          }
+       }
+       private fun hasCameraPermission(): Boolean =
+          ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
+                  PackageManager.PERMISSION_GRANTED
        private fun showMRZScanResult(result: MRZScanResult) {
           if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
              setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RETURN_HOME))
@@ -1131,21 +1243,28 @@ class ResultActivity : AppCompatActivity() {
              val tvNoResult = findViewById<TextView>(R.id.no_result_view)
              tvNoResult.visibility = View.VISIBLE
              tvNoResult.text = result.errorString
+             showCameraPermissionAction(result.errorCode)
              return
           }
           findViewById<View>(R.id.result_view).visibility = View.VISIBLE
           findViewById<View>(R.id.no_result_view).visibility = View.GONE
           val data = result.data
-          val genderText = data.sex.substring(0, 1).uppercase() + data.sex.substring(1).lowercase()
-          // Main info
-          val tvFullName = findViewById<TextView>(R.id.tv_full_name)
-          tvFullName.text = "${data.firstName} ${data.lastName}"
-          val tvGenderAndAge = findViewById<TextView>(R.id.tv_gender_and_age)
-          tvGenderAndAge.text = "$genderText, ${data.age} years old"
-          val tvExpiry = findViewById<TextView>(R.id.tv_expiry)
-          tvExpiry.text = "Expiry: ${data.dateOfExpire}"
+          // Sex can be empty when the field was not parsed, so capitalize only if non-empty.
+          val sexText = data.sex
+          val genderText = if (sexText.isEmpty()) ""
+          else sexText.substring(0, 1).uppercase() + sexText.substring(1).lowercase()
+          // The top summary is a plain overview with no validation highlighting. Field-level
+          // validation is surfaced by the Personal Info and Document Info sections below;
+          // flagging a compound line such as "gender, age" on one field's status would
+          // imply both values are invalid.
+          findViewById<TextView>(R.id.tv_full_name).text = (data.firstName + " " + data.lastName).trim()
+          findViewById<TextView>(R.id.tv_gender_and_age).text =
+             if (genderText.isEmpty() && data.age == 0) ""
+             else "$genderText, ${data.age} years old"
+          findViewById<TextView>(R.id.tv_expiry).text =
+             if (data.dateOfExpire.isEmpty()) "" else "Expiry: ${data.dateOfExpire}"
           val ivPortrait = findViewById<ImageView>(R.id.iv_portrait)
-          val portraitImage = result.getPortraitImage()
+          val portraitImage = result.portraitImage
           if (portraitImage != null) {
              try {
                 ivPortrait.setImageBitmap(portraitImage.toBitmap())
@@ -1157,30 +1276,86 @@ class ResultActivity : AppCompatActivity() {
           // Images view pager
           showImages(result)
           // Personal info
-          val tvGivenName = findViewById<TextView>(R.id.tv_given_name)
-          tvGivenName.text = data.firstName
-          val tvSurname = findViewById<TextView>(R.id.tv_surname)
-          tvSurname.text = data.lastName
-          val tvDateOfBirth = findViewById<TextView>(R.id.tv_date_of_birth)
-          tvDateOfBirth.text = data.dateOfBirth
-          val tvGender = findViewById<TextView>(R.id.tv_gender)
-          tvGender.text = genderText
-          val tvNationality = findViewById<TextView>(R.id.tv_nationality)
-          tvNationality.text = data.nationality
+          applyField(findViewById(R.id.tv_given_name), data.firstName, data.getFieldValidationStatus("firstName"))
+          applyField(findViewById(R.id.tv_surname), data.lastName, data.getFieldValidationStatus("lastName"))
+          applyField(findViewById(R.id.tv_date_of_birth), data.dateOfBirth, data.getFieldValidationStatus("dateOfBirth"))
+          applyField(findViewById(R.id.tv_gender), genderText, data.getFieldValidationStatus("sex"))
+          applyField(findViewById(R.id.tv_nationality), data.nationality, data.getFieldValidationStatus("nationality"))
           // Document info
-          val tvDocType = findViewById<TextView>(R.id.tv_doc_type)
-          when (data.documentType) {
-             "MRTD_TD1_ID" -> tvDocType.text = "ID (TD1)"
-             "MRTD_TD2_ID" -> tvDocType.text = "ID (TD2)"
-             "MRTD_TD3_PASSPORT" -> tvDocType.text = "Passport (TD3)"
+          val docTypeText = when (data.documentType ?: "") {
+             "MRTD_TD1_ID" -> "ID (TD1)"
+             "MRTD_TD2_ID" -> "ID (TD2)"
+             "MRTD_TD3_PASSPORT" -> "Passport (TD3)"
+             else -> ""
           }
-          val tvDocNumber = findViewById<TextView>(R.id.tv_doc_number)
-          tvDocNumber.text = data.documentNumber
-          val tvExpiryDate = findViewById<TextView>(R.id.tv_expiry_date)
-          tvExpiryDate.text = data.dateOfExpire
-          // Raw MRZ text
-          val tvRawMRZ = findViewById<TextView>(R.id.tv_raw_mrz)
-          tvRawMRZ.text = data.mrzText
+          // documentType comes from the MRZ code type, not an independently validated field.
+          applyField(findViewById(R.id.tv_doc_type), docTypeText, EnumValidationStatus.VS_NONE)
+          applyField(findViewById(R.id.tv_doc_number), data.documentNumber, data.getFieldValidationStatus("documentNumber"))
+          applyField(findViewById(R.id.tv_expiry_date), data.dateOfExpire, data.getFieldValidationStatus("dateOfExpire"))
+          // The raw MRZ text is tappable too: a line-level failure can flag the raw MRZ when
+          // no individual field failed, for example corruption in a field that carries no
+          // check digit of its own such as name, nationality or sex.
+          applyField(findViewById(R.id.tv_raw_mrz), data.mrzText, data.getFieldValidationStatus("mrzText"))
+       }
+       // Renders value into tv, appending a circular error icon and colouring the row amber
+       // when validation failed. Empty values render as "N/A" so it is clear which fields the
+       // parser could not extract at all. Failed rows are tappable and open an explanation.
+       private fun applyField(tv: TextView, value: String?, status: Int) {
+          val failed = status == EnumValidationStatus.VS_FAILED
+          val text = if (value.isNullOrEmpty()) "N/A" else value
+          if (failed) {
+             val spannable = SpannableString("$text  ￼")
+             val icon = ContextCompat.getDrawable(this, R.drawable.ic_error_circle)!!
+             val iconSize = (tv.textSize * 1.2f).roundToInt()
+             icon.setBounds(0, 0, iconSize, iconSize)
+             spannable.setSpan(
+                ImageSpan(icon, ImageSpan.ALIGN_BOTTOM),
+                spannable.length - 1, spannable.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+             )
+             spannable.setSpan(UnderlineSpan(), 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+             tv.text = spannable
+          } else {
+             tv.text = text
+          }
+          tv.setTextColor(
+             ContextCompat.getColor(this, if (failed) R.color.warning_amber else R.color.white)
+          )
+          if (failed) {
+             tv.setOnClickListener { showValidationInfoDialog() }
+          } else {
+             tv.setOnClickListener(null)
+             tv.isClickable = false
+          }
+       }
+       private fun showValidationInfoDialog() {
+          AlertDialog.Builder(this)
+             .setTitle("Field validation warning")
+             .setMessage("This value doesn't match its check digit. The document may be invalid or altered.")
+             .setPositiveButton("OK", null)
+             .show()
+       }
+       // Swaps Re-Scan for Open Settings when the scan failed because camera access was
+       // unavailable. Re-Scan is dropped deliberately: reaching this screen means the user
+       // already saw the scanner's own permission dialog and cancelled it, so retrying would
+       // only replay what they declined, and once the denial is permanent it loops back here.
+       private fun showCameraPermissionAction(errorCode: Int) {
+          // EC_CAMERA_PERMISSION_RESTRICTED means device policy withholds the camera and
+          // Settings has no toggle to offer, so leave both buttons hidden in that case.
+          if (errorCode != MRZScanResult.EnumErrorCode.EC_CAMERA_PERMISSION_DENIED) {
+             return
+          }
+          isShowingCameraPermissionError = true
+          findViewById<View>(R.id.btn_rescan).visibility = View.GONE
+          val btnOpenSettings = findViewById<View>(R.id.btn_open_settings)
+          btnOpenSettings.visibility = View.VISIBLE
+          btnOpenSettings.setOnClickListener {
+             startActivity(
+                Intent(
+                   Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                   Uri.fromParts("package", packageName, null)
+                )
+             )
+          }
        }
        private fun showImages(result: MRZScanResult) {
           val mrzSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ)
@@ -1189,31 +1364,43 @@ class ResultActivity : AppCompatActivity() {
           val oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE)
           val tabImages = findViewById<TabLayout>(R.id.tab_images)
           val vpImages = findViewById<ViewPager2>(R.id.vp_images)
-          if (mrzSideDocumentImage == null && mrzSideOriginalImage == null) {
+          // A tab is shown only when its own set of images came back. Original images are off
+          // by default, so normally only "Processed" appears — set
+          // config.isReturnOriginalImage = true in MainActivity to get both.
+          val hasProcessed = mrzSideDocumentImage != null || oppositeSideDocumentImage != null
+          val hasOriginal = mrzSideOriginalImage != null || oppositeSideOriginalImage != null
+          if (!hasProcessed && !hasOriginal) {
              tabImages.visibility = View.GONE
              vpImages.visibility = View.GONE
              return
-          } else {
-             tabImages.visibility = View.VISIBLE
-             vpImages.visibility = View.VISIBLE
           }
+          tabImages.visibility = View.VISIBLE
+          vpImages.visibility = View.VISIBLE
           vpImages.adapter = object : FragmentStateAdapter(this) {
              override fun createFragment(position: Int): Fragment {
-                return if (position == 0 && mrzSideDocumentImage != null) {
+                // Page 0 is the processed pair whenever processed images exist; otherwise
+                // the single page is the original pair.
+                return if (position == 0 && hasProcessed) {
                    ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage)
                 } else {
                    ImagesFragment.newInstance(mrzSideOriginalImage, oppositeSideOriginalImage)
                 }
              }
              override fun getItemCount(): Int {
-                return if (mrzSideDocumentImage != null && mrzSideOriginalImage != null) 2 else 1
+                return if (hasProcessed && hasOriginal) 2 else 1
              }
           }
-          if (mrzSideOriginalImage != null || oppositeSideOriginalImage != null) {
-             TabLayoutMediator(tabImages, vpImages) { tab, position ->
-                tab.text = if (position == 0 && mrzSideDocumentImage != null) "Processed" else "Original"
-             }.attach()
-          }
+          // Always attached, so the surviving tab is still labelled when there is only one.
+          TabLayoutMediator(tabImages, vpImages) { tab, position ->
+             tab.text = if (position == 0 && hasProcessed) "Processed" else "Original"
+          }.attach()
+       }
+       companion object {
+          const val REQUEST_CODE = 1024
+          const val EXTRA_RESULT = "RESULT"
+          const val EXTRA_ACTION = "ACTION"
+          const val ACTION_RESCAN = 0
+          const val ACTION_RETURN_HOME = 1
        }
 }
 ```
