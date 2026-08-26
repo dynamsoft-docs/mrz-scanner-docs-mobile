@@ -669,6 +669,11 @@ Open **AndroidManifest.xml** and declare `ResultActivity` inside the `<applicati
 
 In Android Studio, right-click the package folder (`com.dynamsoft.scanmrz`) in the **Project** pane and select **New > Java Class** (or **New > Kotlin File/Class** for Kotlin), then name it `ImagesFragment`.
 
+The images reach the fragment through `setArguments(Bundle)` rather than a constructor. `FragmentManager` recreates fragments by reflection, so it needs a public no-arg constructor and can only restore state it finds in the arguments `Bundle`. Because `ImageData` is not itself serializable into a `Bundle`, each image is encoded to JPEG bytes on the way in and decoded on the way out.
+
+> [!IMPORTANT]
+> Do not pass `ImageData` through the fragment's constructor. That form compiles, but `ResultActivity` will crash at `super.onCreate(...)` whenever the activity is recreated — after a configuration change, under **Don't keep activities**, or following process death. You can reproduce it by enabling **Don't keep activities** in Developer Options, completing a scan, then backgrounding and reopening the app.
+
 <div class="sample-code-prefix"></div>
 >- Java
 >- Kotlin
@@ -677,8 +682,10 @@ In Android Studio, right-click the package folder (`com.dynamsoft.scanmrz`) in t
 ```java
 package com.dynamsoft.scanmrz;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -688,21 +695,56 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.dynamsoft.core.basic_structures.CoreException;
 import com.dynamsoft.core.basic_structures.ImageData;
+import java.io.ByteArrayOutputStream;
 public class ImagesFragment extends Fragment {
-       private final ImageData imageData1;
-       private final ImageData imageData2;
-       public ImagesFragment(ImageData imageData1, ImageData imageData2) {
+       private static final String ARG_IMAGE_1 = "image1";
+       private static final String ARG_IMAGE_2 = "image2";
+       // The JPEG quality and maximum dimension below keep the Bundle payload well under
+       // the ~1 MB Binder transaction limit that carries saved instance state.
+       private static final int JPEG_QUALITY = 85;
+       private static final int MAX_DIMENSION_PX = 1024;
+       // A public no-arg constructor is required: FragmentManager recreates fragments by
+       // reflection. The images are passed through setArguments(Bundle) so they survive
+       // configuration changes and process death.
+       public ImagesFragment() {
           super();
-          this.imageData1 = imageData1;
-          this.imageData2 = imageData2;
        }
        @NonNull
        public static ImagesFragment newInstance(@Nullable ImageData imageData1, @Nullable ImageData imageData2) {
-          return new ImagesFragment(imageData1, imageData2);
+          ImagesFragment fragment = new ImagesFragment();
+          Bundle args = new Bundle();
+          byte[] bytes1 = encode(imageData1);
+          byte[] bytes2 = encode(imageData2);
+          if (bytes1 != null) args.putByteArray(ARG_IMAGE_1, bytes1);
+          if (bytes2 != null) args.putByteArray(ARG_IMAGE_2, bytes2);
+          fragment.setArguments(args);
+          return fragment;
+       }
+       @Nullable
+       private static byte[] encode(@Nullable ImageData imageData) {
+          if (imageData == null) return null;
+          try {
+             Bitmap bmp = downscaleIfNeeded(imageData.toBitmap());
+             ByteArrayOutputStream out = new ByteArrayOutputStream();
+             bmp.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out);
+             return out.toByteArray();
+          } catch (CoreException e) {
+             e.printStackTrace();
+             return null;
+          }
+       }
+       @NonNull
+       private static Bitmap downscaleIfNeeded(@NonNull Bitmap src) {
+          int w = src.getWidth();
+          int h = src.getHeight();
+          int max = Math.max(w, h);
+          if (max <= MAX_DIMENSION_PX) return src;
+          float scale = (float) MAX_DIMENSION_PX / max;
+          return Bitmap.createScaledBitmap(src, Math.round(w * scale), Math.round(h * scale), true);
        }
        @Nullable
        @Override
-       public View onCreateView(@NonNull android.view.LayoutInflater inflater,
+       public View onCreateView(@NonNull LayoutInflater inflater,
                                 @Nullable ViewGroup container,
                                 @Nullable Bundle savedInstanceState) {
           LinearLayout root = new LinearLayout(requireContext());
@@ -719,31 +761,33 @@ public class ImagesFragment extends Fragment {
        }
        @Override
        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+          Bundle args = getArguments();
+          if (args == null) return;
           LinearLayout root = (LinearLayout) view;
-          ImageData[] imageDatas = new ImageData[]{imageData1, imageData2};
-          for (int i = 0; i < imageDatas.length; i++) {
-             ImageData imageData = imageDatas[i];
-             if (imageData1 != null && imageData2 != null && i == 1) {
-                root.addView(new View(requireContext()),
-                        new LinearLayout.LayoutParams(
-                                (int)(16 * getResources().getDisplayMetrics().density),
-                                ViewGroup.LayoutParams.MATCH_PARENT));
-             }
-             if (imageData != null) {
-                try {
-                   Bitmap bmp = imageData.toBitmap();
-                   ImageView iv = new ImageView(requireContext());
-                   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-                   iv.setLayoutParams(lp);
-                   iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                   iv.setAdjustViewBounds(true);
-                   iv.setImageBitmap(bmp);
-                   root.addView(iv);
-                } catch (CoreException e) {
-                   e.printStackTrace();
-                }
-             }
+          byte[] bytes1 = args.getByteArray(ARG_IMAGE_1);
+          byte[] bytes2 = args.getByteArray(ARG_IMAGE_2);
+          addImageView(root, bytes1);
+          if (bytes1 != null && bytes2 != null) {
+             // 16dp spacer between the two images
+             root.addView(new View(requireContext()),
+                     new LinearLayout.LayoutParams(
+                             (int) (16 * getResources().getDisplayMetrics().density),
+                             ViewGroup.LayoutParams.MATCH_PARENT));
           }
+          addImageView(root, bytes2);
+       }
+       private void addImageView(@NonNull LinearLayout root, @Nullable byte[] bytes) {
+          if (bytes == null) return;
+          Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+          if (bmp == null) return;
+          ImageView iv = new ImageView(requireContext());
+          LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                  0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+          iv.setLayoutParams(lp);
+          iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+          iv.setAdjustViewBounds(true);
+          iv.setImageBitmap(bmp);
+          root.addView(iv);
        }
 }
 ```
@@ -751,8 +795,10 @@ public class ImagesFragment extends Fragment {
 ```kotlin
 package com.dynamsoft.scanmrz
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -760,17 +806,16 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.dynamsoft.core.basic_structures.CoreException
 import com.dynamsoft.core.basic_structures.ImageData
-class ImagesFragment(
-       private val imageData1: ImageData?,
-       private val imageData2: ImageData?
-) : Fragment() {
-       companion object {
-          fun newInstance(imageData1: ImageData?, imageData2: ImageData?): ImagesFragment {
-             return ImagesFragment(imageData1, imageData2)
-          }
-       }
+import java.io.ByteArrayOutputStream
+import kotlin.math.max
+import kotlin.math.roundToInt
+// Kotlin supplies the required public no-arg constructor for free: FragmentManager
+// recreates fragments by reflection. The images are passed through setArguments(Bundle)
+// so they survive configuration changes and process death. Do not be tempted to hand
+// ImageData to a Kotlin primary constructor instead.
+class ImagesFragment : Fragment() {
        override fun onCreateView(
-          inflater: android.view.LayoutInflater,
+          inflater: LayoutInflater,
           container: ViewGroup?,
           savedInstanceState: Bundle?
        ): View {
@@ -787,33 +832,69 @@ class ImagesFragment(
           return root
        }
        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+          val args = arguments ?: return
           val root = view as LinearLayout
-          val imageDatas = arrayOf(imageData1, imageData2)
-          for (i in imageDatas.indices) {
-             val imageData = imageDatas[i]
-             if (imageData1 != null && imageData2 != null && i == 1) {
-                root.addView(
-                   View(requireContext()),
-                   LinearLayout.LayoutParams(
-                      (16 * resources.displayMetrics.density).toInt(),
-                      ViewGroup.LayoutParams.MATCH_PARENT
-                   )
+          val bytes1 = args.getByteArray(ARG_IMAGE_1)
+          val bytes2 = args.getByteArray(ARG_IMAGE_2)
+          addImageView(root, bytes1)
+          if (bytes1 != null && bytes2 != null) {
+             // 16dp spacer between the two images
+             root.addView(
+                View(requireContext()),
+                LinearLayout.LayoutParams(
+                   (16 * resources.displayMetrics.density).toInt(),
+                   ViewGroup.LayoutParams.MATCH_PARENT
                 )
+             )
+          }
+          addImageView(root, bytes2)
+       }
+       private fun addImageView(root: LinearLayout, bytes: ByteArray?) {
+          if (bytes == null) return
+          val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: return
+          val iv = ImageView(requireContext())
+          iv.layoutParams = LinearLayout.LayoutParams(
+             0, ViewGroup.LayoutParams.MATCH_PARENT, 1f
+          )
+          iv.scaleType = ImageView.ScaleType.FIT_CENTER
+          iv.adjustViewBounds = true
+          iv.setImageBitmap(bmp)
+          root.addView(iv)
+       }
+       companion object {
+          private const val ARG_IMAGE_1 = "image1"
+          private const val ARG_IMAGE_2 = "image2"
+          // The JPEG quality and maximum dimension below keep the Bundle payload well
+          // under the ~1 MB Binder transaction limit that carries saved instance state.
+          private const val JPEG_QUALITY = 85
+          private const val MAX_DIMENSION_PX = 1024
+          fun newInstance(imageData1: ImageData?, imageData2: ImageData?): ImagesFragment {
+             val fragment = ImagesFragment()
+             val args = Bundle()
+             encode(imageData1)?.let { args.putByteArray(ARG_IMAGE_1, it) }
+             encode(imageData2)?.let { args.putByteArray(ARG_IMAGE_2, it) }
+             fragment.arguments = args
+             return fragment
+          }
+          private fun encode(imageData: ImageData?): ByteArray? {
+             if (imageData == null) return null
+             return try {
+                val bmp = downscaleIfNeeded(imageData.toBitmap())
+                val out = ByteArrayOutputStream()
+                bmp.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
+                out.toByteArray()
+             } catch (e: CoreException) {
+                e.printStackTrace()
+                null
              }
-             if (imageData != null) {
-                try {
-                   val bmp: Bitmap = imageData.toBitmap()
-                   val iv = ImageView(requireContext())
-                   val lp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
-                   iv.layoutParams = lp
-                   iv.scaleType = ImageView.ScaleType.FIT_CENTER
-                   iv.adjustViewBounds = true
-                   iv.setImageBitmap(bmp)
-                   root.addView(iv)
-                } catch (e: CoreException) {
-                   e.printStackTrace()
-                }
-             }
+          }
+          private fun downscaleIfNeeded(src: Bitmap): Bitmap {
+             val w = src.width
+             val h = src.height
+             val maxDimension = max(w, h)
+             if (maxDimension <= MAX_DIMENSION_PX) return src
+             val scale = MAX_DIMENSION_PX.toFloat() / maxDimension
+             return Bitmap.createScaledBitmap(src, (w * scale).roundToInt(), (h * scale).roundToInt(), true)
           }
        }
 }
