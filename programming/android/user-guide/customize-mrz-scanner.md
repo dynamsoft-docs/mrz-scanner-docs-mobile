@@ -159,7 +159,7 @@ val config = MRZScannerConfig().apply {
 - [`setTorchButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#settorchbuttonvisible)
 - [`setCameraToggleButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setcameratogglebuttonvisible)
 - [`setBeepButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setbeepbuttonvisible)
-- [`setVibrateButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setvibrateButtonvisible)
+- [`setVibrateButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setvibratebuttonvisible)
 - [`setFormatSelectorVisible`]({{ site.android_api }}mrz-scanner-config.html#setformatselectorvisible)
 - [`setGuideFrameVisible`]({{ site.android_api }}mrz-scanner-config.html#setguideframevisible)
 

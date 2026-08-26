@@ -46,8 +46,8 @@ final class MRZScannerConfig
 | [`setCameraToggleButtonVisible`](#setcameratogglebuttonvisible) | Sets the visibility of the camera toggle button. |
 | [`setBeepButtonVisible`](#setbeepbuttonvisible) | Sets the visibility of the beep toggle button in the UI. |
 | [`isBeepButtonVisible`](#isbeepbuttonvisible) | Returns the visibility status of the beep toggle button. |
-| [`setVibrateButtonVisible`](#setvibrateButtonvisible) | Sets the visibility of the vibrate toggle button in the UI. |
-| [`isVibrateButtonVisible`](#isvibrateButtonvisible) | Returns the visibility status of the vibrate toggle button. |
+| [`setVibrateButtonVisible`](#setvibratebuttonvisible) | Sets the visibility of the vibrate toggle button in the UI. |
+| [`isVibrateButtonVisible`](#isvibratebuttonvisible) | Returns the visibility status of the vibrate toggle button. |
 | [`setFormatSelectorVisible`](#setformatselectorvisible) | Sets the visibility of the document format selector. |
 | [`isFormatSelectorVisible`](#isformatselectorvisible) | Returns the visibility status of the document format selector. |
 | [`setReturnDocumentImage`](#setreturndocumentimage) | Sets whether to return a cropped document image after scanning. |
