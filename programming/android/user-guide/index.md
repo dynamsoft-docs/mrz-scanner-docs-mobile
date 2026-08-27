@@ -633,6 +633,29 @@ Tap **Scan an MRZ**, point the camera at the machine-readable zone of a passport
 > [!NOTE]
 > A physical Android device is required. The camera is not available on the Android Emulator.
 
+## The Scanner Screen
+
+`MRZScannerActivity` supplies its own full-screen UI, so nothing above defines what the user sees while scanning. Knowing what it presents is worth a moment, because it determines how much guidance your own screens need to provide.
+
+The screen is a live camera preview with a **guide frame** marking where to place the document, a **toolbar** across the top carrying the close, torch, camera-toggle, beep, and vibrate buttons, a **format selector** along the bottom for choosing between ID, passport, or both, and a **prompt** that updates as the scan progresses. Every one of these can be hidden — see [Configure the UI Elements](customize-mrz-scanner.md#configure-the-ui-elements).
+
+### What the user is told
+
+The scanner narrates its own progress, so the prompt text is the main thing a user follows:
+
+| Stage | On screen |
+| ----- | --------- |
+| Waiting for a document | **Scan the MRZ side first** |
+| Text lines detected in frame | A spinner beside the guide frame |
+| MRZ read, nothing further needed | **MRZ scanned ✓** |
+| MRZ read, portrait found on the same side | **MRZ scanned ✓ / Portrait scanned ✓** |
+| MRZ read, opposite side needed | **MRZ scanned ✓ / Flip and scan the other side**, with an animated flip prompt |
+| Both sides captured | **MRZ scanned ✓ / Both sides scanned ✓** |
+
+The spinner is not a generic busy indicator. It is driven by per-frame text-line detection, so it appears when the scanner can see MRZ-like text and is working on it, and disappears when the document moves out of frame. Once the MRZ is confirmed it stops for the rest of the session. Treated as a signal, it tells the user that holding steady is worthwhile.
+
+The last three rows are covered in detail in the next section.
+
 ## Scanning Two-Sided Documents
 
 On a passport the machine-readable zone and the portrait share one page, so a single capture collects everything. On most TD1 and TD2 ID cards they are on opposite sides, and the scanner has to see both. It handles this itself — the app you built above needs no extra code — but it changes what the scan looks like to the user and what comes back in the result.
