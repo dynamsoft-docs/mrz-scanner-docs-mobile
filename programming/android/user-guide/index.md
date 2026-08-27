@@ -633,6 +633,56 @@ Tap **Scan an MRZ**, point the camera at the machine-readable zone of a passport
 > [!NOTE]
 > A physical Android device is required. The camera is not available on the Android Emulator.
 
+## Scanning Two-Sided Documents
+
+On a passport the machine-readable zone and the portrait share one page, so a single capture collects everything. On most TD1 and TD2 ID cards they are on opposite sides, and the scanner has to see both. It handles this itself — the app you built above needs no extra code — but it changes what the scan looks like to the user and what comes back in the result.
+
+The scanner always reads the **MRZ side first**, whichever physical side that is. The API names the sides `DS_MRZ` and `DS_OPPOSITE` for that reason: document layouts vary by country, so there is no guarantee the MRZ is on the back or that the portrait is on the front.
+
+### What happens during a scan
+
+1. The user scans the MRZ side. This fills the images returned for `DS_MRZ`.
+2. The scanner looks for a portrait on that same side. If it finds one — the usual case for a passport — the scan ends there and **`DS_OPPOSITE` stays `null`**.
+3. If no portrait is found and the document is not a passport, the scanner shows **"Flip and scan the other side"** with an animated prompt. Once the opposite side is captured, its images fill `DS_OPPOSITE` and the portrait is taken from it.
+
+A passport that yields no portrait is treated differently: the scanner keeps looking on the same page rather than asking for a flip, since flipping a passport would not help.
+
+> [!NOTE]
+> Five seconds after the MRZ is read, a tappable **"Continue scanning or tap to finish →"** prompt appears. It lets the user finish with whatever has been captured so far, which is the way out when a document has no portrait to find. Ending the scan this way leaves `DS_OPPOSITE` and the portrait `null`, so treat both as optional in your result handling.
+
+### What you get back
+
+Assuming default settings:
+
+| Document | `getDocumentImage(DS_MRZ)` | `getDocumentImage(DS_OPPOSITE)` | `getPortraitImage()` |
+| -------- | ------------------------- | ------------------------------- | -------------------- |
+| Passport (TD3) | populated | `null` | populated, from the MRZ side |
+| ID card (TD1 / TD2) | populated | populated | populated, from the opposite side |
+| Any document, with `setReturnPortraitImage(false)` | populated | `null` | `null` |
+
+The same pattern applies to `getOriginalImage(side)` once `setReturnOriginalImage(true)` is set.
+
+### Turning it off
+
+Two-sided scanning is driven entirely by the portrait. It is on by default because `setReturnPortraitImage` defaults to `true`; setting it to `false` ends every scan as soon as the MRZ is read:
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+config.setReturnPortraitImage(false);
+```
+2. 
+```kotlin
+config.isReturnPortraitImage = false
+```
+
+That is the right choice when you only need the parsed text, and it makes every scan a single capture. `getPortraitImage()` and both `DS_OPPOSITE` getters then always return `null`.
+
+For an example that displays the document images from both sides, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+
 ## Next Steps
 
 - **Go further** — Work through the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
