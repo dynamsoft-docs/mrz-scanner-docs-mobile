@@ -824,7 +824,7 @@ public class ResultActivity extends AppCompatActivity {
           // check digit of its own such as name, nationality or sex.
           applyField(findViewById(R.id.tv_raw_mrz), data.getMrzText(), data.getFieldValidationStatus("mrzText"));
        }
-       // Renders value into tv, appending a circular error icon and colouring the row amber
+       // Renders value into tv, appending a circular error icon and coloring the row amber
        // when validation failed. Empty values render as "N/A" so it is clear which fields the
        // parser could not extract at all. Failed rows are tappable and open an explanation.
        private void applyField(TextView tv, String value, int status) {
@@ -912,7 +912,7 @@ public class ResultActivity extends AppCompatActivity {
                 return hasProcessed && hasOriginal ? 2 : 1;
              }
           });
-          // Always attached, so the surviving tab is still labelled when there is only one.
+          // Always attached, so the surviving tab is still labeled when there is only one.
           new TabLayoutMediator(tabImages, vpImages, (tab, position) -> {
              if (position == 0 && hasProcessed) {
                 tab.setText("Processed");
@@ -1057,7 +1057,7 @@ class ResultActivity : AppCompatActivity() {
           // check digit of its own such as name, nationality or sex.
           applyField(findViewById(R.id.tv_raw_mrz), data.mrzText, data.getFieldValidationStatus("mrzText"))
        }
-       // Renders value into tv, appending a circular error icon and colouring the row amber
+       // Renders value into tv, appending a circular error icon and coloring the row amber
        // when validation failed. Empty values render as "N/A" so it is clear which fields the
        // parser could not extract at all. Failed rows are tappable and open an explanation.
        private fun applyField(tv: TextView, value: String?, status: Int) {
@@ -1150,7 +1150,7 @@ class ResultActivity : AppCompatActivity() {
                 return if (hasProcessed && hasOriginal) 2 else 1
              }
           }
-          // Always attached, so the surviving tab is still labelled when there is only one.
+          // Always attached, so the surviving tab is still labeled when there is only one.
           TabLayoutMediator(tabImages, vpImages) { tab, position ->
              tab.text = if (position == 0 && hasProcessed) "Processed" else "Original"
           }.attach()
