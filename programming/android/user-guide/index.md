@@ -35,6 +35,7 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
    - IDE: **Android Studio 2024.3.2** suggested.
    - JDK: **Java 17** or higher.
    - Gradle: **8.0** or higher.
+- Hardware: **a physical Android device**. The Android Emulator does not expose a camera, so the scanner cannot run on it.
 
 ## Licensing
 
@@ -109,6 +110,12 @@ A valid license key is required to use the SDK. If you are just getting started,
 The following steps build **ScanMRZBasic** — the smallest app that scans an MRZ and shows the parsed result. You can download the finished project from GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) or [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt).
 
 The whole app is a single activity: a button launches the scanner, and the result renders on the same screen. For a fuller app with a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+
+Before you start, have these ready:
+
+- **A license key** — a trial key is embedded in the snippets below, but you can request your own from the [Licensing](#licensing) section.
+- **A physical Android device**, connected over USB. Step 6 covers enabling USB debugging if you have not done so before.
+- **A document to scan** — any passport or ID card carrying a TD1, TD2, or TD3 machine-readable zone. See [Supported Document Types](../../shared/supported-document-types.md) for what each format looks like.
 
 > [!NOTE]
 > The Kotlin snippets below use the package `com.dynamsoft.scanmrzbasic`, matching the project name from Step 1. The downloadable Kotlin sample uses `com.dynamsoft.scanmrzbasickt` so that both samples can be installed on one device. The code is otherwise identical.
