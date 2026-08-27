@@ -106,11 +106,6 @@ val config = MRZScannerConfig().apply {
 
 ## Configure the UI Elements
 
-<div align="center">
-    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="80%" alt="mrz-scanner"></p>
-    <p>MRZ Scanner UI</p>
-</div>
-
 The MRZ Scanner UI includes the following configurable elements:
 
 - **Close button**: Dismisses the scanner and returns the user to the previous screen.
