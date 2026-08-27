@@ -126,7 +126,7 @@ Follow the instructions in the [Add the SDK](#add-the-sdk) section above to add 
 
 ### Step 3: Add the App Resources
 
-Three resource files support the screen you build in Step 4. Start with **colors.xml** in **src/main/res/values/**, which defines the text colour and the amber used to flag a field that fails validation:
+Three resource files support the screen you build in Step 4. Start with **colors.xml** in **src/main/res/values/**, which defines the text color and the amber used to flag a field that fails validation:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -156,7 +156,7 @@ Finally, replace **themes.xml** in the same folder:
     </style>
 
     <!-- The two styles below just keep the field rows in activity_main.xml to one
-         line each; they carry no SDK behaviour. -->
+         line each; they carry no SDK behavior. -->
     <style name="FieldLabel">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -173,7 +173,7 @@ Finally, replace **themes.xml** in the same folder:
 </resources>
 ```
 
-The theme parents to `Theme.AppCompat` because this project does not use Material Components. `FieldLabel` and `FieldValue` are ordinary layout styles that keep each field row in the next step to a single line; neither carries any SDK behaviour.
+The theme parents to `Theme.AppCompat` because this project does not use Material Components. `FieldLabel` and `FieldValue` are ordinary layout styles that keep each field row in the next step to a single line; neither carries any SDK behavior.
 
 ### Step 4: Set Up the Layout
 
@@ -182,9 +182,8 @@ Open **activity_main.xml** in **src/main/res/layout/** and replace its contents.
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Deliberately plain. This sample is the runnable counterpart to the user guide, so
-    the layout stays the smallest thing that can show a scan result. Styling belongs
-    in the ScanMRZ sample, not here.
+    Deliberately plain — the smallest layout that can show a scan result. See the
+    ScanMRZ sample for a styled result screen.
 
     The scan button sits outside the ScrollView so it stays reachable at the bottom of
     the screen while a long result scrolls above it.
@@ -271,6 +270,19 @@ Open **activity_main.xml** in **src/main/res/layout/** and replace its contents.
 
 </LinearLayout>
 ```
+
+`MainActivity` looks up six things in this layout, so the IDs matter:
+
+| ID | Purpose |
+| -- | ------- |
+| `main` | The root view. Window insets are applied to it so content clears the status and navigation bars. |
+| `btn_scan` | Launches the scanner. |
+| `tv_status` | Carries the "Scan cancelled" message and any error string. Hidden until one of them applies. |
+| `result_panel` | Wraps the whole result area. Starts `gone`, becomes visible only after a successful scan. |
+| `iv_portrait` | The portrait cropped from the document, when one was found. |
+| `tv_full_name` … `tv_raw_mrz` | One `TextView` per parsed field. |
+
+Keeping `result_panel` hidden until there is something to show means the screen never displays a set of empty labels.
 
 ### Step 5: Launch the Scanner and Show the Result
 
@@ -413,7 +425,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Shows {@code value}, or "N/A" when the parser extracted nothing, and colours the
+     * Shows {@code value}, or "N/A" when the parser extracted nothing, and colors the
      * row amber when the value does not match its check digit.
      */
     private void applyField(TextView tv, String value, int status) {
@@ -550,7 +562,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Shows [value], or "N/A" when the parser extracted nothing, and colours the row
+     * Shows [value], or "N/A" when the parser extracted nothing, and colors the row
      * amber when the value does not match its check digit.
      */
     private fun applyField(tv: TextView, value: String?, status: Int) {
@@ -562,6 +574,40 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ```
+
+**Key APIs in use**
+
+- **`MRZScannerConfig`** — carries your license and any optional settings. The same instance is handed to every launch, so configure it once.
+- **`MRZScannerActivity.ResultContract`** — the Activity Result contract for the scanner. `registerForActivityResult` returns a launcher that accepts an `MRZScannerConfig` and delivers an `MRZScanResult` back. The scanner runs as its own activity, which is why the result arrives here rather than through a listener you register on the config.
+- **`getResultStatus()`** — one of `RS_FINISHED`, `RS_CANCELED`, or `RS_EXCEPTION`. Handle all three: cancellation and failure are reported through the same path as success rather than thrown, so a scanner that never produces a result is usually an unhandled status rather than a crash.
+- **`getErrorString()`** — a readable message that accompanies `RS_EXCEPTION`. [`getErrorCode`](../api-reference/mrz-scan-result.md#geterrorcode) gives the machine-readable code behind it.
+- **`getData()`** — the parsed [`MRZData`](../api-reference/mrz-data.md), holding every field read from the document.
+- **`getPortraitImage()`** — the portrait cropped from the document, or `null` when none was found. `toBitmap()` throws `CoreException`, so it is wrapped in a `try`.
+
+**Reading a field's validation status**
+
+Most MRZ fields are protected by a check digit, and [`getFieldValidationStatus`](../api-reference/mrz-data.md#getfieldvalidationstatus) reports whether the value read from the document matched it. It takes the same field names as the getters on `MRZData`:
+
+```java
+applyField(findViewById(R.id.tv_doc_number), data.getDocumentNumber(),
+        data.getFieldValidationStatus("documentNumber"));
+```
+
+The result is `VS_SUCCEEDED`, `VS_NONE` when the field carries no check digit, or `VS_FAILED` when the value and its check digit disagree — meaning the document may be misread, invalid, or altered. `applyField` colors the row amber in that case. Note that the value is still returned either way, so you can decide whether to accept it, prompt for a re-scan, or ask for manual correction.
+
+The full name is the one field that needs two lookups, because the single line on screen joins two separately validated fields:
+
+```java
+int firstNameStatus = data.getFieldValidationStatus("firstName");
+int nameStatus = firstNameStatus == EnumValidationStatus.VS_FAILED
+        ? firstNameStatus
+        : data.getFieldValidationStatus("lastName");
+```
+
+Either half failing should flag the whole line, so a failed `firstName` wins; otherwise the status of `lastName` is used. Document type is passed `VS_NONE` explicitly, since it is derived from the MRZ layout itself rather than read from a field with a check digit.
+
+> [!TIP]
+> The [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md) shows a richer treatment of the same API: an error icon, an underline marking the row as tappable, and a dialog explaining what a failed check digit means.
 
 ### Step 6: Run the Project
 
