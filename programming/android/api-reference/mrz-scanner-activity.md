@@ -78,9 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 ImageData oppositeSideImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
                 // Access the portrait image. Null if not detected or if setReturnPortraitImage(false).
                 ImageData portraitImage = result.getPortraitImage();
-                // If you need to pass the result to another activity via Intent,
-                // call result.retainAllImageInstances() before startActivity()
-                // to prevent the native image instances from being recycled.
+                // The result can be passed to another activity via Intent as-is;
+                // the images are reference counted and need no extra handling.
              } else if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
                 // The user closed the scanner before completing a scan.
              } else if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
@@ -137,9 +136,8 @@ class MainActivity : AppCompatActivity() {
                    val oppositeSideImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
                    // Access the portrait image. Null if not detected or if setReturnPortraitImage(false).
                    val portraitImage = result.getPortraitImage()
-                   // If you need to pass the result to another activity via Intent,
-                   // call result.retainAllImageInstances() before startActivity()
-                   // to prevent the native image instances from being recycled.
+                   // The result can be passed to another activity via Intent as-is;
+                   // the images are reference counted and need no extra handling.
                 }
                 MRZScanResult.EnumResultStatus.RS_CANCELED -> {
                    // The user closed the scanner before completing a scan.

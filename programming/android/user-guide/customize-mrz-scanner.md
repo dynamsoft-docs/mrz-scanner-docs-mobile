@@ -217,7 +217,7 @@ Once configured, use the following methods on `MRZScanResult` to access the imag
 - `getOriginalImage(EnumDocumentSide)` - returns the original full-frame image for the specified side.
 - `getPortraitImage()` - returns the detected portrait image.
 
-> [!NOTE] If you need to pass an `MRZScanResult` containing images to another activity via `Intent`, call `result.retainAllImageInstances()` before `startActivity()`. This prevents the native image instances from being recycled before the receiving activity can access them.
+> [!NOTE] These images are backed by native buffers rather than ordinary `Bitmap` objects, but their lifetime is managed for you. Passing an `MRZScanResult` to another activity through an `Intent` requires no extra work: the receiving instance takes its own reference as it is unparceled, and each instance releases its own when collected. See [Results and Image Lifetime](index.md#results-and-image-lifetime) in the user guide.
 
 **Related APIs**
 
