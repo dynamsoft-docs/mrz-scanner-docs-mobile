@@ -633,6 +633,59 @@ Tap **Scan an MRZ**, point the camera at the machine-readable zone of a passport
 > [!NOTE]
 > A physical Android device is required. The camera is not available on the Android Emulator.
 
+## Results and Image Lifetime
+
+The scanner is a separate activity, which shapes how results reach you and how long the images in them stay valid.
+
+### How the result arrives
+
+`MRZScannerActivity.ResultContract` is an `ActivityResultContract`, so the scanner is launched and its result collected through the standard Activity Result API rather than a listener you register on the config. Two things follow from that:
+
+- **Register the launcher unconditionally**, at the point where the activity is constructed — in `onCreate`, not inside a click handler. Android restores pending results during activity recreation, and a launcher registered later may miss one.
+- **One launcher handles any number of scans.** Call `launch(config)` again for a re-scan; there is no teardown between runs, and the same `MRZScannerConfig` can be reused.
+
+The config is read when the scanner starts, so changes made to it between launches take effect on the next scan.
+
+### How long the images stay valid
+
+`getDocumentImage`, `getOriginalImage`, and `getPortraitImage` return `ImageData` backed by a native buffer rather than an ordinary `Bitmap`. Each `MRZScanResult` holds a reference to those buffers and releases it when the object is collected.
+
+You do not have to manage this. Passing a result to another activity through an `Intent` works without any extra call: the instance that comes out the other side takes its own reference as it is unparceled, so the buffers stay alive as long as any result object still points at them.
+
+> [!IMPORTANT]
+> Do not call `retainAllImageInstances()` or `releaseAllImageInstances()`. Both are annotated `@RestrictTo(LIBRARY_GROUP)` and exist for the SDK's internal use. Taking a manual reference leaks the buffer, because nothing will ever release it.
+
+If you need an image to outlive the result — to cache it, upload it, or hold it in a view model — convert it to something with ordinary Java lifetime as soon as you receive it:
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+ImageData portrait = result.getPortraitImage();
+if (portrait != null) {
+       try {
+          Bitmap bitmap = portrait.toBitmap(); // an ordinary Bitmap, safe to keep
+       } catch (CoreException e) {
+          e.printStackTrace();
+       }
+}
+```
+2. 
+```kotlin
+val portrait = result.portraitImage
+if (portrait != null) {
+       try {
+          val bitmap = portrait.toBitmap() // an ordinary Bitmap, safe to keep
+       } catch (e: CoreException) {
+          e.printStackTrace()
+       }
+}
+```
+
+`toBitmap()` produces an ordinary `Bitmap`, subject to normal garbage collection and no longer tied to the result.
+
 ## The Scanner Screen
 
 `MRZScannerActivity` supplies its own full-screen UI, so nothing above defines what the user sees while scanning. Knowing what it presents is worth a moment, because it determines how much guidance your own screens need to provide.
