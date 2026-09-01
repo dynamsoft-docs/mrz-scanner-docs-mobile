@@ -334,7 +334,7 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
 /**
  * Launches the built-in MRZ scanner and renders the result on this same screen.
  *
- * <p>The whole sample is this one activity. See the ScanMRZ sample for a fuller
+ * The whole sample is this one activity. See the ScanMRZ sample for a fuller
  * app: document images, per-field explanations and permission recovery.
  */
 public class MainActivity extends AppCompatActivity {
@@ -761,6 +761,69 @@ config.isReturnPortraitImage = false
 That is the right choice when you only need the parsed text, and it makes every scan a single capture. `getPortraitImage()` and both `DS_OPPOSITE` getters then always return `null`.
 
 For an example that displays the document images from both sides, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+
+## Preparing for Release
+
+Two things are worth checking before you ship a build that includes the scanner: that shrinking has not broken the native bindings, and that you are not shipping more of the SDK than your users need.
+
+### Shrinking and obfuscation
+
+The SDK needs no keep rules of its own, so a project using Android's default configuration builds correctly with `minifyEnabled true` and nothing added.
+
+That default matters, though. Several SDK classes declare `native` methods that the native layer resolves **by name**, so renaming or removing them breaks the binding at runtime rather than at build time. The rule that protects them ships in `proguard-android-optimize.txt`, which new projects reference by default:
+
+```
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+```
+
+If your project uses a hand-written configuration instead of the default file, carry that rule across.
+
+### App size
+
+Most of the footprint is the Dynamsoft Capture Vision engine and its models, not the MRZ layer. Measured from a build of `ScanMRZBasic`, the native libraries alone come to:
+
+| ABI | Native libraries |
+| --- | ---------------- |
+| `armeabi-v7a` | ~11 MB |
+| `arm64-v8a` | ~16 MB |
+| `x86` | ~19 MB |
+| `x86_64` | ~19 MB |
+
+A single APK carrying all four is the worst case. Two ways to avoid it:
+
+- **Publish an Android App Bundle.** Google Play generates per-device APKs from it and delivers only the matching ABI, so a user installs roughly one column of that table rather than all of it. This is the recommended option and needs no configuration.
+- **Filter ABIs** when you distribute APKs directly. `x86` and `x86_64` mostly serve emulators, and the scanner needs a camera the emulator does not provide — but ChromeOS devices are `x86_64` and do have cameras, so drop them only if you know your distribution does not include them:
+
+<div class="sample-code-prefix"></div>
+>- Groovy
+>- Kotlin
+>
+>1. 
+```groovy
+android {
+       defaultConfig {
+          ndk {
+             abiFilters 'armeabi-v7a', 'arm64-v8a'
+          }
+       }
+}
+```
+2. 
+```kotlin
+android {
+       defaultConfig {
+          ndk {
+             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+          }
+       }
+}
+```
+
+### 16 KB page sizes
+
+The SDK's native libraries are built for devices whose kernels use a 16 KB memory page size, so no action is needed on your side.
 
 ## Next Steps
 
