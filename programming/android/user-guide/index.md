@@ -308,7 +308,7 @@ You do not need to write any camera-permission code. The `CAMERA` permission is 
 >
 >1. 
 ```java
-package com.dynamsoft.scanmrzbasic;
+package com.dynamsoft.scanmrzbasic;`
 
 import android.os.Bundle;
 import android.view.View;
@@ -706,6 +706,9 @@ The scanner narrates its own progress, so the prompt text is the main thing a us
 | Both sides captured | **MRZ scanned ✓ / Both sides scanned ✓** |
 
 The spinner is not a generic busy indicator. It is driven by per-frame text-line detection, so it appears when the scanner can see MRZ-like text and is working on it, and disappears when the document moves out of frame. Once the MRZ is confirmed it stops for the rest of the session. Treated as a signal, it tells the user that holding steady is worthwhile.
+
+> [!NOTE]
+> The prompt is hidden along with the guide frame, since it reads as a label on it. Hiding the frame also widens the scanned area to the whole preview — see [Hiding the guide frame](customize-mrz-scanner.md#hiding-the-guide-frame).
 
 The last three rows are covered in detail in the next section.
 
