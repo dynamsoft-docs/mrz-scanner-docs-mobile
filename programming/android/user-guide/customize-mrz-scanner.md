@@ -39,7 +39,7 @@ The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is ca
 
 11. **`setFormatSelectorVisible` / `isFormatSelectorVisible`** (default value `true`) - controls whether the document format selector is displayed at the bottom of the scanning UI. The format selector allows users to switch between scanning ID cards, passports, or both.
 
-12. **`setGuideFrameVisible` / `isGuideFrameVisible`** (default value `true`) - serves as a toggle to show or hide the guide frame overlay during scanning. The guide frame assists users in properly aligning the document for optimal MRZ detection.
+12. **`setGuideFrameVisible` / `isGuideFrameVisible`** (default value `true`) - serves as a toggle to show or hide the guide frame overlay during scanning. The guide frame assists users in properly aligning the document for optimal MRZ detection. Hiding it also widens the scanned area to the whole camera preview and hides the prompt text — see [Hiding the guide frame](#hiding-the-guide-frame).
 
 13. **`setReturnDocumentImage` / `isReturnDocumentImage`** (default value `true`) - controls whether a cropped document image is included in the scan result. When enabled, the result's `getDocumentImage()` method will return the document image for each scanned side.
 
@@ -147,6 +147,18 @@ val config = MRZScannerConfig().apply {
    setGuideFrameVisible(false)
 }
 ```
+
+### Hiding the guide frame
+
+The guide frame is more than an overlay: it defines the area the scanner reads. Hiding it therefore changes scanning behavior, not just appearance.
+
+With `setGuideFrameVisible(false)`:
+
+- **The whole camera preview is scanned.** While the frame is visible, capture is limited to the area inside it. With no frame on screen the user has no way to know where to aim, so the restriction is lifted rather than left invisibly in place.
+- **The prompt text is hidden as well.** The prompt is anchored to the frame and reads as a label on it, so the two are shown and hidden together.
+- **The scanning progress spinner and the flip prompt remain.** Both are positioned independently, and they carry feedback the user still needs.
+
+Plan for the wider capture area if you hide the frame: with the entire preview in play, the scanner may pick up a document elsewhere in shot.
 
 **Related APIs**
 
