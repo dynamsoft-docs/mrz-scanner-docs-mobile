@@ -106,6 +106,11 @@ val config = MRZScannerConfig().apply {
 
 ## Configure the UI Elements
 
+<div align="center">
+    <p><img src="../../assets/mrz-scanner-ui-android-362000.png" width="90%" alt="The MRZ Scanner UI with each configurable element labelled"></p>
+    <p>MRZ Scanner UI</p>
+</div>
+
 The MRZ Scanner UI includes the following configurable elements:
 
 - **Close button**: Dismisses the scanner and returns the user to the previous screen.
@@ -117,6 +122,8 @@ The MRZ Scanner UI includes the following configurable elements:
 - **Prompt text**: A status label that updates dynamically to guide users through each step of the scanning process.
 - **Format selector**: A bottom control bar for selecting the target document type — ID card, passport, or both.
 
+
+The scanning spinner is labelled above for orientation but is not configurable — it appears while the scanner can see MRZ-like text in the frame. See [The Scanner Screen](index.md#the-scanner-screen) for what it signals.
 
 All UI elements are visible by default. Use the following configuration to hide any elements that are not needed for your use case:
 
