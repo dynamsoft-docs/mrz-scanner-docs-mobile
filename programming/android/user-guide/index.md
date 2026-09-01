@@ -82,7 +82,7 @@ A valid license key is required to use the SDK. If you are just getting started,
                }
            }
    }
-   ```
+```
 
 2. Open **build.gradle** (Module: app) for Groovy DSL — or **build.gradle.kts** (Module: app) for Kotlin DSL — and add the dependency:
 
@@ -101,7 +101,7 @@ A valid license key is required to use the SDK. If you are just getting started,
    dependencies {
            implementation("com.dynamsoft:mrzscannerbundle:3.6.2000")
    }
-   ```
+```
 
 3. Click **Sync Now**. After the synchronization completes, the SDK is added to the project.
 
@@ -309,12 +309,10 @@ You do not need to write any camera-permission code. The `CAMERA` permission is 
 >1. 
 ```java
 package com.dynamsoft.scanmrzbasic;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
@@ -322,7 +320,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.dynamsoft.core.basic_structures.CoreException;
 import com.dynamsoft.core.basic_structures.ImageData;
 import com.dynamsoft.dcp.EnumValidationStatus;
@@ -330,7 +327,6 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZData;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-
 /**
  * Launches the built-in MRZ scanner and renders the result on this same screen.
  *
@@ -338,10 +334,8 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
  * app: document images, per-field explanations and permission recovery.
  */
 public class MainActivity extends AppCompatActivity {
-
     private final MRZScannerConfig config = new MRZScannerConfig();
     private ActivityResultLauncher<MRZScannerConfig> launcher;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -352,24 +346,19 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
-
         // A trial license, so it needs a network connection. Request your own at
         // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
         config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-
         // The scanner runs as its own activity, so its result arrives through the
         // Activity Result API rather than a callback on this class.
         launcher = registerForActivityResult(
                 new MRZScannerActivity.ResultContract(), this::showResult);
-
         findViewById(R.id.btn_scan).setOnClickListener(v -> launcher.launch(config));
     }
-
     /** Renders one of the three result statuses the scanner can come back with. */
     private void showResult(MRZScanResult result) {
         TextView tvStatus = findViewById(R.id.tv_status);
         View resultPanel = findViewById(R.id.result_panel);
-
         if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
             // The user closed the scanner. There is no data and nothing went wrong.
             tvStatus.setText(R.string.scan_cancelled);
@@ -377,7 +366,6 @@ public class MainActivity extends AppCompatActivity {
             resultPanel.setVisibility(View.GONE);
             return;
         }
-
         if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
             // The scanner asks for camera access itself, so a denial lands here as a
             // readable error string — this sample needs no permission code of its own.
@@ -386,11 +374,9 @@ public class MainActivity extends AppCompatActivity {
             resultPanel.setVisibility(View.GONE);
             return;
         }
-
         tvStatus.setVisibility(View.GONE);
         resultPanel.setVisibility(View.VISIBLE);
         MRZData data = result.getData();
-
         // Validation is per field, so a full name that joins two of them is flagged
         // when either half fails.
         int firstNameStatus = data.getFieldValidationStatus("firstName");
@@ -398,7 +384,6 @@ public class MainActivity extends AppCompatActivity {
                 ? firstNameStatus
                 : data.getFieldValidationStatus("lastName");
         String fullName = (data.getFirstName() + " " + data.getLastName()).trim();
-
         applyField(findViewById(R.id.tv_full_name), fullName, nameStatus);
         applyField(findViewById(R.id.tv_doc_number), data.getDocumentNumber(),
                 data.getFieldValidationStatus("documentNumber"));
@@ -413,10 +398,8 @@ public class MainActivity extends AppCompatActivity {
                 EnumValidationStatus.VS_NONE);
         applyField(findViewById(R.id.tv_raw_mrz), data.getMrzText(),
                 data.getFieldValidationStatus("mrzText"));
-
         showPortrait(result.getPortraitImage());
     }
-
     /** The portrait is returned by default, but is null when none could be cropped. */
     private void showPortrait(ImageData portrait) {
         ImageView ivPortrait = findViewById(R.id.iv_portrait);
@@ -430,7 +413,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (CoreException ignored) {
         }
     }
-
     /**
      * Shows {@code value}, or "N/A" when the parser extracted nothing, and colors the
      * row amber when the value does not match its check digit.
@@ -446,26 +428,22 @@ public class MainActivity extends AppCompatActivity {
 2. 
 ```kotlin
 package com.dynamsoft.scanmrzbasic
-
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-
 import com.dynamsoft.core.basic_structures.CoreException
 import com.dynamsoft.core.basic_structures.ImageData
 import com.dynamsoft.dcp.EnumValidationStatus
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
-
 /**
  * Launches the built-in MRZ scanner and renders the result on this same screen.
  *
@@ -473,10 +451,8 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
  * document images, per-field explanations and permission recovery.
  */
 class MainActivity : AppCompatActivity() {
-
     private val config = MRZScannerConfig()
     private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -486,25 +462,20 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
             insets
         }
-
         // A trial license, so it needs a network connection. Request your own at
         // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
         config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-
         // The scanner runs as its own activity, so its result arrives through the
         // Activity Result API rather than a callback on this class.
         launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
             showResult(result)
         }
-
         findViewById<View>(R.id.btn_scan).setOnClickListener { launcher.launch(config) }
     }
-
     /** Renders one of the three result statuses the scanner can come back with. */
     private fun showResult(result: MRZScanResult) {
         val tvStatus = findViewById<TextView>(R.id.tv_status)
         val resultPanel = findViewById<View>(R.id.result_panel)
-
         if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
             // The user closed the scanner. There is no data and nothing went wrong.
             tvStatus.setText(R.string.scan_cancelled)
@@ -512,7 +483,6 @@ class MainActivity : AppCompatActivity() {
             resultPanel.visibility = View.GONE
             return
         }
-
         if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
             // The scanner asks for camera access itself, so a denial lands here as a
             // readable error string — this sample needs no permission code of its own.
@@ -521,11 +491,9 @@ class MainActivity : AppCompatActivity() {
             resultPanel.visibility = View.GONE
             return
         }
-
         tvStatus.visibility = View.GONE
         resultPanel.visibility = View.VISIBLE
         val data = result.data
-
         // Validation is per field, so a full name that joins two of them is flagged
         // when either half fails.
         val firstNameStatus = data.getFieldValidationStatus("firstName")
@@ -535,7 +503,6 @@ class MainActivity : AppCompatActivity() {
             data.getFieldValidationStatus("lastName")
         }
         val fullName = (data.firstName + " " + data.lastName).trim()
-
         applyField(findViewById(R.id.tv_full_name), fullName, nameStatus)
         applyField(findViewById(R.id.tv_doc_number), data.documentNumber,
             data.getFieldValidationStatus("documentNumber"))
@@ -550,10 +517,8 @@ class MainActivity : AppCompatActivity() {
             EnumValidationStatus.VS_NONE)
         applyField(findViewById(R.id.tv_raw_mrz), data.mrzText,
             data.getFieldValidationStatus("mrzText"))
-
         showPortrait(result.portraitImage)
     }
-
     /** The portrait is returned by default, but is null when none could be cropped. */
     private fun showPortrait(portrait: ImageData?) {
         val ivPortrait = findViewById<ImageView>(R.id.iv_portrait)
@@ -567,7 +532,6 @@ class MainActivity : AppCompatActivity() {
         } catch (ignored: CoreException) {
         }
     }
-
     /**
      * Shows [value], or "N/A" when the parser extracted nothing, and colors the row
      * amber when the value does not match its check digit.
