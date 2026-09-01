@@ -12,14 +12,17 @@ enableLanguageSelection: true
 
 # MRZ Scanner User Guide (Android Edition)
 
-The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building a complete MRZ scanning app from scratch using `MRZScannerActivity` — the built-in activity that handles the camera UI, scanning logic, and result delivery.
+The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building an MRZ scanning app from scratch using `MRZScannerActivity` — the built-in activity that handles the camera UI, scanning logic, and result delivery.
+
+> [!TIP]
+> The app built here is **ScanMRZBasic**, available on GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) and [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt). For a fuller app with a dedicated result screen, document images, and camera-permission recovery, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
 
 > [!IMPORTANT]
-> For the full sample code, visit the [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+> Upgrading an existing integration rather than starting fresh? See the [Upgrade Guide](upgrade.md) first.
 
 ## Supported Document Types
 
-The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](supported-document-types.md).
+The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
 
 > [!NOTE]
 > For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
@@ -32,6 +35,7 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
    - IDE: **Android Studio 2024.3.2** suggested.
    - JDK: **Java 17** or higher.
    - Gradle: **8.0** or higher.
+- Hardware: **a physical Android device**. The Android Emulator does not expose a camera, so the scanner cannot run on it.
 
 ## Licensing
 
@@ -89,13 +93,13 @@ A valid license key is required to use the SDK. If you are just getting started,
    >1. 
    ```groovy
    dependencies {
-           implementation 'com.dynamsoft:mrzscannerbundle:3.4.1300'
+           implementation 'com.dynamsoft:mrzscannerbundle:3.6.2000'
    }
    ```
    2. 
    ```kotlin
    dependencies {
-           implementation("com.dynamsoft:mrzscannerbundle:3.4.1300")
+           implementation("com.dynamsoft:mrzscannerbundle:3.6.2000")
    }
    ```
 
@@ -103,197 +107,106 @@ A valid license key is required to use the SDK. If you are just getting started,
 
 ## Building the MRZ Scanner Application
 
-The following steps build the **ScanMRZ** sample app. You can also download the complete project from the [GitHub repo](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+The following steps build **ScanMRZBasic** — the smallest app that scans an MRZ and shows the parsed result. You can download the finished project from GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) or [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt).
+
+The whole app is a single activity: a button launches the scanner, and the result renders on the same screen. For a fuller app with a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+
+Before you start, have these ready:
+
+- **A license key** — a trial key is embedded in the snippets below, but you can request your own from the [Licensing](#licensing) section.
+- **A physical Android device**, connected over USB. Step 6 covers enabling USB debugging if you have not done so before.
+- **A document to scan** — any passport or ID card carrying a TD1, TD2, or TD3 machine-readable zone. See [Supported Document Types](../../shared/supported-document-types.md) for what each format looks like.
+
+> [!NOTE]
+> The Kotlin snippets below use the package `com.dynamsoft.scanmrzbasic`, matching the project name from Step 1. The downloadable Kotlin sample uses `com.dynamsoft.scanmrzbasickt` so that both samples can be installed on one device. The code is otherwise identical.
 
 ### Step 1: Create a New Project
 
 1. Open Android Studio and select **File > New > New Project**.
 2. Choose **Empty Views Activity** as the project template.
-3. Set the app name to *ScanMRZ*, choose a save location, and set the **Minimum SDK** to 21.
-4. Choose your preferred **Language** (either **Java** or **Kotlin**) and **Build configuration language** (either **Kotlin DSL** or **Groovy DSL**). The SDK supports all combinations — sample snippets later in this guide cover both languages and both DSLs.
+3. Set the app name to *ScanMRZBasic*, choose a save location, and set the **Minimum SDK** to 21.
+4. Choose your preferred **Language** (either **Java** or **Kotlin**) and **Build configuration language** (either **Kotlin DSL** or **Groovy DSL**). The SDK supports all combinations — the snippets below cover both languages, and the [Add the SDK](#add-the-sdk) section covers both DSLs.
 
 ### Step 2: Add the SDK
 
 Follow the instructions in the [Add the SDK](#add-the-sdk) section above to add `mrzscannerbundle` to your project.
 
-### Step 3: Set Up the Layout
+### Step 3: Add the App Resources
 
-Open **activity_main.xml** and replace its contents with the following. The layout contains a single "Scan an MRZ" button centered on the screen. Scan results will be shown in a separate `ResultActivity`, created in [Step 8](#step-8-implement-resultactivity).
+Three resource files support the screen you build in Step 4. Start with **colors.xml** in **src/main/res/values/**, which defines the text color and the amber used to flag a field that fails validation:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<resources>
+    <color name="white">#FFFFFFFF</color>
+    <!-- Applied to a field whose value does not match its check digit. -->
+    <color name="warning_amber">#FFC107</color>
+</resources>
+```
+
+Add the two strings the screen needs to **strings.xml** in the same folder. Your project already has an `app_name` entry, generated when you created it:
+
+```xml
+<string name="scan_an_mrz">Scan an MRZ</string>
+<string name="scan_cancelled">Scan cancelled</string>
+```
+
+Finally, replace **themes.xml** in the same folder:
+
+```xml
+<resources>
+
+    <style name="Theme.MRZScannerBasic" parent="Theme.AppCompat.NoActionBar">
+        <item name="textAllCaps">false</item>
+        <item name="colorAccent">@android:color/white</item>
+        <item name="buttonTint">@color/white</item>
+    </style>
+
+    <!-- The two styles below just keep the field rows in activity_main.xml to one
+         line each; they carry no SDK behavior. -->
+    <style name="FieldLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="FieldValue">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>
+```
+
+The theme parents to `Theme.AppCompat` because this project does not use Material Components. `FieldLabel` and `FieldValue` are ordinary layout styles that keep each field row in the next step to a single line; neither carries any SDK behavior.
+
+### Step 4: Set Up the Layout
+
+Open **activity_main.xml** in **src/main/res/layout/** and replace its contents. The screen has two halves: a **Scan an MRZ** button, and a result area that stays hidden until a scan succeeds.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Deliberately plain — the smallest layout that can show a scan result. See the
+    ScanMRZ sample for a styled result screen.
+
+    The scan button sits outside the ScrollView so it stays reachable at the bottom of
+    the screen while a long result scrolls above it.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_start"
-        android:text="Scan an MRZ"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-```
-
-### Step 4: Configure and Launch the Scanner
-
-Provide your license key on `MRZScannerConfig` (see [Licensing](#licensing) for how to obtain one), register an `ActivityResultLauncher` to launch the scanner, and wire it to the scan button. Each result returns a `resultStatus` of *RS_FINISHED* (MRZ decoded), *RS_CANCELED* (user closed the scanner), or *RS_EXCEPTION* (an error occurred); all three are handled inside `ResultActivity`, created in later steps.
-
-For optional config settings like document type filtering, UI visibility, and image capture, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
-
-<div class="sample-code-prefix"></div>
->- Java
->- Kotlin
->
->1. 
-```java
-package com.dynamsoft.scanmrz;
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-public class MainActivity extends AppCompatActivity {
-       private ActivityResultLauncher<MRZScannerConfig> launcher;
-       private final MRZScannerConfig config = new MRZScannerConfig();
-       @Override
-       protected void onCreate(@Nullable Bundle savedInstanceState) {
-          super.onCreate(savedInstanceState);
-          EdgeToEdge.enable(this);
-          setContentView(R.layout.activity_main);
-          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-             return insets;
-          });
-          config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-          launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
-             Intent intent = new Intent(this, ResultActivity.class);
-             intent.putExtra(ResultActivity.EXTRA_RESULT, result);
-             startActivityForResult(intent, ResultActivity.REQUEST_CODE);
-          });
-          findViewById(R.id.btn_start).setOnClickListener(v -> launcher.launch(config));
-       }
-       @Override
-       protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-          super.onActivityResult(requestCode, resultCode, data);
-          if (requestCode == ResultActivity.REQUEST_CODE && resultCode == RESULT_OK) {
-             int action = data.getIntExtra(ResultActivity.EXTRA_ACTION, ResultActivity.ACTION_RETURN_HOME);
-             if (action == ResultActivity.ACTION_RESCAN) {
-                launcher.launch(config);
-             }
-          }
-       }
-}
-```
-2. 
-```kotlin
-package com.dynamsoft.scanmrz
-import android.content.Intent
-import android.os.Bundle
-import android.view.View
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
-import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
-class MainActivity : AppCompatActivity() {
-       private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
-       private val config = MRZScannerConfig()
-       override fun onCreate(savedInstanceState: Bundle?) {
-          super.onCreate(savedInstanceState)
-          enableEdgeToEdge()
-          setContentView(R.layout.activity_main)
-          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-             insets
-          }
-          config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9")
-          launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
-             val intent = Intent(this, ResultActivity::class.java)
-             intent.putExtra(ResultActivity.EXTRA_RESULT, result)
-             startActivityForResult(intent, ResultActivity.REQUEST_CODE)
-          }
-          findViewById<View>(R.id.btn_start).setOnClickListener {
-             launcher.launch(config)
-          }
-       }
-       @Deprecated("Deprecated in Java")
-       override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-          super.onActivityResult(requestCode, resultCode, data)
-          if (requestCode == ResultActivity.REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-             val action = data.getIntExtra(ResultActivity.EXTRA_ACTION, ResultActivity.ACTION_RETURN_HOME)
-             if (action == ResultActivity.ACTION_RESCAN) {
-                launcher.launch(config)
-             }
-          }
-       }
-}
-```
-
-> [!NOTE]
-> The Kotlin `enableEdgeToEdge()` extension requires **androidx.activity 1.8.0** or higher (fresh Android Studio projects from Hedgehog onward already meet this). On older versions, replace `enableEdgeToEdge()` with `EdgeToEdge.enable(this)` and update the import to `import androidx.activity.EdgeToEdge`.
-
-> [!NOTE]
-> References to `ResultActivity` (and its constants `EXTRA_RESULT`, `REQUEST_CODE`, `EXTRA_ACTION`, `ACTION_RESCAN`, `ACTION_RETURN_HOME`) will show as unresolved in your IDE at this point. This is expected — `ResultActivity` is created in [Step 8](#step-8-implement-resultactivity), and the errors will clear once that step is complete.
-
-### Step 5: Create the Result Screen Layouts
-
-This step creates all three UI resource files that `ResultActivity` needs.
-
-**activity_results.xml**
-
-Create **activity_results.xml** in **src/main/res/layout/**. This layout contains the scrollable result area, an error text view for exception states, a header with the portrait and key identity details, a tab-based image pager for document photos, detailed personal and document info fields, the raw MRZ text, and the action buttons:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ResultActivity">
-
-    <TextView
-        android:id="@+id/no_result_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        android:gravity="center"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/ll_buttons"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
-        android:id="@+id/result_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/ll_buttons"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -301,373 +214,93 @@ Create **activity_results.xml** in **src/main/res/layout/**. This layout contain
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Carries the cancelled message and any error string. -->
+            <TextView
+                android:id="@+id/tv_status"
+                style="@style/FieldValue"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:text="Scan cancelled"
+                tools:visibility="visible" />
+
             <LinearLayout
+                android:id="@+id/result_panel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="100dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:paddingVertical="8dp">
-
-                    <TextView
-                        android:id="@+id/tv_full_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_gender_and_age"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tv_expiry"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="4dp"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="8dp"
-                    android:layout_height="match_parent" />
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/iv_portrait"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.2"
-                    android:contentDescription="Portrait"
-                    android:src="@drawable/ic_portrait_placeholder" />
+                    android:layout_width="96dp"
+                    android:layout_height="128dp"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
+                <TextView style="@style/FieldLabel" android:text="Full Name" />
+                <TextView android:id="@+id/tv_full_name" style="@style/FieldValue" />
+
+                <TextView style="@style/FieldLabel" android:text="Document Number" />
+                <TextView android:id="@+id/tv_doc_number" style="@style/FieldValue" />
+
+                <TextView style="@style/FieldLabel" android:text="Nationality" />
+                <TextView android:id="@+id/tv_nationality" style="@style/FieldValue" />
+
+                <TextView style="@style/FieldLabel" android:text="Date of Birth" />
+                <TextView android:id="@+id/tv_date_of_birth" style="@style/FieldValue" />
+
+                <TextView style="@style/FieldLabel" android:text="Date of Expiry" />
+                <TextView android:id="@+id/tv_date_of_expiry" style="@style/FieldValue" />
+
+                <TextView style="@style/FieldLabel" android:text="Document Type" />
+                <TextView android:id="@+id/tv_doc_type" style="@style/FieldValue" />
+
+                <TextView style="@style/FieldLabel" android:text="Raw MRZ Text" />
+                <TextView
+                    android:id="@+id/tv_raw_mrz"
+                    style="@style/FieldValue"
+                    android:fontFamily="monospace" />
             </LinearLayout>
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_images"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:tabGravity="center"
-                app:tabMode="fixed" />
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vp_images"
-                android:layout_width="match_parent"
-                android:layout_height="162dp"
-                android:layout_marginTop="8dp"
-                android:overScrollMode="never" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="24dp"
-                android:text="Personal Info"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Given Name" />
-
-                <TextView
-                    android:id="@+id/tv_given_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Surname" />
-
-                <TextView
-                    android:id="@+id/tv_surname"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Date of Birth" />
-
-                <TextView
-                    android:id="@+id/tv_date_of_birth"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Gender" />
-
-                <TextView
-                    android:id="@+id/tv_gender"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Nationality" />
-
-                <TextView
-                    android:id="@+id/tv_nationality"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="24dp"
-                android:text="Document Info"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Doc. Type" />
-
-                <TextView
-                    android:id="@+id/tv_doc_type"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Doc. Number" />
-
-                <TextView
-                    android:id="@+id/tv_doc_number"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Expiry Date" />
-
-                <TextView
-                    android:id="@+id/tv_expiry_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="24dp"
-                android:text="Raw MRZ Text"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_raw_mrz"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="monospace"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp" />
-
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/ll_buttons"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_margin="16dp"
         android:padding="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:text="@string/scan_an_mrz"
+        android:textSize="18sp" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_rescan"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="Re-Scan" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_return_home"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="Return Home" />
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
 ```
 
-**image_view_pager.xml**
+`MainActivity` looks up six things in this layout, so the IDs matter:
 
-Create **image_view_pager.xml** in **src/main/res/layout/**. This layout defines the tab bar and pager used to display scanned document images:
+| ID | Purpose |
+| -- | ------- |
+| `main` | The root view. Window insets are applied to it so content clears the status and navigation bars. |
+| `btn_scan` | Launches the scanner. |
+| `tv_status` | Carries the "Scan cancelled" message and any error string. Hidden until one of them applies. |
+| `result_panel` | Wraps the whole result area. Starts `gone`, becomes visible only after a successful scan. |
+| `iv_portrait` | The portrait cropped from the document, when one was found. |
+| `tv_full_name` … `tv_raw_mrz` | One `TextView` per parsed field. |
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+Keeping `result_panel` hidden until there is something to show means the screen never displays a set of empty labels.
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+### Step 5: Launch the Scanner and Show the Result
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_images"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            app:tabMode="fixed" />
+Open **MainActivity** and replace its contents. This is the whole application: it provides a license, launches `MRZScannerActivity`, and renders whichever of the three result statuses comes back.
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vp_images"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:overScrollMode="never" />
+For optional config settings like document type filtering, UI visibility, and image capture, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-```
-
-**ic_portrait_placeholder.xml**
-
-Create **ic_portrait_placeholder.xml** in **src/main/res/drawable/**. This vector drawable is shown as the portrait fallback when no portrait image was captured:
-
-```xml
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="88dp"
-    android:height="88dp"
-    android:viewportWidth="88"
-    android:viewportHeight="88">
-    <path
-        android:pathData="M79.382,75.625C79.141,76.043 78.794,76.39 78.375,76.632C77.957,76.873 77.483,77 77,77H11C10.517,76.999 10.044,76.872 9.626,76.631C9.208,76.389 8.862,76.042 8.621,75.624C8.38,75.206 8.253,74.732 8.253,74.249C8.253,73.767 8.38,73.293 8.621,72.875C13.857,63.824 21.924,57.334 31.34,54.257C26.682,51.485 23.064,47.26 21.04,42.232C19.016,37.204 18.699,31.651 20.137,26.425C21.574,21.199 24.688,16.59 28.999,13.305C33.31,10.02 38.58,8.241 44,8.241C49.42,8.241 54.69,10.02 59.001,13.305C63.312,16.59 66.426,21.199 67.863,26.425C69.301,31.651 68.984,37.204 66.96,42.232C64.936,47.26 61.318,51.485 56.66,54.257C66.076,57.334 74.143,63.824 79.379,72.875C79.621,73.293 79.748,73.767 79.749,74.249C79.749,74.732 79.623,75.207 79.382,75.625Z"
-        android:fillColor="#000000"/>
-</vector>
-```
-
-### Step 6: Register ResultActivity in the Manifest
-
-Open **AndroidManifest.xml** and declare `ResultActivity` inside the `<application>` block:
-
-```xml
-<activity
-    android:name=".ResultActivity"
-    android:exported="true"
-    android:screenOrientation="portrait" />
-```
+You do not need to write any camera-permission code. The `CAMERA` permission is declared by the SDK and merged into your app at build time, and `MRZScannerActivity` requests it on first launch. If access is unavailable the scanner shows a dialog offering **Allow camera access** or **Open Settings**, never starts the camera, and reports the outcome as `RS_EXCEPTION`.
 
 > [!NOTE]
-> `MRZScannerActivity` is already declared in the library manifest with a default `screenOrientation` of `portrait`. If you need to override its orientation, redeclare it in your app manifest with `tools:replace="android:screenOrientation"`.
-
-### Step 7: Create ImagesFragment
-
-`ImagesFragment` is a `Fragment` that programmatically renders one or two document images side by side. It is used by the `ViewPager2` adapter in `ResultActivity` to display cropped and original scan images.
-
-In Android Studio, right-click the package folder (`com.dynamsoft.scanmrz`) in the **Project** pane and select **New > Java Class** (or **New > Kotlin File/Class** for Kotlin), then name it `ImagesFragment`.
+> To present your own permission UI instead, call `config.setCameraPermissionPromptEnabled(false)`. The scanner then suppresses its dialog but still reports the denial, and still never starts the camera without access. See [Customize MRZ Scanner](customize-mrz-scanner.md#handling-camera-permission) for the full flow.
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -675,475 +308,315 @@ In Android Studio, right-click the package folder (`com.dynamsoft.scanmrz`) in t
 >
 >1. 
 ```java
-package com.dynamsoft.scanmrz;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import com.dynamsoft.core.basic_structures.CoreException;
-import com.dynamsoft.core.basic_structures.ImageData;
-public class ImagesFragment extends Fragment {
-       private final ImageData imageData1;
-       private final ImageData imageData2;
-       public ImagesFragment(ImageData imageData1, ImageData imageData2) {
-          super();
-          this.imageData1 = imageData1;
-          this.imageData2 = imageData2;
-       }
-       @NonNull
-       public static ImagesFragment newInstance(@Nullable ImageData imageData1, @Nullable ImageData imageData2) {
-          return new ImagesFragment(imageData1, imageData2);
-       }
-       @Nullable
-       @Override
-       public View onCreateView(@NonNull android.view.LayoutInflater inflater,
-                                @Nullable ViewGroup container,
-                                @Nullable Bundle savedInstanceState) {
-          LinearLayout root = new LinearLayout(requireContext());
-          root.setLayoutParams(new LinearLayout.LayoutParams(
-                  ViewGroup.LayoutParams.MATCH_PARENT,
-                  ViewGroup.LayoutParams.MATCH_PARENT
-          ));
-          root.setOrientation(LinearLayout.HORIZONTAL);
-          root.setGravity(Gravity.CENTER_VERTICAL);
-          root.setBaselineAligned(false);
-          root.setClipToPadding(false);
-          root.setClipChildren(false);
-          return root;
-       }
-       @Override
-       public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-          LinearLayout root = (LinearLayout) view;
-          ImageData[] imageDatas = new ImageData[]{imageData1, imageData2};
-          for (int i = 0; i < imageDatas.length; i++) {
-             ImageData imageData = imageDatas[i];
-             if (imageData1 != null && imageData2 != null && i == 1) {
-                root.addView(new View(requireContext()),
-                        new LinearLayout.LayoutParams(
-                                (int)(16 * getResources().getDisplayMetrics().density),
-                                ViewGroup.LayoutParams.MATCH_PARENT));
-             }
-             if (imageData != null) {
-                try {
-                   Bitmap bmp = imageData.toBitmap();
-                   ImageView iv = new ImageView(requireContext());
-                   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-                   iv.setLayoutParams(lp);
-                   iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                   iv.setAdjustViewBounds(true);
-                   iv.setImageBitmap(bmp);
-                   root.addView(iv);
-                } catch (CoreException e) {
-                   e.printStackTrace();
-                }
-             }
-          }
-       }
-}
-```
-2. 
-```kotlin
-package com.dynamsoft.scanmrz
-import android.graphics.Bitmap
-import android.os.Bundle
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
-import com.dynamsoft.core.basic_structures.CoreException
-import com.dynamsoft.core.basic_structures.ImageData
-class ImagesFragment(
-       private val imageData1: ImageData?,
-       private val imageData2: ImageData?
-) : Fragment() {
-       companion object {
-          fun newInstance(imageData1: ImageData?, imageData2: ImageData?): ImagesFragment {
-             return ImagesFragment(imageData1, imageData2)
-          }
-       }
-       override fun onCreateView(
-          inflater: android.view.LayoutInflater,
-          container: ViewGroup?,
-          savedInstanceState: Bundle?
-       ): View {
-          val root = LinearLayout(requireContext())
-          root.layoutParams = LinearLayout.LayoutParams(
-             ViewGroup.LayoutParams.MATCH_PARENT,
-             ViewGroup.LayoutParams.MATCH_PARENT
-          )
-          root.orientation = LinearLayout.HORIZONTAL
-          root.gravity = Gravity.CENTER_VERTICAL
-          root.isBaselineAligned = false
-          root.clipToPadding = false
-          root.clipChildren = false
-          return root
-       }
-       override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-          val root = view as LinearLayout
-          val imageDatas = arrayOf(imageData1, imageData2)
-          for (i in imageDatas.indices) {
-             val imageData = imageDatas[i]
-             if (imageData1 != null && imageData2 != null && i == 1) {
-                root.addView(
-                   View(requireContext()),
-                   LinearLayout.LayoutParams(
-                      (16 * resources.displayMetrics.density).toInt(),
-                      ViewGroup.LayoutParams.MATCH_PARENT
-                   )
-                )
-             }
-             if (imageData != null) {
-                try {
-                   val bmp: Bitmap = imageData.toBitmap()
-                   val iv = ImageView(requireContext())
-                   val lp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
-                   iv.layoutParams = lp
-                   iv.scaleType = ImageView.ScaleType.FIT_CENTER
-                   iv.adjustViewBounds = true
-                   iv.setImageBitmap(bmp)
-                   root.addView(iv)
-                } catch (e: CoreException) {
-                   e.printStackTrace()
-                }
-             }
-          }
-       }
-}
-```
+package com.dynamsoft.scanmrzbasic;`
 
-### Step 8: Implement ResultActivity
-
-Create **ResultActivity** in the same package folder using the same steps as above — right-click the package folder and select **New > Java Class** (or **New > Kotlin File/Class**), then name it `ResultActivity`. It receives the `MRZScanResult` passed from `MainActivity`, handles all three result statuses, and populates the result screen with the extracted MRZ data, portrait image, and document images.
-
-<div class="sample-code-prefix"></div>
->- Java
->- Kotlin
->
->1. 
-```java
-package com.dynamsoft.scanmrz;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
+
+import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
+
 import com.dynamsoft.core.basic_structures.CoreException;
 import com.dynamsoft.core.basic_structures.ImageData;
-import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentSide;
+import com.dynamsoft.dcp.EnumValidationStatus;
 import com.dynamsoft.mrzscannerbundle.ui.MRZData;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
-public class ResultActivity extends AppCompatActivity {
-       public static final int REQUEST_CODE = 1024;
-       public static final String EXTRA_RESULT = "RESULT";
-       public static final String EXTRA_ACTION = "ACTION";
-       public static final int ACTION_RESCAN = 0;
-       public static final int ACTION_RETURN_HOME = 1;
-       @Override
-       protected void onCreate(Bundle savedInstanceState) {
-          super.onCreate(savedInstanceState);
-          setContentView(R.layout.activity_results);
-          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-             return insets;
-          });
-          MRZScanResult scanResult = (MRZScanResult) getIntent().getParcelableExtra(EXTRA_RESULT);
-          if (scanResult != null) {
-             showMRZScanResult(scanResult);
-          }
-          findViewById(R.id.btn_rescan).setOnClickListener(v -> {
-             setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RESCAN));
-             finish();
-          });
-          findViewById(R.id.btn_return_home).setOnClickListener(v -> {
-             setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RETURN_HOME));
-             finish();
-          });
-       }
-       private void showMRZScanResult(MRZScanResult result) {
-          if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
-             setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RETURN_HOME));
-             finish();
-             return;
-          }
-          if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
-             findViewById(R.id.result_view).setVisibility(View.GONE);
-             TextView tvNoResult = findViewById(R.id.no_result_view);
-             tvNoResult.setVisibility(View.VISIBLE);
-             tvNoResult.setText(result.getErrorString());
-             return;
-          }
-          findViewById(R.id.result_view).setVisibility(View.VISIBLE);
-          findViewById(R.id.no_result_view).setVisibility(View.GONE);
-          MRZData data = result.getData();
-          String genderText = data.getSex().substring(0, 1).toUpperCase() + data.getSex().substring(1).toLowerCase();
-          // Main info
-          TextView tvFullName = findViewById(R.id.tv_full_name);
-          tvFullName.setText(data.getFirstName() + " " + data.getLastName());
-          TextView tvGenderAndAge = findViewById(R.id.tv_gender_and_age);
-          tvGenderAndAge.setText(genderText + ", " + data.getAge() + " years old");
-          TextView tvExpiry = findViewById(R.id.tv_expiry);
-          tvExpiry.setText("Expiry: " + data.getDateOfExpire());
-          ImageView ivPortrait = findViewById(R.id.iv_portrait);
-          ImageData portraitImage = result.getPortraitImage();
-          if (portraitImage != null) {
-             try {
-                ivPortrait.setImageBitmap(portraitImage.toBitmap());
-             } catch (CoreException ignored) {
-             }
-          } else {
-             ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder);
-          }
-          // Images view pager
-          showImages(result);
-          // Personal info
-          TextView tvGivenName = findViewById(R.id.tv_given_name);
-          tvGivenName.setText(data.getFirstName());
-          TextView tvSurname = findViewById(R.id.tv_surname);
-          tvSurname.setText(data.getLastName());
-          TextView tvDateOfBirth = findViewById(R.id.tv_date_of_birth);
-          tvDateOfBirth.setText(data.getDateOfBirth());
-          TextView tvGender = findViewById(R.id.tv_gender);
-          tvGender.setText(genderText);
-          TextView tvNationality = findViewById(R.id.tv_nationality);
-          tvNationality.setText(data.getNationality());
-          // Document info
-          TextView tvDocType = findViewById(R.id.tv_doc_type);
-          switch (data.getDocumentType()) {
-             case "MRTD_TD1_ID":
-                tvDocType.setText("ID (TD1)");
-                break;
-             case "MRTD_TD2_ID":
-                tvDocType.setText("ID (TD2)");
-                break;
-             case "MRTD_TD3_PASSPORT":
-                tvDocType.setText("Passport (TD3)");
-                break;
-          }
-          TextView tvDocNumber = findViewById(R.id.tv_doc_number);
-          tvDocNumber.setText(data.getDocumentNumber());
-          TextView tvExpiryDate = findViewById(R.id.tv_expiry_date);
-          tvExpiryDate.setText(data.getDateOfExpire());
-          // Raw MRZ text
-          TextView tvRawMRZ = findViewById(R.id.tv_raw_mrz);
-          tvRawMRZ.setText(data.getMrzText());
-       }
-       private void showImages(MRZScanResult result) {
-          ImageData mrzSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ);
-          ImageData oppositeSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
-          ImageData mrzSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_MRZ);
-          ImageData oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE);
-          TabLayout tabImages = findViewById(R.id.tab_images);
-          ViewPager2 vpImages = findViewById(R.id.vp_images);
-          if (mrzSideDocumentImage == null && mrzSideOriginalImage == null) {
-             tabImages.setVisibility(View.GONE);
-             vpImages.setVisibility(View.GONE);
-             return;
-          } else {
-             tabImages.setVisibility(View.VISIBLE);
-             vpImages.setVisibility(View.VISIBLE);
-          }
-          vpImages.setAdapter(new FragmentStateAdapter(this) {
-             @NonNull
-             @Override
-             public Fragment createFragment(int position) {
-                if (position == 0 && mrzSideDocumentImage != null) {
-                   return ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage);
-                } else {
-                   return ImagesFragment.newInstance(mrzSideOriginalImage, oppositeSideOriginalImage);
-                }
-             }
-             @Override
-             public int getItemCount() {
-                if (mrzSideDocumentImage != null && mrzSideOriginalImage != null) {
-                   return 2;
-                } else {
-                   return 1;
-                }
-             }
-          });
-          if (mrzSideOriginalImage != null || oppositeSideOriginalImage != null) {
-             new TabLayoutMediator(tabImages, vpImages, (tab, position) -> {
-                if (position == 0 && mrzSideDocumentImage != null) {
-                   tab.setText("Processed");
-                } else {
-                   tab.setText("Original");
-                }
-             }).attach();
-          }
-       }
+import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
+import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
+
+/**
+ * Launches the built-in MRZ scanner and renders the result on this same screen.
+ *
+ * The whole sample is this one activity. See the ScanMRZ sample for a fuller
+ * app: document images, per-field explanations and permission recovery.
+ */
+public class MainActivity extends AppCompatActivity {
+
+    private final MRZScannerConfig config = new MRZScannerConfig();
+    private ActivityResultLauncher<MRZScannerConfig> launcher;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
+        });
+
+        // A trial license, so it needs a network connection. Request your own at
+        // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
+        config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
+
+        // The scanner runs as its own activity, so its result arrives through the
+        // Activity Result API rather than a callback on this class.
+        launcher = registerForActivityResult(
+                new MRZScannerActivity.ResultContract(), this::showResult);
+
+        findViewById(R.id.btn_scan).setOnClickListener(v -> launcher.launch(config));
+    }
+
+    /** Renders one of the three result statuses the scanner can come back with. */
+    private void showResult(MRZScanResult result) {
+        TextView tvStatus = findViewById(R.id.tv_status);
+        View resultPanel = findViewById(R.id.result_panel);
+
+        if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
+            // The user closed the scanner. There is no data and nothing went wrong.
+            tvStatus.setText(R.string.scan_cancelled);
+            tvStatus.setVisibility(View.VISIBLE);
+            resultPanel.setVisibility(View.GONE);
+            return;
+        }
+
+        if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
+            // The scanner asks for camera access itself, so a denial lands here as a
+            // readable error string — this sample needs no permission code of its own.
+            tvStatus.setText(result.getErrorString());
+            tvStatus.setVisibility(View.VISIBLE);
+            resultPanel.setVisibility(View.GONE);
+            return;
+        }
+
+        tvStatus.setVisibility(View.GONE);
+        resultPanel.setVisibility(View.VISIBLE);
+        MRZData data = result.getData();
+
+        // Validation is per field, so a full name that joins two of them is flagged
+        // when either half fails.
+        int firstNameStatus = data.getFieldValidationStatus("firstName");
+        int nameStatus = firstNameStatus == EnumValidationStatus.VS_FAILED
+                ? firstNameStatus
+                : data.getFieldValidationStatus("lastName");
+        String fullName = (data.getFirstName() + " " + data.getLastName()).trim();
+
+        applyField(findViewById(R.id.tv_full_name), fullName, nameStatus);
+        applyField(findViewById(R.id.tv_doc_number), data.getDocumentNumber(),
+                data.getFieldValidationStatus("documentNumber"));
+        applyField(findViewById(R.id.tv_nationality), data.getNationality(),
+                data.getFieldValidationStatus("nationality"));
+        applyField(findViewById(R.id.tv_date_of_birth), data.getDateOfBirth(),
+                data.getFieldValidationStatus("dateOfBirth"));
+        applyField(findViewById(R.id.tv_date_of_expiry), data.getDateOfExpire(),
+                data.getFieldValidationStatus("dateOfExpire"));
+        // The document type comes from the MRZ layout itself, so it has no check digit.
+        applyField(findViewById(R.id.tv_doc_type), data.getDocumentType(),
+                EnumValidationStatus.VS_NONE);
+        applyField(findViewById(R.id.tv_raw_mrz), data.getMrzText(),
+                data.getFieldValidationStatus("mrzText"));
+
+        showPortrait(result.getPortraitImage());
+    }
+
+    /** The portrait is returned by default, but is null when none could be cropped. */
+    private void showPortrait(ImageData portrait) {
+        ImageView ivPortrait = findViewById(R.id.iv_portrait);
+        ivPortrait.setVisibility(View.GONE);
+        if (portrait == null) {
+            return;
+        }
+        try {
+            ivPortrait.setImageBitmap(portrait.toBitmap());
+            ivPortrait.setVisibility(View.VISIBLE);
+        } catch (CoreException ignored) {
+        }
+    }
+
+    /**
+     * Shows {@code value}, or "N/A" when the parser extracted nothing, and colors the
+     * row amber when the value does not match its check digit.
+     */
+    private void applyField(TextView tv, String value, int status) {
+        boolean failed = status == EnumValidationStatus.VS_FAILED;
+        tv.setText(value == null || value.isEmpty() ? "N/A" : value);
+        tv.setTextColor(ContextCompat.getColor(this,
+                failed ? R.color.warning_amber : R.color.white));
+    }
 }
 ```
 2. 
 ```kotlin
-package com.dynamsoft.scanmrz
+package com.dynamsoft.scanmrzbasic
+
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
+
 import com.dynamsoft.core.basic_structures.CoreException
 import com.dynamsoft.core.basic_structures.ImageData
-import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentSide
-import com.dynamsoft.mrzscannerbundle.ui.MRZData
+import com.dynamsoft.dcp.EnumValidationStatus
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
-class ResultActivity : AppCompatActivity() {
-       companion object {
-          const val REQUEST_CODE = 1024
-          const val EXTRA_RESULT = "RESULT"
-          const val EXTRA_ACTION = "ACTION"
-          const val ACTION_RESCAN = 0
-          const val ACTION_RETURN_HOME = 1
-       }
-       override fun onCreate(savedInstanceState: Bundle?) {
-          super.onCreate(savedInstanceState)
-          setContentView(R.layout.activity_results)
-          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-             insets
-          }
-          val scanResult = intent.getParcelableExtra<MRZScanResult>(EXTRA_RESULT)
-          scanResult?.let { showMRZScanResult(it) }
-          findViewById<View>(R.id.btn_rescan).setOnClickListener {
-             setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RESCAN))
-             finish()
-          }
-          findViewById<View>(R.id.btn_return_home).setOnClickListener {
-             setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RETURN_HOME))
-             finish()
-          }
-       }
-       private fun showMRZScanResult(result: MRZScanResult) {
-          if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
-             setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RETURN_HOME))
-             finish()
-             return
-          }
-          if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
-             findViewById<View>(R.id.result_view).visibility = View.GONE
-             val tvNoResult = findViewById<TextView>(R.id.no_result_view)
-             tvNoResult.visibility = View.VISIBLE
-             tvNoResult.text = result.errorString
-             return
-          }
-          findViewById<View>(R.id.result_view).visibility = View.VISIBLE
-          findViewById<View>(R.id.no_result_view).visibility = View.GONE
-          val data = result.data
-          val genderText = data.sex.substring(0, 1).uppercase() + data.sex.substring(1).lowercase()
-          // Main info
-          val tvFullName = findViewById<TextView>(R.id.tv_full_name)
-          tvFullName.text = "${data.firstName} ${data.lastName}"
-          val tvGenderAndAge = findViewById<TextView>(R.id.tv_gender_and_age)
-          tvGenderAndAge.text = "$genderText, ${data.age} years old"
-          val tvExpiry = findViewById<TextView>(R.id.tv_expiry)
-          tvExpiry.text = "Expiry: ${data.dateOfExpire}"
-          val ivPortrait = findViewById<ImageView>(R.id.iv_portrait)
-          val portraitImage = result.getPortraitImage()
-          if (portraitImage != null) {
-             try {
-                ivPortrait.setImageBitmap(portraitImage.toBitmap())
-             } catch (ignored: CoreException) {
-             }
-          } else {
-             ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder)
-          }
-          // Images view pager
-          showImages(result)
-          // Personal info
-          val tvGivenName = findViewById<TextView>(R.id.tv_given_name)
-          tvGivenName.text = data.firstName
-          val tvSurname = findViewById<TextView>(R.id.tv_surname)
-          tvSurname.text = data.lastName
-          val tvDateOfBirth = findViewById<TextView>(R.id.tv_date_of_birth)
-          tvDateOfBirth.text = data.dateOfBirth
-          val tvGender = findViewById<TextView>(R.id.tv_gender)
-          tvGender.text = genderText
-          val tvNationality = findViewById<TextView>(R.id.tv_nationality)
-          tvNationality.text = data.nationality
-          // Document info
-          val tvDocType = findViewById<TextView>(R.id.tv_doc_type)
-          when (data.documentType) {
-             "MRTD_TD1_ID" -> tvDocType.text = "ID (TD1)"
-             "MRTD_TD2_ID" -> tvDocType.text = "ID (TD2)"
-             "MRTD_TD3_PASSPORT" -> tvDocType.text = "Passport (TD3)"
-          }
-          val tvDocNumber = findViewById<TextView>(R.id.tv_doc_number)
-          tvDocNumber.text = data.documentNumber
-          val tvExpiryDate = findViewById<TextView>(R.id.tv_expiry_date)
-          tvExpiryDate.text = data.dateOfExpire
-          // Raw MRZ text
-          val tvRawMRZ = findViewById<TextView>(R.id.tv_raw_mrz)
-          tvRawMRZ.text = data.mrzText
-       }
-       private fun showImages(result: MRZScanResult) {
-          val mrzSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ)
-          val oppositeSideDocumentImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
-          val mrzSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_MRZ)
-          val oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE)
-          val tabImages = findViewById<TabLayout>(R.id.tab_images)
-          val vpImages = findViewById<ViewPager2>(R.id.vp_images)
-          if (mrzSideDocumentImage == null && mrzSideOriginalImage == null) {
-             tabImages.visibility = View.GONE
-             vpImages.visibility = View.GONE
-             return
-          } else {
-             tabImages.visibility = View.VISIBLE
-             vpImages.visibility = View.VISIBLE
-          }
-          vpImages.adapter = object : FragmentStateAdapter(this) {
-             override fun createFragment(position: Int): Fragment {
-                return if (position == 0 && mrzSideDocumentImage != null) {
-                   ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage)
-                } else {
-                   ImagesFragment.newInstance(mrzSideOriginalImage, oppositeSideOriginalImage)
-                }
-             }
-             override fun getItemCount(): Int {
-                return if (mrzSideDocumentImage != null && mrzSideOriginalImage != null) 2 else 1
-             }
-          }
-          if (mrzSideOriginalImage != null || oppositeSideOriginalImage != null) {
-             TabLayoutMediator(tabImages, vpImages) { tab, position ->
-                tab.text = if (position == 0 && mrzSideDocumentImage != null) "Processed" else "Original"
-             }.attach()
-          }
-       }
+import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
+import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
+
+/**
+ * Launches the built-in MRZ scanner and renders the result on this same screen.
+ *
+ * The whole sample is this one activity. See the ScanMRZ sample for a fuller app:
+ * document images, per-field explanations and permission recovery.
+ */
+class MainActivity : AppCompatActivity() {
+
+    private val config = MRZScannerConfig()
+    private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            insets
+        }
+
+        // A trial license, so it needs a network connection. Request your own at
+        // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
+        config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+
+        // The scanner runs as its own activity, so its result arrives through the
+        // Activity Result API rather than a callback on this class.
+        launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
+            showResult(result)
+        }
+
+        findViewById<View>(R.id.btn_scan).setOnClickListener { launcher.launch(config) }
+    }
+
+    /** Renders one of the three result statuses the scanner can come back with. */
+    private fun showResult(result: MRZScanResult) {
+        val tvStatus = findViewById<TextView>(R.id.tv_status)
+        val resultPanel = findViewById<View>(R.id.result_panel)
+
+        if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
+            // The user closed the scanner. There is no data and nothing went wrong.
+            tvStatus.setText(R.string.scan_cancelled)
+            tvStatus.visibility = View.VISIBLE
+            resultPanel.visibility = View.GONE
+            return
+        }
+
+        if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
+            // The scanner asks for camera access itself, so a denial lands here as a
+            // readable error string — this sample needs no permission code of its own.
+            tvStatus.text = result.errorString
+            tvStatus.visibility = View.VISIBLE
+            resultPanel.visibility = View.GONE
+            return
+        }
+
+        tvStatus.visibility = View.GONE
+        resultPanel.visibility = View.VISIBLE
+        val data = result.data
+
+        // Validation is per field, so a full name that joins two of them is flagged
+        // when either half fails.
+        val firstNameStatus = data.getFieldValidationStatus("firstName")
+        val nameStatus = if (firstNameStatus == EnumValidationStatus.VS_FAILED) {
+            firstNameStatus
+        } else {
+            data.getFieldValidationStatus("lastName")
+        }
+        val fullName = (data.firstName + " " + data.lastName).trim()
+
+        applyField(findViewById(R.id.tv_full_name), fullName, nameStatus)
+        applyField(findViewById(R.id.tv_doc_number), data.documentNumber,
+            data.getFieldValidationStatus("documentNumber"))
+        applyField(findViewById(R.id.tv_nationality), data.nationality,
+            data.getFieldValidationStatus("nationality"))
+        applyField(findViewById(R.id.tv_date_of_birth), data.dateOfBirth,
+            data.getFieldValidationStatus("dateOfBirth"))
+        applyField(findViewById(R.id.tv_date_of_expiry), data.dateOfExpire,
+            data.getFieldValidationStatus("dateOfExpire"))
+        // The document type comes from the MRZ layout itself, so it has no check digit.
+        applyField(findViewById(R.id.tv_doc_type), data.documentType,
+            EnumValidationStatus.VS_NONE)
+        applyField(findViewById(R.id.tv_raw_mrz), data.mrzText,
+            data.getFieldValidationStatus("mrzText"))
+
+        showPortrait(result.portraitImage)
+    }
+
+    /** The portrait is returned by default, but is null when none could be cropped. */
+    private fun showPortrait(portrait: ImageData?) {
+        val ivPortrait = findViewById<ImageView>(R.id.iv_portrait)
+        ivPortrait.visibility = View.GONE
+        if (portrait == null) {
+            return
+        }
+        try {
+            ivPortrait.setImageBitmap(portrait.toBitmap())
+            ivPortrait.visibility = View.VISIBLE
+        } catch (ignored: CoreException) {
+        }
+    }
+
+    /**
+     * Shows [value], or "N/A" when the parser extracted nothing, and colors the row
+     * amber when the value does not match its check digit.
+     */
+    private fun applyField(tv: TextView, value: String?, status: Int) {
+        val failed = status == EnumValidationStatus.VS_FAILED
+        tv.text = if (value.isNullOrEmpty()) "N/A" else value
+        tv.setTextColor(
+            ContextCompat.getColor(this, if (failed) R.color.warning_amber else R.color.white)
+        )
+    }
 }
 ```
 
-> [!NOTE]
-> - `EnumDocumentSide.DS_MRZ` refers to the side of the document containing the machine-readable zone; `DS_OPPOSITE` is the reverse side (relevant for two-sided documents like TD1 ID cards).
-> - Image retrieval methods on `MRZScanResult` (`getDocumentImage()`, `getOriginalImage()`, `getPortraitImage()`) return `null` if the corresponding option was disabled in the config or if no image was captured for that side.
+**Key APIs in use**
 
-For the full list of fields available on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
+- **`MRZScannerConfig`** — carries your license and any optional settings. The same instance is handed to every launch, so configure it once.
+- **`MRZScannerActivity.ResultContract`** — the Activity Result contract for the scanner. `registerForActivityResult` returns a launcher that accepts an `MRZScannerConfig` and delivers an `MRZScanResult` back. The scanner runs as its own activity, which is why the result arrives here rather than through a listener you register on the config.
+- **`getResultStatus()`** — one of `RS_FINISHED`, `RS_CANCELED`, or `RS_EXCEPTION`. Handle all three: cancellation and failure are reported through the same path as success rather than thrown, so a scanner that never produces a result is usually an unhandled status rather than a crash.
+- **`getErrorString()`** — a readable message that accompanies `RS_EXCEPTION`. [`getErrorCode`](../api-reference/mrz-scan-result.md#geterrorcode) gives the machine-readable code behind it.
+- **`getData()`** — the parsed [`MRZData`](../api-reference/mrz-data.md), holding every field read from the document.
+- **`getPortraitImage()`** — the portrait cropped from the document, or `null` when none was found. `toBitmap()` throws `CoreException`, so it is wrapped in a `try`.
 
-### Step 9: Run the Project
+**Reading a field's validation status**
+
+Most MRZ fields are protected by a check digit, and [`getFieldValidationStatus`](../api-reference/mrz-data.md#getfieldvalidationstatus) reports whether the value read from the document matched it. It takes the same field names as the getters on `MRZData`:
+
+```java
+applyField(findViewById(R.id.tv_doc_number), data.getDocumentNumber(),
+        data.getFieldValidationStatus("documentNumber"));
+```
+
+The result is `VS_SUCCEEDED`, `VS_NONE` when the field carries no check digit, or `VS_FAILED` when the value and its check digit disagree — meaning the document may be misread, invalid, or altered. `applyField` colors the row amber in that case. Note that the value is still returned either way, so you can decide whether to accept it, prompt for a re-scan, or ask for manual correction.
+
+The full name is the one field that needs two lookups, because the single line on screen joins two separately validated fields:
+
+```java
+int firstNameStatus = data.getFieldValidationStatus("firstName");
+int nameStatus = firstNameStatus == EnumValidationStatus.VS_FAILED
+        ? firstNameStatus
+        : data.getFieldValidationStatus("lastName");
+```
+
+Either half failing should flag the whole line, so a failed `firstName` wins; otherwise the status of `lastName` is used. Document type is passed `VS_NONE` explicitly, since it is derived from the MRZ layout itself rather than read from a field with a check digit.
+
+> [!TIP]
+> The [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md) shows a richer treatment of the same API: an error icon, an underline marking the row as tappable, and a dialog explaining what a failed check digit means.
+
+### Step 6: Run the Project
 
 Before running, complete these steps on your Android device:
 
@@ -1155,14 +628,212 @@ Before running, complete these steps on your Android device:
 
 4. **Click Run.**
 
-When the scanner finishes, the result is passed to `ResultActivity`, where the extracted MRZ data and any captured images are displayed.
+Tap **Scan an MRZ**, point the camera at the machine-readable zone of a passport or ID card, and the parsed fields appear on the screen behind the scanner.
 
 > [!NOTE]
 > A physical Android device is required. The camera is not available on the Android Emulator.
 
+## Results and Image Lifetime
+
+The scanner is a separate activity, which shapes how results reach you and how long the images in them stay valid.
+
+### How the result arrives
+
+`MRZScannerActivity.ResultContract` is an `ActivityResultContract`, so the scanner is launched and its result collected through the standard Activity Result API rather than a listener you register on the config. Two things follow from that:
+
+- **Register the launcher unconditionally**, at the point where the activity is constructed — in `onCreate`, not inside a click handler. Android restores pending results during activity recreation, and a launcher registered later may miss one.
+- **One launcher handles any number of scans.** Call `launch(config)` again for a re-scan; there is no teardown between runs, and the same `MRZScannerConfig` can be reused.
+
+The config is read when the scanner starts, so changes made to it between launches take effect on the next scan.
+
+### How long the images stay valid
+
+`getDocumentImage`, `getOriginalImage`, and `getPortraitImage` return `ImageData` backed by a native buffer rather than an ordinary `Bitmap`. Each `MRZScanResult` holds a reference to those buffers and releases it when the object is collected.
+
+You do not have to manage this. Passing a result to another activity through an `Intent` works without any extra call: the instance that comes out the other side takes its own reference as it is unparceled, so the buffers stay alive as long as any result object still points at them.
+
+> [!IMPORTANT]
+> Do not call `retainAllImageInstances()` or `releaseAllImageInstances()`. Both are annotated `@RestrictTo(LIBRARY_GROUP)` and exist for the SDK's internal use. Taking a manual reference leaks the buffer, because nothing will ever release it.
+
+If you need an image to outlive the result — to cache it, upload it, or hold it in a view model — convert it to something with ordinary Java lifetime as soon as you receive it:
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+ImageData portrait = result.getPortraitImage();
+if (portrait != null) {
+       try {
+          Bitmap bitmap = portrait.toBitmap(); // an ordinary Bitmap, safe to keep
+       } catch (CoreException e) {
+          e.printStackTrace();
+       }
+}
+```
+2. 
+```kotlin
+val portrait = result.portraitImage
+if (portrait != null) {
+       try {
+          val bitmap = portrait.toBitmap() // an ordinary Bitmap, safe to keep
+       } catch (e: CoreException) {
+          e.printStackTrace()
+       }
+}
+```
+
+`toBitmap()` produces an ordinary `Bitmap`, subject to normal garbage collection and no longer tied to the result.
+
+## The Scanner Screen
+
+`MRZScannerActivity` supplies its own full-screen UI, so nothing above defines what the user sees while scanning. Knowing what it presents is worth a moment, because it determines how much guidance your own screens need to provide.
+
+The screen is a live camera preview with a **guide frame** marking where to place the document, a **toolbar** across the top carrying the close, torch, camera-toggle, beep, and vibrate buttons, a **format selector** along the bottom for choosing between ID, passport, or both, and a **prompt** that updates as the scan progresses. Every one of these can be hidden — see [Configure the UI Elements](customize-mrz-scanner.md#configure-the-ui-elements).
+
+### What the user is told
+
+The scanner narrates its own progress, so the prompt text is the main thing a user follows:
+
+| Stage | On screen |
+| ----- | --------- |
+| Waiting for a document | **Scan the MRZ side first** |
+| Text lines detected in frame | A spinner beside the guide frame |
+| MRZ read, nothing further needed | **MRZ scanned ✓** |
+| MRZ read, portrait found on the same side | **MRZ scanned ✓ / Portrait scanned ✓** |
+| MRZ read, opposite side needed | **MRZ scanned ✓ / Flip and scan the other side**, with an animated flip prompt |
+| Both sides captured | **MRZ scanned ✓ / Both sides scanned ✓** |
+
+The spinner is not a generic busy indicator. It is driven by per-frame text-line detection, so it appears when the scanner can see MRZ-like text and is working on it, and disappears when the document moves out of frame. Once the MRZ is confirmed it stops for the rest of the session. Treated as a signal, it tells the user that holding steady is worthwhile.
+
+> [!NOTE]
+> The prompt is hidden along with the guide frame, since it reads as a label on it. Hiding the frame also widens the scanned area to the whole preview — see [Hiding the guide frame](customize-mrz-scanner.md#hiding-the-guide-frame).
+
+The last three rows are covered in detail in the next section.
+
+## Scanning Two-Sided Documents
+
+On a passport the machine-readable zone and the portrait share one page, so a single capture collects everything. On most TD1 and TD2 ID cards they are on opposite sides, and the scanner has to see both. It handles this itself — the app you built above needs no extra code — but it changes what the scan looks like to the user and what comes back in the result.
+
+The scanner always reads the **MRZ side first**, whichever physical side that is. The API names the sides `DS_MRZ` and `DS_OPPOSITE` for that reason: document layouts vary by country, so there is no guarantee the MRZ is on the back or that the portrait is on the front.
+
+### What happens during a scan
+
+1. The user scans the MRZ side. This fills the images returned for `DS_MRZ`.
+2. The scanner looks for a portrait on that same side. If it finds one — the usual case for a passport — the scan ends there and **`DS_OPPOSITE` stays `null`**.
+3. If no portrait is found and the document is not a passport, the scanner shows **"Flip and scan the other side"** with an animated prompt. Once the opposite side is captured, its images fill `DS_OPPOSITE` and the portrait is taken from it.
+
+A passport that yields no portrait is treated differently: the scanner keeps looking on the same page rather than asking for a flip, since flipping a passport would not help.
+
+> [!NOTE]
+> Five seconds after the MRZ is read, a tappable **"Continue scanning or tap to finish →"** prompt appears. It lets the user finish with whatever has been captured so far, which is the way out when a document has no portrait to find. Ending the scan this way leaves `DS_OPPOSITE` and the portrait `null`, so treat both as optional in your result handling.
+
+<div align="center">
+    <p><img src="../../assets/mrz-scanner-no-portrait-android.png" width="42%" alt="The scanner reporting no portrait detected, with a prompt to continue scanning or tap to finish"></p>
+    <p>The scanner offering a way out when no portrait is found</p>
+</div>
+
+### What you get back
+
+Assuming default settings:
+
+| Document | `getDocumentImage(DS_MRZ)` | `getDocumentImage(DS_OPPOSITE)` | `getPortraitImage()` |
+| -------- | ------------------------- | ------------------------------- | -------------------- |
+| Passport (TD3) | populated | `null` | populated, from the MRZ side |
+| ID card (TD1 / TD2) | populated | populated | populated, from the opposite side |
+| Any document, with `setReturnPortraitImage(false)` | populated | `null` | `null` |
+
+The same pattern applies to `getOriginalImage(side)` once `setReturnOriginalImage(true)` is set.
+
+### Turning it off
+
+Two-sided scanning is driven entirely by the portrait. It is on by default because `setReturnPortraitImage` defaults to `true`; setting it to `false` ends every scan as soon as the MRZ is read:
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+config.setReturnPortraitImage(false);
+```
+2. 
+```kotlin
+config.isReturnPortraitImage = false
+```
+
+That is the right choice when you only need the parsed text, and it makes every scan a single capture. `getPortraitImage()` and both `DS_OPPOSITE` getters then always return `null`.
+
+For an example that displays the document images from both sides, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+
+## Preparing for Release
+
+Two things are worth checking before you ship a build that includes the scanner: that shrinking has not broken the native bindings, and that you are not shipping more of the SDK than your users need.
+
+### Shrinking and obfuscation
+
+The SDK needs no keep rules of its own, so a project using Android's default configuration builds correctly with `minifyEnabled true` and nothing added.
+
+That default matters, though. Several SDK classes declare `native` methods that the native layer resolves **by name**, so renaming or removing them breaks the binding at runtime rather than at build time. The rule that protects them ships in `proguard-android-optimize.txt`, which new projects reference by default:
+
+```
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+```
+
+If your project uses a hand-written configuration instead of the default file, carry that rule across.
+
+### App size
+
+Most of the footprint is the Dynamsoft Capture Vision engine and its models, not the MRZ layer. Measured from a build of `ScanMRZBasic`, the native libraries alone come to:
+
+| ABI | Native libraries |
+| --- | ---------------- |
+| `armeabi-v7a` | ~11 MB |
+| `arm64-v8a` | ~16 MB |
+| `x86` | ~19 MB |
+| `x86_64` | ~19 MB |
+
+A single APK carrying all four is the worst case. Two ways to avoid it:
+
+- **Publish an Android App Bundle.** Google Play generates per-device APKs from it and delivers only the matching ABI, so a user installs roughly one column of that table rather than all of it. This is the recommended option and needs no configuration.
+- **Filter ABIs** when you distribute APKs directly. `x86` and `x86_64` mostly serve emulators, and the scanner needs a camera the emulator does not provide — but ChromeOS devices are `x86_64` and do have cameras, so drop them only if you know your distribution does not include them:
+
+<div class="sample-code-prefix"></div>
+>- Groovy
+>- Kotlin
+>
+>1. 
+```groovy
+android {
+       defaultConfig {
+          ndk {
+             abiFilters 'armeabi-v7a', 'arm64-v8a'
+          }
+       }
+}
+```
+2. 
+```kotlin
+android {
+       defaultConfig {
+          ndk {
+             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+          }
+       }
+}
+```
+
+### 16 KB page sizes
+
+The SDK's native libraries are built for devices whose kernels use a 16 KB memory page size, so no action is needed on your side.
+
 ## Next Steps
 
-- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ).
+- **Go further** — Work through the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
+- **Samples** — Browse all four Android samples on the [Demo and Samples](../samples/index.md) page.
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [Android API Reference](../api-reference/index.md) for all classes and methods.
 - **License** — See the [License Activation](license-activation.md) guide for production license setup.

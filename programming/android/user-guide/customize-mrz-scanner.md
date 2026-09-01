@@ -19,7 +19,7 @@ The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is ca
 
 1. **`setLicense` / `getLicense`** - the license key is the only property whose ***value must be specified when instantiating the MRZ Scanner instance***. If the license is undefined, invalid, or expired, the MRZ Scanner cannot proceed with scanning, and instead displays a pop-up error message instructing the user to contact the app administrator to resolve this license issue.
 
-2. **`setDocumentType` / `getDocumentType`** - specifies the type of document that the MRZ Scanner will recognize. This property accepts values defined in the EnumDocumentType such as `EnumDocumentType.DT_ALL`, `EnumDocumentType.DT_ID`, or `EnumDocumentType.DT_PASSPORT`. It helps the scanner to optimize its processing based on the expected document type. To learn more about the different document types that are supported, please refer to the [Supported Document Types](supported-document-types.md) page.
+2. **`setDocumentType` / `getDocumentType`** - specifies the type of document that the MRZ Scanner will recognize. This property accepts values defined in the EnumDocumentType such as `EnumDocumentType.DT_ALL`, `EnumDocumentType.DT_ID`, or `EnumDocumentType.DT_PASSPORT`. It helps the scanner to optimize its processing based on the expected document type. To learn more about the different document types that are supported, please refer to the [Supported Document Types](../../shared/supported-document-types.md) page.
 
 3. **`setTemplateFile` / `getTemplateFile`** - a template file is a JSON file or JSON string that contains a series of algorithm parameter settings (called Capture Vision templates) that is usually used for very specific and customized scanning and parsing scenarios. The `templateFile` points to the location of the JSON file. The MRZ Scanner comes with a default template file, but you may choose to use a custom template to target specialized use cases. We recommend contacting the [Dynamsoft Technical Support Team](https://www.dynamsoft.com/company/contact/) for assistance with template customization.
 
@@ -39,13 +39,15 @@ The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is ca
 
 11. **`setFormatSelectorVisible` / `isFormatSelectorVisible`** (default value `true`) - controls whether the document format selector is displayed at the bottom of the scanning UI. The format selector allows users to switch between scanning ID cards, passports, or both.
 
-12. **`setGuideFrameVisible` / `isGuideFrameVisible`** (default value `true`) - serves as a toggle to show or hide the guide frame overlay during scanning. The guide frame assists users in properly aligning the document for optimal MRZ detection.
+12. **`setGuideFrameVisible` / `isGuideFrameVisible`** (default value `true`) - serves as a toggle to show or hide the guide frame overlay during scanning. The guide frame assists users in properly aligning the document for optimal MRZ detection. Hiding it also widens the scanned area to the whole camera preview and hides the prompt text — see [Hiding the guide frame](#hiding-the-guide-frame).
 
 13. **`setReturnDocumentImage` / `isReturnDocumentImage`** (default value `true`) - controls whether a cropped document image is included in the scan result. When enabled, the result's `getDocumentImage()` method will return the document image for each scanned side.
 
 14. **`setReturnOriginalImage` / `isReturnOriginalImage`** (default value `false`) - controls whether the original full-frame camera image is included in the scan result. When enabled, the result's `getOriginalImage()` method will return the unprocessed camera frame for each scanned side.
 
 15. **`setReturnPortraitImage` / `isReturnPortraitImage`** (default value `true`) - controls whether the detected portrait image is included in the scan result. When enabled, the result's `getPortraitImage()` method will return the portrait extracted from the document.
+
+16. **`setCameraPermissionPromptEnabled` / `isCameraPermissionPromptEnabled`** (default value `true`) - controls whether the scanner presents its own dialog when camera access is unavailable. When enabled, the scanner explains the problem and offers a way forward before reporting. Disable it only if you intend to present your own permission UI. The camera is never started without access either way.
 
 Next, we go over the different ways that these properties can be used to customize the scanner with a few examples.
 
@@ -105,7 +107,7 @@ val config = MRZScannerConfig().apply {
 ## Configure the UI Elements
 
 <div align="center">
-    <p><img src="../../assets/mrz-scanner-ui-341100.png" width="80%" alt="mrz-scanner"></p>
+    <p><img src="../../assets/mrz-scanner-ui-android-362000.png" width="90%" alt="The MRZ Scanner UI with each configurable element labelled"></p>
     <p>MRZ Scanner UI</p>
 </div>
 
@@ -120,6 +122,8 @@ The MRZ Scanner UI includes the following configurable elements:
 - **Prompt text**: A status label that updates dynamically to guide users through each step of the scanning process.
 - **Format selector**: A bottom control bar for selecting the target document type — ID card, passport, or both.
 
+
+The scanning spinner is labelled above for orientation but is not configurable — it appears while the scanner can see MRZ-like text in the frame. See [The Scanner Screen](index.md#the-scanner-screen) for what it signals.
 
 All UI elements are visible by default. Use the following configuration to hide any elements that are not needed for your use case:
 
@@ -138,7 +142,7 @@ config.setVibrateButtonVisible(false);
 config.setFormatSelectorVisible(false);
 config.setGuideFrameVisible(false);
 ```
-1. 
+2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
    setCloseButtonVisible(false)
@@ -151,13 +155,25 @@ val config = MRZScannerConfig().apply {
 }
 ```
 
+### Hiding the guide frame
+
+The guide frame is more than an overlay: it defines the area the scanner reads. Hiding it therefore changes scanning behavior, not just appearance.
+
+With `setGuideFrameVisible(false)`:
+
+- **The whole camera preview is scanned.** While the frame is visible, capture is limited to the area inside it. With no frame on screen the user has no way to know where to aim, so the restriction is lifted rather than left invisibly in place.
+- **The prompt text is hidden as well.** The prompt is anchored to the frame and reads as a label on it, so the two are shown and hidden together.
+- **The scanning progress spinner and the flip prompt remain.** Both are positioned independently, and they carry feedback the user still needs.
+
+Plan for the wider capture area if you hide the frame: with the entire preview in play, the scanner may pick up a document elsewhere in shot.
+
 **Related APIs**
 
 - [`setCloseButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setclosebuttonvisible)
 - [`setTorchButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#settorchbuttonvisible)
 - [`setCameraToggleButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setcameratogglebuttonvisible)
 - [`setBeepButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setbeepbuttonvisible)
-- [`setVibrateButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setvibrateButtonvisible)
+- [`setVibrateButtonVisible`]({{ site.android_api }}mrz-scanner-config.html#setvibratebuttonvisible)
 - [`setFormatSelectorVisible`]({{ site.android_api }}mrz-scanner-config.html#setformatselectorvisible)
 - [`setGuideFrameVisible`]({{ site.android_api }}mrz-scanner-config.html#setguideframevisible)
 
@@ -220,7 +236,7 @@ Once configured, use the following methods on `MRZScanResult` to access the imag
 - `getOriginalImage(EnumDocumentSide)` - returns the original full-frame image for the specified side.
 - `getPortraitImage()` - returns the detected portrait image.
 
-> [!NOTE] If you need to pass an `MRZScanResult` containing images to another activity via `Intent`, call `result.retainAllImageInstances()` before `startActivity()`. This prevents the native image instances from being recycled before the receiving activity can access them.
+> [!NOTE] These images are backed by native buffers rather than ordinary `Bitmap` objects, but their lifetime is managed for you. Passing an `MRZScanResult` to another activity through an `Intent` requires no extra work: the receiving instance takes its own reference as it is unparceled, and each instance releases its own when collected. See [Results and Image Lifetime](index.md#results-and-image-lifetime) in the user guide.
 
 **Related APIs**
 
@@ -230,6 +246,51 @@ Once configured, use the following methods on `MRZScanResult` to access the imag
 - [`getDocumentImage`]({{ site.android_api }}mrz-scan-result.html#getdocumentimage)
 - [`getOriginalImage`]({{ site.android_api }}mrz-scan-result.html#getoriginalimage)
 - [`getPortraitImage`]({{ site.android_api }}mrz-scan-result.html#getportraitimage)
+
+## Handling Camera Permission
+
+The MRZ Scanner manages the camera permission for you. The `CAMERA` permission is declared by the SDK and merged into your app at build time, `MRZScannerActivity` requests it on first launch, and the camera is never started without it. For most integrations there is nothing to add.
+
+If access is unavailable, the scanner explains the situation and offers whatever action can actually resolve it:
+
+| State | Dialog action |
+| ----- | ------------- |
+| The permission can be requested again | **Allow camera access** — re-requests in place, no restart needed. |
+| The permission is permanently denied | **Open Settings** — opens the app's page in the system settings. |
+| Camera access is blocked by device policy | Explanation only — there is no action the user can take. |
+
+**Cancel** is available in every case. Whichever route the user takes, the activity finishes and the outcome is reported through the normal result path as `RS_EXCEPTION`, with an error code of `EC_CAMERA_PERMISSION_DENIED` (1001) or `EC_CAMERA_PERMISSION_RESTRICTED` (1002).
+
+### Presenting your own permission UI
+
+To replace the scanner's dialog with your own, disable the prompt:
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+MRZScannerConfig config = new MRZScannerConfig();
+config.setCameraPermissionPromptEnabled(false);
+```
+2. 
+```kotlin
+val config = MRZScannerConfig().apply {
+   setCameraPermissionPromptEnabled(false)
+}
+```
+
+The scanner then suppresses its dialog but still reports the denial through `MRZScanResult`, and still refuses to start the camera without access. Read the error code to decide what to show: `EC_CAMERA_PERMISSION_DENIED` is worth offering a route into Settings, while `EC_CAMERA_PERMISSION_RESTRICTED` is not — device policy withholds the camera, and the per-app camera toggle is absent from Settings in that state, so sending the user there is a dead end.
+
+> [!NOTE]
+> Granting the permission in Settings does not kill the Android process, so a screen showing a denial can re-check the permission in `onResume` and start a new scan in place. The [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md#resultactivity) shows this.
+
+**Related APIs**
+
+- [`setCameraPermissionPromptEnabled`]({{ site.android_api }}mrz-scanner-config.html#setcamerapermissionpromptenabled)
+- [`isCameraPermissionPromptEnabled`]({{ site.android_api }}mrz-scanner-config.html#iscamerapermissionpromptenabled)
+- [`EnumErrorCode`]({{ site.android_api }}error-code.html)
 
 ## Further Customization
 

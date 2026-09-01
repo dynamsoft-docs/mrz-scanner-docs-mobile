@@ -10,6 +10,32 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
+## 3.6.2000 (TBD)
+
+The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dynamsoft Capture Vision base the SDK ships against. There were no public 3.5.x or 3.6.1000 releases.
+
+### New
+
+- **Per-field MRZ validation**: `MRZData.getFieldValidationStatus(String)` reports whether a parsed field agrees with its check digit, returning `VS_NONE`, `VS_SUCCEEDED`, or `VS_FAILED`. It accepts the same field names as the `MRZData` getters. The composite fields `dateOfBirth`, `dateOfExpire`, and `mrzText` report the worst status among their components.
+  - **Behavior change**: scans that fail check-digit validation are no longer discarded. The parsed values are returned with their validation status, so you can accept them, prompt for a re-scan, or request manual correction.
+
+- **Camera permission handling**: `MRZScannerActivity` now gates the camera on permission and never opens it without access. When access is unavailable it shows a dialog offering **Allow camera access** or **Open Settings**, then reports the outcome.
+  - New `EnumErrorCode`: `EC_CAMERA_PERMISSION_DENIED` (1001), which the user can resolve, and `EC_CAMERA_PERMISSION_RESTRICTED` (1002), withheld by device policy. Both are returned by `getErrorCode()` with a status of `RS_EXCEPTION`. The bundle owns codes 1000–1999; Capture Vision codes are all `<= 0`.
+  - New `setCameraPermissionPromptEnabled(boolean)` / `isCameraPermissionPromptEnabled()` (default: `true`) suppress the dialog for integrators presenting their own UI. Denials are still reported.
+
+- **Scanning progress indicator**: Shown while the scanner is actively processing frames, prompting the user to hold the device steady.
+
+- **Flip document prompt**: For TD1 and TD2 IDs with the portrait on the opposite side, the scanner now prompts the user to flip the document after the MRZ is captured.
+
+### Fixes & Improvements
+
+- Upgraded the Dynamsoft Capture Vision base to 3.6.2000, addressing a known CVE and including crash fixes. Also adds MRZ text-line orientation detection, so an MRZ rotated 180° can be read.
+- Fixed a memory leak that retained the native image buffers of every completed scan, so sustained scanning could eventually exhaust memory. Passing a scan result between activities requires no manual image handling.
+- Constrained the scan region to the guide frame. Previously the full camera preview was analyzed, so a document held outside the guide could be accepted. When the guide frame is hidden with `setGuideFrameVisible(false)`, the whole preview is scanned instead, and the prompt text is now hidden along with the frame.
+- Fixed small documents going undetected after the user switched format with the bottom selector. The document area threshold was applied only to the format the scanner started with.
+- Fixed the guide frame border reverting to white at the moment the success message appeared, so the two now overlap as intended.
+- Fixed an `UnsatisfiedLinkError` that could occur when an `MRZScanResult` was restored in a freshly started process.
+
 ## 3.4.1300 (05/20/2026)
 
 ### Fixes & Improvements
