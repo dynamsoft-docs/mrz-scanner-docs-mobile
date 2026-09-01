@@ -30,6 +30,7 @@ The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dyna
 ### Fixes & Improvements
 
 - Upgraded the Dynamsoft Capture Vision base to 3.6.2000, addressing a known CVE and including crash fixes. Also adds MRZ text-line orientation detection, so an MRZ rotated 180° can be read.
+- Fixed a memory leak that retained the native image buffers of every completed scan, so sustained scanning could eventually exhaust memory. Passing a scan result between activities requires no manual image handling.
 - Constrained the scan region to the guide frame. Previously the full camera preview was analyzed, so a document held outside the guide could be accepted.
 - Fixed an `UnsatisfiedLinkError` that could occur when an `MRZScanResult` was restored in a freshly started process.
 
