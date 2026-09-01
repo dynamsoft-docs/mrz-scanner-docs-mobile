@@ -308,7 +308,7 @@ You do not need to write any camera-permission code. The `CAMERA` permission is 
 >
 >1. 
 ```java
-package com.dynamsoft.scanmrzbasic;`
+package com.dynamsoft.scanmrzbasic;
 
 import android.os.Bundle;
 import android.view.View;
@@ -730,7 +730,7 @@ A passport that yields no portrait is treated differently: the scanner keeps loo
 > Five seconds after the MRZ is read, a tappable **"Continue scanning or tap to finish →"** prompt appears. It lets the user finish with whatever has been captured so far, which is the way out when a document has no portrait to find. Ending the scan this way leaves `DS_OPPOSITE` and the portrait `null`, so treat both as optional in your result handling.
 
 <div align="center">
-    <p><img src="../../assets/mrz-scanner-no-portrait-android.png" width="42%" alt="The scanner reporting no portrait detected, with a prompt to continue scanning or tap to finish"></p>
+    <p><img src="../../assets/mrz-scanner-no-portrait-android.png" width="34%" alt="The scanner reporting no portrait detected, with a prompt to continue scanning or tap to finish"></p>
     <p>The scanner offering a way out when no portrait is found</p>
 </div>
 
