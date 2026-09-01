@@ -327,12 +327,9 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZData;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-/**
- * Launches the built-in MRZ scanner and renders the result on this same screen.
- *
- * The whole sample is this one activity. See the ScanMRZ sample for a fuller
- * app: document images, per-field explanations and permission recovery.
- */
+// Launches the built-in MRZ scanner and renders the result on this same screen.
+// The whole sample is this one activity. See the ScanMRZ sample for a fuller
+// app: document images, per-field explanations and permission recovery.
 public class MainActivity extends AppCompatActivity {
     private final MRZScannerConfig config = new MRZScannerConfig();
     private ActivityResultLauncher<MRZScannerConfig> launcher;
@@ -355,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                 new MRZScannerActivity.ResultContract(), this::showResult);
         findViewById(R.id.btn_scan).setOnClickListener(v -> launcher.launch(config));
     }
-    /** Renders one of the three result statuses the scanner can come back with. */
+    // Renders one of the three result statuses the scanner can come back with.
     private void showResult(MRZScanResult result) {
         TextView tvStatus = findViewById(R.id.tv_status);
         View resultPanel = findViewById(R.id.result_panel);
@@ -400,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
                 data.getFieldValidationStatus("mrzText"));
         showPortrait(result.getPortraitImage());
     }
-    /** The portrait is returned by default, but is null when none could be cropped. */
+    // The portrait is returned by default, but is null when none could be cropped.
     private void showPortrait(ImageData portrait) {
         ImageView ivPortrait = findViewById(R.id.iv_portrait);
         ivPortrait.setVisibility(View.GONE);
@@ -413,10 +410,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (CoreException ignored) {
         }
     }
-    /**
-     * Shows {@code value}, or "N/A" when the parser extracted nothing, and colors the
-     * row amber when the value does not match its check digit.
-     */
+    // Shows value, or "N/A" when the parser extracted nothing, and colors the
+    // row amber when the value does not match its check digit.
     private void applyField(TextView tv, String value, int status) {
         boolean failed = status == EnumValidationStatus.VS_FAILED;
         tv.setText(value == null || value.isEmpty() ? "N/A" : value);
@@ -444,12 +439,9 @@ import com.dynamsoft.dcp.EnumValidationStatus
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
-/**
- * Launches the built-in MRZ scanner and renders the result on this same screen.
- *
- * The whole sample is this one activity. See the ScanMRZ sample for a fuller app:
- * document images, per-field explanations and permission recovery.
- */
+// Launches the built-in MRZ scanner and renders the result on this same screen.
+// The whole sample is this one activity. See the ScanMRZ sample for a fuller app:
+// document images, per-field explanations and permission recovery.
 class MainActivity : AppCompatActivity() {
     private val config = MRZScannerConfig()
     private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
@@ -472,7 +464,7 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<View>(R.id.btn_scan).setOnClickListener { launcher.launch(config) }
     }
-    /** Renders one of the three result statuses the scanner can come back with. */
+    // Renders one of the three result statuses the scanner can come back with.
     private fun showResult(result: MRZScanResult) {
         val tvStatus = findViewById<TextView>(R.id.tv_status)
         val resultPanel = findViewById<View>(R.id.result_panel)
@@ -519,7 +511,7 @@ class MainActivity : AppCompatActivity() {
             data.getFieldValidationStatus("mrzText"))
         showPortrait(result.portraitImage)
     }
-    /** The portrait is returned by default, but is null when none could be cropped. */
+    // The portrait is returned by default, but is null when none could be cropped.
     private fun showPortrait(portrait: ImageData?) {
         val ivPortrait = findViewById<ImageView>(R.id.iv_portrait)
         ivPortrait.visibility = View.GONE
@@ -532,10 +524,8 @@ class MainActivity : AppCompatActivity() {
         } catch (ignored: CoreException) {
         }
     }
-    /**
-     * Shows [value], or "N/A" when the parser extracted nothing, and colors the row
-     * amber when the value does not match its check digit.
-     */
+    // Shows value, or "N/A" when the parser extracted nothing, and colors the row
+    // amber when the value does not match its check digit.
     private fun applyField(tv: TextView, value: String?, status: Int) {
         val failed = status == EnumValidationStatus.VS_FAILED
         tv.text = if (value.isNullOrEmpty()) "N/A" else value
