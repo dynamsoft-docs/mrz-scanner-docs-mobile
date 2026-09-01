@@ -1168,5 +1168,6 @@ class ResultActivity : AppCompatActivity() {
 ## Next steps
 
 - [MRZ Scanner User Guide](../user-guide/index.md) — build the minimal integration from scratch.
+- [Demo and Samples](index.md) — all four Android samples, and the demo app.
 - [Customizing the MRZ Scanner](../user-guide/customize-mrz-scanner.md) — document type, UI elements, feedback, and camera permission.
 - [Android API Reference](../api-reference/index.md) — all classes and methods.
