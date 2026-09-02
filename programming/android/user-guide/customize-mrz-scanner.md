@@ -289,7 +289,7 @@ val config = MRZScannerConfig().apply {
 The scanner then suppresses its dialog but still reports the denial through `MRZScanResult`, and still refuses to start the camera without access. Read the error code to decide what to show: `EC_CAMERA_PERMISSION_DENIED` is worth offering a route into Settings, while `EC_CAMERA_PERMISSION_RESTRICTED` is not — device policy withholds the camera, and the per-app camera toggle is absent from Settings in that state, so sending the user there is a dead end.
 
 > [!NOTE]
-> Granting the permission in Settings does not kill the Android process, so a screen showing a denial can re-check the permission in `onResume` and start a new scan in place. The [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md#resultactivity) shows this.
+> Granting the permission in Settings does not kill the Android process, so a screen showing a denial can re-check the permission in `onResume` and start a new scan in place. The [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md#resultactivity) shows this.
 
 **Related APIs**
 

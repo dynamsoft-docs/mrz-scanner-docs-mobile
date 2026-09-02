@@ -15,7 +15,7 @@ enableLanguageSelection: true
 The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building an MRZ scanning app from scratch using `MRZScannerActivity` — the built-in activity that handles the camera UI, scanning logic, and result delivery.
 
 > [!TIP]
-> The app built here is **ScanMRZBasic**, available on GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) and [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt). For a fuller app with a dedicated result screen, document images, and camera-permission recovery, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+> The app built here is **ScanMRZBasic**, available on GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) and [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt). For a fuller app with a dedicated result screen, document images, and camera-permission recovery, see the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md).
 
 > [!IMPORTANT]
 > Upgrading an existing integration rather than starting fresh? See the [Upgrade Guide](upgrade.md) first.
@@ -109,7 +109,7 @@ A valid license key is required to use the SDK. If you are just getting started,
 
 The following steps build **ScanMRZBasic** — the smallest app that scans an MRZ and shows the parsed result. You can download the finished project from GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) or [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt).
 
-The whole app is a single activity: a button launches the scanner, and the result renders on the same screen. For a fuller app with a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+The whole app is a single activity: a button launches the scanner, and the result renders on the same screen. For a fuller app with a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery, see the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md).
 
 Before you start, have these ready:
 
@@ -568,7 +568,7 @@ int nameStatus = firstNameStatus == EnumValidationStatus.VS_FAILED
 The displayed line should be flagged if either half failed, so a failed `firstName` is used when present, and the status of `lastName` otherwise. Document type is passed `VS_NONE` explicitly, since it is derived from the MRZ layout itself rather than read from a field with a check digit.
 
 > [!TIP]
-> The [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md) shows a richer treatment of the same API: an error icon, an underline marking the row as tappable, and a dialog explaining what a failed check digit means.
+> The [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) shows a richer treatment of the same API: an error icon, an underline marking the row as tappable, and a dialog explaining what a failed check digit means.
 
 ### Step 6: Run the Project
 
@@ -719,7 +719,7 @@ config.isReturnPortraitImage = false
 
 That is the right choice when you only need the parsed text, and it makes every scan a single capture. `getPortraitImage()` and both `DS_OPPOSITE` getters then always return `null`.
 
-For an example that displays the document images from both sides, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+For an example that displays the document images from both sides, see the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md).
 
 ## Preparing for Release
 
@@ -786,7 +786,7 @@ The SDK's native libraries are built for devices whose kernels use a 16 KB memor
 
 ## Next Steps
 
-- **Go further** — Work through the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
+- **Go further** — Work through the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
 - **Samples** — Browse all four Android samples on the [Demo and Samples](../samples/index.md) page.
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [Android API Reference](../api-reference/index.md) for all classes and methods.
