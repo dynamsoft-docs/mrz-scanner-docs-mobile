@@ -71,7 +71,7 @@ config.setDocumentType(EnumDocumentType.DT_PASSPORT);
 2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
-   setDocumentType(EnumDocumentType.DT_PASSPORT)
+   documentType = EnumDocumentType.DT_PASSPORT
 }
 ```
 
@@ -95,7 +95,7 @@ config.setTemplateFile("CustomizedTemplate.json");
 2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
-   setTemplateFile("CustomizedTemplate.json")
+   templateFile = "CustomizedTemplate.json"
 }
 ```
 
@@ -148,13 +148,13 @@ config.setGuideFrameVisible(false);
 2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
-   setCloseButtonVisible(false)
-   setTorchButtonVisible(false)
-   setCameraToggleButtonVisible(false)
-   setBeepButtonVisible(false)
-   setVibrateButtonVisible(false)
-   setFormatSelectorVisible(false)
-   setGuideFrameVisible(false)
+   isCloseButtonVisible = false
+   isTorchButtonVisible = false
+   isCameraToggleButtonVisible = false
+   isBeepButtonVisible = false
+   isVibrateButtonVisible = false
+   isFormatSelectorVisible = false
+   isGuideFrameVisible = false
 }
 ```
 
@@ -200,8 +200,8 @@ config.setVibrateEnabled(true);
 2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
-   setBeepEnabled(true)
-   setVibrateEnabled(true)
+   isBeepEnabled = true
+   isVibrateEnabled = true
 }
 ```
 
@@ -228,9 +228,9 @@ config.setReturnOriginalImage(false);  // Original full-frame image (default: fa
 2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
-   setReturnDocumentImage(true)   // Cropped document image (default: true).
-   setReturnPortraitImage(true)   // Portrait image (default: true).
-   setReturnOriginalImage(false)  // Original full-frame image (default: false).
+   isReturnDocumentImage = true   // Cropped document image (default: true).
+   isReturnPortraitImage = true   // Portrait image (default: true).
+   isReturnOriginalImage = false  // Original full-frame image (default: false).
 }
 ```
 
@@ -282,7 +282,7 @@ config.setCameraPermissionPromptEnabled(false);
 2. 
 ```kotlin
 val config = MRZScannerConfig().apply {
-   setCameraPermissionPromptEnabled(false)
+   isCameraPermissionPromptEnabled = false
 }
 ```
 
