@@ -11,13 +11,15 @@ needAutoGenerateSidebar: true
 
 # Customizing the MRZ Scanner
 
-When developing with `MRZScannerActivity`, you can add configurations via the `MRZScannerConfig` class. This page will guide you on how to configure the settings.
+`MRZScannerActivity` works out of the box with only a license key. This page covers what you can change through `MRZScannerConfig` when the defaults do not suit your app.
 
 ## MRZScannerConfig Overview
 
-The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is capable of configuring almost all customization options applicable to MRZ scanning use cases with the MRZ Scanner. The MRZ Scanner passes an `MRZScannerConfig` object to the constructor when creating an MRZ Scanner instance. `MRZScannerConfig` contains the following properties:
+[**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) carries almost every option the MRZ Scanner exposes. You build one, set the properties you need, and pass it to `launch()` on the `ActivityResultLauncher` registered against `MRZScannerActivity.ResultContract`. The scanner reads it when it starts, so changing a property between launches takes effect on the next scan.
 
-1. **`setLicense` / `getLicense`** - the license key is the only property whose ***value must be specified when instantiating the MRZ Scanner instance***. If the license is undefined, invalid, or expired, the MRZ Scanner cannot proceed with scanning, and instead displays a pop-up error message instructing the user to contact the app administrator to resolve this license issue.
+`MRZScannerConfig` contains the following properties:
+
+1. **`setLicense` / `getLicense`** - the license key is the **only property you must set**; every other property has a working default. If the license is undefined, invalid, or expired, the scanner cannot proceed and instead displays an error message telling the user to contact the app administrator.
 
 2. **`setDocumentType` / `getDocumentType`** - specifies the type of document that the MRZ Scanner will recognize. This property accepts values defined in the EnumDocumentType such as `EnumDocumentType.DT_ALL`, `EnumDocumentType.DT_ID`, or `EnumDocumentType.DT_PASSPORT`. It helps the scanner to optimize its processing based on the expected document type. To learn more about the different document types that are supported, please refer to the [Supported Document Types](../../shared/supported-document-types.md) page.
 
@@ -49,13 +51,13 @@ The [**`MRZScannerConfig`**](../api-reference/mrz-scanner-config.md) class is ca
 
 16. **`setCameraPermissionPromptEnabled` / `isCameraPermissionPromptEnabled`** (default value `true`) - controls whether the scanner presents its own dialog when camera access is unavailable. When enabled, the scanner explains the problem and offers a way forward before reporting. Disable it only if you intend to present your own permission UI. The camera is never started without access either way.
 
-Next, we go over the different ways that these properties can be used to customize the scanner with a few examples.
+The sections below show these properties in use.
 
 ## Setting the MRZ Document Type
 
 ### Using the API
 
-Specifies the type of document to scan, such as ID cards or passports. It also improves the processing speed and the accuracy.
+Setting the document type narrows what the scanner looks for, which improves both speed and accuracy. Use it whenever you know in advance that your users will only present one kind of document.
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -75,11 +77,11 @@ val config = MRZScannerConfig().apply {
 
 ### Using a customized template file
 
-A template file is a JSON file that includes a series of algorithm parameter settings. It is always used to customize the performance for different usage scenarios. [Contact us](https://www.dynamsoft.com/company/customer-service/#contact) to get a customized template for your scanner.
+A template file is a JSON file holding a set of algorithm parameters. It tunes recognition for a specific scanning scenario, and is only needed when the default behavior does not suit your documents or conditions. [Contact us](https://www.dynamsoft.com/company/customer-service/#contact) for a template tailored to your use case.
 
 1. Add a **Templates** folder to the assets folder of your project at **src\main\assets\Templates**. Put your JSON file in the **Templates** folder.
 
-2. Specify the template file via setTemplateFile
+2. Point the config at it with `setTemplateFile`:
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -97,7 +99,8 @@ val config = MRZScannerConfig().apply {
 }
 ```
 
-> [!NOTE] You can also use a JSON string as the template file.
+> [!NOTE]
+> You can also pass a JSON string directly instead of a file path.
 
 **Related APIs**
 
@@ -165,7 +168,7 @@ With `setGuideFrameVisible(false)`:
 - **The prompt text is hidden as well.** The prompt is anchored to the frame and reads as a label on it, so the two are shown and hidden together.
 - **The scanning progress spinner and the flip prompt remain.** Both are positioned independently, and they carry feedback the user still needs.
 
-Plan for the wider capture area if you hide the frame: with the entire preview in play, the scanner may pick up a document elsewhere in shot.
+Account for that wider capture area if you hide the frame. With the entire preview in play, the scanner may pick up a document elsewhere in the shot.
 
 **Related APIs**
 
@@ -181,7 +184,8 @@ Plan for the wider capture area if you hide the frame: with the entire preview i
 
 The MRZ Scanner can play a beep sound or vibrate the device upon a successful scan. Both are disabled by default.
 
-> [!NOTE] The `setBeepEnabled` and `setVibrateEnabled` settings control the feedback *behavior*. To hide the buttons that allow users to toggle these behaviors from the scanning UI, use `setBeepButtonVisible` and `setVibrateButtonVisible`.
+> [!NOTE]
+> `setBeepEnabled` and `setVibrateEnabled` control the *behavior*. The buttons that let users toggle it during a scan are controlled separately, by `setBeepButtonVisible` and `setVibrateButtonVisible`.
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -236,7 +240,8 @@ Once configured, use the following methods on `MRZScanResult` to access the imag
 - `getOriginalImage(EnumDocumentSide)` - returns the original full-frame image for the specified side.
 - `getPortraitImage()` - returns the detected portrait image.
 
-> [!NOTE] These images are backed by native buffers rather than ordinary `Bitmap` objects, but their lifetime is managed for you. Passing an `MRZScanResult` to another activity through an `Intent` requires no extra work: the receiving instance takes its own reference as it is unparceled, and each instance releases its own when collected. See [Results and Image Lifetime](index.md#results-and-image-lifetime) in the user guide.
+> [!NOTE]
+> These images are backed by native buffers rather than ordinary `Bitmap` objects, but their lifetime is managed for you. Passing an `MRZScanResult` to another activity through an `Intent` requires no extra work: the receiving instance takes its own reference as it is unparceled, and each instance releases its own when collected. See [Results and Image Lifetime](index.md#results-and-image-lifetime) in the user guide.
 
 **Related APIs**
 
