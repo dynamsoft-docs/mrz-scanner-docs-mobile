@@ -321,3 +321,66 @@ The raw text of the MRZ.
 ```swift
 let mrzText: String
 ```
+
+## Methods
+
+| Method | Description |
+| ------ | ----------- |
+| [`getFieldValidationStatus`](#getfieldvalidationstatus) | Returns the validation status of a single parsed MRZ field. |
+
+### getFieldValidationStatus
+
+Returns the validation status of a single parsed MRZ field. Most MRZ fields are protected by a check digit, and this method reports whether the value read from the document matched it.
+
+A status of `failed` means the value does not agree with its check digit — the document may be misread, invalid, or altered. The value is still returned by the corresponding property, so you can choose whether to accept it, prompt for a re-scan, or ask for manual correction.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+- (DSValidationStatus)getFieldValidationStatus:(NSString *)fieldName;
+```
+2. 
+```swift
+func getFieldValidationStatus(_ fieldName: String) -> ValidationStatus
+```
+
+**Parameters**
+
+`fieldName`: The name of the field to query, using the same names as the properties on this class. The accepted values are:
+
+| `fieldName` | Corresponding property |
+| ----------- | ---------------------- |
+| `firstName` | [`firstName`](#firstname) |
+| `lastName` | [`lastName`](#lastname) |
+| `sex` | [`sex`](#sex) |
+| `issuingState` | [`issuingState`](#issuingstate) |
+| `nationality` | [`nationality`](#nationality) |
+| `dateOfBirth` | [`dateOfBirth`](#dateofbirth) |
+| `dateOfExpire` | [`dateOfExpire`](#dateofexpire) |
+| `documentNumber` | [`documentNumber`](#documentnumber) |
+| `mrzText` | [`mrzText`](#mrztext) |
+| `optionalData1` | [`optionalData1`](#optionaldata1) |
+| `optionalData2` | [`optionalData2`](#optionaldata2) |
+| `personalNumber` | [`personalNumber`](#personalnumber) |
+
+**Return Value**
+
+A `ValidationStatus` value:
+
+| Member | Value | Description |
+| ------ | ----- | ----------- |
+| `DSValidationStatusNone` / `none` | 0 | The field has no validation specified. |
+| `DSValidationStatusSucceeded` / `succeeded` | 1 | The validation for the field succeeded. |
+| `DSValidationStatusFailed` / `failed` | 2 | The validation for the field failed. |
+
+`ValidationStatus` belongs to Dynamsoft Code Parser rather than to this SDK, and is imported from `DynamsoftCaptureVisionBundle`. See the [ValidationStatus reference](https://www.dynamsoft.com/code-parser/docs/mobile/programming/ios/api-reference/enum/validation-status.html?lang=objc,swift){:target="_blank"} for its full definition.
+
+> [!NOTE]
+> `dateOfBirth`, `dateOfExpire` and `mrzText` are composites of several underlying MRZ fields. Each returns the worst status among its components: `failed` if any component failed, otherwise `succeeded` if any component passed, otherwise `none`.
+>
+> Because `mrzText` aggregates whole MRZ lines, it can report `failed` when no individual field does. This happens when the corruption falls in a field that carries no check digit of its own, such as name, nationality, or sex.
+
+An unrecognized `fieldName` returns `none` rather than raising an error, as does any field for which no validation information was captured.
