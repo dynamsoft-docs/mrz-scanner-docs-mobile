@@ -1,17 +1,20 @@
 ---
 layout: default-layout
-title: ScanMRZ Sample Walkthrough - Dynamsoft MRZ Scanner Android Edition
-description: A walkthrough of the full ScanMRZ Android sample - its result screen, image pager, per-field validation display, and camera-permission recovery.
-keywords: sample, walkthrough, ScanMRZ, result screen, Android
+title: Building the ScanMRZ Demo App - Dynamsoft MRZ Scanner Android Edition
+description: Build the complete ScanMRZ demo app for Android - its result screen, image pager, per-field validation display, and camera-permission recovery.
+keywords: demo app, sample, ScanMRZ, result screen, Android
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
-breadcrumbText: ScanMRZ Walkthrough
+breadcrumbText: ScanMRZ Demo App
 noTitleIndex: true
 ---
 
-# ScanMRZ Sample Walkthrough
+# Building the ScanMRZ Demo App
 
-The [MRZ Scanner User Guide](../user-guide/index.md) builds **ScanMRZBasic**, the smallest app that scans an MRZ and shows the parsed data on a single screen. This page walks through **ScanMRZ**, the fuller sample built on top of it.
+The [MRZ Scanner User Guide](../user-guide/index.md) builds **ScanMRZBasic**, the smallest app that scans an MRZ and shows the parsed data on a single screen. This page builds **ScanMRZ**, the complete demo app on top of it.
+
+> [!NOTE]
+> The **MRZ Scanner Demo** published on Google Play is this same implementation behind a more polished landing screen. Building `ScanMRZ` gives you the full scanning and result experience; the store app adds branding around it.
 
 Everything on this page is presentation. It uses the same SDK calls the user guide covers — `MRZScannerConfig`, `MRZScannerActivity.ResultContract`, and the getters on `MRZScanResult` — and adds a result screen around them. None of it is required in order to use the MRZ Scanner.
 
@@ -1164,6 +1167,126 @@ class ResultActivity : AppCompatActivity() {
        }
 }
 ```
+
+## MainActivity
+
+The user guide's `MainActivity` renders the result on its own screen. Here it does one thing differently: it hands the result to `ResultActivity` and waits to hear what the user chose.
+
+Two changes make that work. The launcher callback packs the `MRZScanResult` into an `Intent` and starts `ResultActivity`, and `onActivityResult` reads the action that comes back — relaunching the scanner when the user tapped **Re-Scan**.
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+package com.dynamsoft.scanmrz;
+import android.content.Intent;
+import android.os.Bundle;
+import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
+import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
+public class MainActivity extends AppCompatActivity {
+       private ActivityResultLauncher<MRZScannerConfig> launcher;
+       private final MRZScannerConfig config = new MRZScannerConfig();
+       @Override
+       protected void onCreate(Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          EdgeToEdge.enable(this);
+          setContentView(R.layout.activity_main);
+          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+             return insets;
+          });
+          // A trial license, so it needs a network connection. Request your own at
+          // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
+          config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
+          // Hand the result to ResultActivity rather than rendering it here.
+          launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
+             Intent intent = new Intent(this, ResultActivity.class);
+             intent.putExtra(ResultActivity.EXTRA_RESULT, result);
+             startActivityForResult(intent, ResultActivity.REQUEST_CODE);
+          });
+          findViewById(R.id.btn_start).setOnClickListener(v -> launcher.launch(config));
+       }
+       // ResultActivity reports back which button the user pressed. Re-Scan relaunches
+       // the scanner with the same config; Return Home needs no action, since this is home.
+       @Override
+       protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+          super.onActivityResult(requestCode, resultCode, data);
+          if (requestCode == ResultActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+             int action = data.getIntExtra(ResultActivity.EXTRA_ACTION, ResultActivity.ACTION_RETURN_HOME);
+             if (action == ResultActivity.ACTION_RESCAN) {
+                launcher.launch(config);
+             }
+          }
+       }
+}
+```
+2. 
+```kotlin
+package com.dynamsoft.scanmrz
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
+import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
+class MainActivity : AppCompatActivity() {
+       private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
+       private val config = MRZScannerConfig()
+       override fun onCreate(savedInstanceState: Bundle?) {
+          super.onCreate(savedInstanceState)
+          enableEdgeToEdge()
+          setContentView(R.layout.activity_main)
+          ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+             insets
+          }
+          // A trial license, so it needs a network connection. Request your own at
+          // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
+          config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+          // Hand the result to ResultActivity rather than rendering it here.
+          launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
+             val intent = Intent(this, ResultActivity::class.java)
+             intent.putExtra(ResultActivity.EXTRA_RESULT, result)
+             startActivityForResult(intent, ResultActivity.REQUEST_CODE)
+          }
+          findViewById<View>(R.id.btn_start).setOnClickListener { launcher.launch(config) }
+       }
+       // ResultActivity reports back which button the user pressed. Re-Scan relaunches
+       // the scanner with the same config; Return Home needs no action, since this is home.
+       // onActivityResult is deprecated in favor of the Activity Result APIs, but is kept
+       // here so the hand-off mirrors the Java sample one-for-one.
+       @Deprecated("Deprecated in Java")
+       override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+          @Suppress("DEPRECATION")
+          super.onActivityResult(requestCode, resultCode, data)
+          if (requestCode == ResultActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+             val action = data?.getIntExtra(ResultActivity.EXTRA_ACTION, ResultActivity.ACTION_RETURN_HOME)
+                ?: ResultActivity.ACTION_RETURN_HOME
+             if (action == ResultActivity.ACTION_RESCAN) {
+                launcher.launch(config)
+             }
+          }
+       }
+}
+```
+
+> [!NOTE]
+> The `MRZScanResult` travels through the `Intent` with no extra handling. Its images are reference counted, and the instance `ResultActivity` unparcels takes its own reference. See [Results and Image Lifetime](../user-guide/index.md#results-and-image-lifetime).
 
 ## Next steps
 

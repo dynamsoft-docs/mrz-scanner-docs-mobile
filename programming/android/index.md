@@ -28,7 +28,7 @@ Dynamsoft MRZ Scanner SDK Android Edition is designed to scan the MRZ code from 
 ## Samples and Demos
 
 - [Samples & Demos](samples/index.md)
-- [ScanMRZ Sample Walkthrough](samples/scanmrz-walkthrough.md)
+- [ScanMRZ Demo App](samples/scanmrz-walkthrough.md)
 
 ## API Reference
 

@@ -10,7 +10,7 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
-## 3.6.2000 (TBD)
+## 3.6.2000 (09/08/2026)
 
 The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dynamsoft Capture Vision base the SDK ships against. There were no public 3.5.x or 3.6.1000 releases.
 
