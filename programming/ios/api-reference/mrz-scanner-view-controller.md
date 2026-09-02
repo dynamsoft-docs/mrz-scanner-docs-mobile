@@ -1,8 +1,8 @@
 ---
 layout: default-layout
 title: MRZScannerViewController Class - Dynamsoft MRZ Scanner iOS Edition
-description: MRZScannerViewController of DynamsoftMRZScanner iOS is an activity class that implements MRZ scanning features.
-keywords: scanner, activity, startCapturing, license 
+description: MRZScannerViewController of DynamsoftMRZScanner iOS is a view controller class that implements MRZ scanning features.
+keywords: MRZ, scanner, view controller, onScannedResult, license
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
 breadcrumbText: MRZScannerViewController
@@ -10,7 +10,7 @@ breadcrumbText: MRZScannerViewController
 
 # Class MRZScannerViewController
 
-`MRZScannerViewController` is an extension of the `ViewController` class that implements MRZ scanning features.
+`MRZScannerViewController` is a `UIViewController` subclass that implements MRZ scanning features. It supplies its own full-screen camera UI, so you present it, hand it an [`MRZScannerConfig`](mrz-scanner-config.md), and receive an [`MRZScanResult`](mrz-scan-result.md) through [`onScannedResult`](#onscannedresult).
 
 ## Definition
 
@@ -70,6 +70,17 @@ A property that holds a Block. The block is a callback that takes a single param
 var onScannedResult: ((MRZScanResult) -> Void)?
 ```
 
+**Remarks**
+
+Two things about this callback are easy to get wrong:
+
+- **It is not called on the main thread.** Dispatch to the main queue before touching any UI or SwiftUI state.
+- **The scanner does not dismiss itself.** Whoever presented `MRZScannerViewController` is responsible for dismissing or popping it when the result arrives.
+
+Convert any images you need with `toUIImage()` inside the callback, before dispatching. The `ImageData` objects on the result are backed by native buffers that the scanner releases once it tears down; a `UIImage` produced from them has ordinary lifetime and is safe to keep.
+
+The callback is invoked exactly once per presentation, for all three values of [`resultStatus`](mrz-scan-result.md#resultstatus) — success, cancellation, and failure all arrive here rather than through separate paths.
+
 ## How to Use
 
 <div class="sample-code-prefix"></div>
@@ -79,91 +90,136 @@ var onScannedResult: ((MRZScanResult) -> Void)?
 >1. 
 ```objc
 #import "ViewController.h"
-#import <DynamsoftLicense/DynamsoftLicense.h>
-#import <DynamsoftMRZScanner/DynamsoftMRZScanner.h>
-#import <DynamsoftMRZScanner/DynamsoftMRZScanner-Swift.h>
-@interface ViewController ()
-@property (nonatomic, strong) UIButton *button;
-@property (nonatomic, strong) UILabel *label;
-@end
+#import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle.h>
+#import <DynamsoftMRZScannerBundle/DynamsoftMRZScannerBundle-Swift.h>
 @implementation ViewController
-- (void)viewDidLoad {
-   [super viewDidLoad];
-   [self setup];
-}
-// Configure a button that pushes MRZScannerViewController when tapped.
+// Configure a button that presents MRZScannerViewController when tapped.
 - (void)buttonTapped {
-   DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
    DSMRZScannerConfig *config = [[DSMRZScannerConfig alloc] init];
+   // Required: set a valid license key.
    config.license = @"DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
+   // Set the document type to scan (default: DSDocumentTypeAll).
+   config.documentType = DSDocumentTypeAll;
+   // Configure which images to include in the result.
+   config.returnDocumentImage = YES;   // Cropped document image (default: YES).
+   config.returnPortraitImage = YES;   // Portrait image (default: YES).
+   config.returnOriginalImage = NO;    // Original full-frame image (default: NO).
+   // Configure UI element visibility.
+   config.isCloseButtonVisible = YES;
+   config.isTorchButtonVisible = YES;
+   config.isCameraToggleButtonVisible = YES;
+   config.isBeepButtonVisible = YES;
+   config.isVibrateButtonVisible = YES;
+   config.isFormatSelectorVisible = YES;
+   config.isGuideFrameVisible = YES;
+   // Configure feedback on a successful scan.
+   config.isBeepEnabled = YES;
+   config.isVibrateEnabled = NO;
+   DSMRZScannerViewController *vc = [[DSMRZScannerViewController alloc] init];
    vc.config = config;
    __weak typeof(self) weakSelf = self;
    vc.onScannedResult = ^(DSMRZScanResult *result) {
-          // The result has 3 statuses: finished, canceled, and exception.
-          switch (result.resultStatus) {
-             case DSResultStatusFinished: {
-                    // Access result.data for the parsed MRZ fields (name, DOB, nationality, expiry, etc.)
-             }
-             case DSResultStatusCanceled: {
-                    // User dismissed the scanner — no MRZ data is available.
-             }
-             case DSResultStatusException: {
-                    // An error occurred — check result.errorString for details.
-             }
-             default:
-                    break;
-          }
-          dispatch_async(dispatch_get_main_queue(), ^{
-             [weakSelf.navigationController popViewControllerAnimated:YES];
-          });
+      // Convert the images now, while the result still holds its native buffers.
+      NSError *error = nil;
+      UIImage *portrait = [[result getPortraitImage] toUIImage:&error];
+      UIImage *mrzSide = [[result getDocumentImage:DSDocumentSideMrz] toUIImage:&error];
+      UIImage *oppositeSide = [[result getDocumentImage:DSDocumentSideOpposite] toUIImage:&error];
+      // The callback runs off the main thread and the scanner does not close
+      // itself, so hop to the main queue and dismiss it here.
+      dispatch_async(dispatch_get_main_queue(), ^{
+         [weakSelf dismissViewControllerAnimated:YES completion:nil];
+         switch (result.resultStatus) {
+            case DSResultStatusFinished: {
+               // Scan completed successfully. data is nil for the other statuses.
+               DSMRZData *data = result.data;
+               NSString *mrzText = data.mrzText;
+               NSString *firstName = data.firstName;
+               // Check a single field against its MRZ check digit.
+               DSValidationStatus status = [data getFieldValidationStatus:@"documentNumber"];
+               break;
+            }
+            case DSResultStatusCanceled:
+               // The user closed the scanner before completing a scan.
+               break;
+            case DSResultStatusException: {
+               // An error occurred during initialization or scanning.
+               NSInteger errorCode = result.errorCode;
+               NSString *errorMessage = result.errorString;
+               break;
+            }
+         }
+      });
    };
-   dispatch_async(dispatch_get_main_queue(), ^{
-          weakSelf.navigationController.navigationBar.hidden = YES;
-          [weakSelf.navigationController pushViewController:vc animated:YES];
-   });
+   // The scanner draws its own close button, so present it full screen.
+   vc.modalPresentationStyle = UIModalPresentationFullScreen;
+   [self presentViewController:vc animated:YES completion:nil];
 }
 @end
 ```
 2. 
 ```swift
 import UIKit
-import DynamsoftLicense
-import DynamsoftMRZScanner
+import DynamsoftMRZScannerBundle
+import DynamsoftCaptureVisionBundle
 class ViewController: UIViewController {
-   let button = UIButton()
-   let label = UILabel()
-   override func viewDidLoad() {
-          super.viewDidLoad()
-          setup()
-   }
-   // Configure a button that pushes MRZScannerViewController when tapped.
+   // Configure a button that presents MRZScannerViewController when tapped.
    @objc func buttonTapped() {
-          let vc = MRZScannerViewController()
-          let config = MRZScannerConfig()
-          config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-          vc.config = config
-          // Set up the result callback of MRZScannerViewController.
-          vc.onScannedResult = { [weak self] result in
-             guard let self = self else { return }
-             // The result has 3 statuses: finished, canceled, and exception.
-             switch result.resultStatus {
-             case .finished:
-                    // Access result.data for the parsed MRZ fields (name, DOB, nationality, expiry, etc.)
-             case .canceled:
-                    // User dismissed the scanner — no MRZ data is available.
-             case .exception:
-                    // An error occurred — check result.errorString for details.
-             @unknown default:
-                    break
-             }
-             DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
-             }
-          }
-          DispatchQueue.main.async {
-             self.navigationController?.navigationBar.isHidden = true
-             self.navigationController?.pushViewController(vc, animated: true)
-          }
+      let config = MRZScannerConfig()
+      // Required: set a valid license key.
+      config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+      // Set the document type to scan (default: .all).
+      config.documentType = .all
+      // Configure which images to include in the result.
+      config.returnDocumentImage = true   // Cropped document image (default: true).
+      config.returnPortraitImage = true   // Portrait image (default: true).
+      config.returnOriginalImage = false  // Original full-frame image (default: false).
+      // Configure UI element visibility.
+      config.isCloseButtonVisible = true
+      config.isTorchButtonVisible = true
+      config.isCameraToggleButtonVisible = true
+      config.isBeepButtonVisible = true
+      config.isVibrateButtonVisible = true
+      config.isFormatSelectorVisible = true
+      config.isGuideFrameVisible = true
+      // Configure feedback on a successful scan.
+      config.isBeepEnabled = true
+      config.isVibrateEnabled = false
+      let vc = MRZScannerViewController()
+      vc.config = config
+      vc.onScannedResult = { [weak self] result in
+         // Convert the images now, while the result still holds its native buffers.
+         let portrait = try? result.getPortraitImage()?.toUIImage()
+         let mrzSide = try? result.getDocumentImage(.mrz)?.toUIImage()
+         let oppositeSide = try? result.getDocumentImage(.opposite)?.toUIImage()
+         // The callback runs off the main thread and the scanner does not close
+         // itself, so hop to the main queue and dismiss it here.
+         DispatchQueue.main.async {
+            self?.dismiss(animated: true)
+            switch result.resultStatus {
+            case .finished:
+               // Scan completed successfully. data is nil for the other statuses.
+               guard let data = result.data else { return }
+               let mrzText = data.mrzText
+               let firstName = data.firstName
+               // Check a single field against its MRZ check digit.
+               let status = data.getFieldValidationStatus("documentNumber")
+            case .canceled:
+               // The user closed the scanner before completing a scan.
+               break
+            case .exception:
+               // An error occurred during initialization or scanning.
+               let errorCode = result.errorCode
+               let errorMessage = result.errorString
+            @unknown default:
+               break
+            }
+         }
+      }
+      // The scanner draws its own close button, so present it full screen.
+      vc.modalPresentationStyle = .fullScreen
+      present(vc, animated: true)
    }
 }
 ```
+
+The example presents the scanner modally, which works in any app. Pushing it onto a `UINavigationController` also works — hide the navigation bar while it is on screen, since the scanner draws its own close button, and pop instead of dismissing. The [ScanMRZ sample](../samples/scanmrz-walkthrough.md) takes that route.
