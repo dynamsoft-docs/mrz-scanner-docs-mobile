@@ -20,3 +20,4 @@ keywords: MRZScanner, api reference, iOS
 | [`ResultStatus`](result-status.md) | A enumeration class that describes the result status. |
 | [`DocumentType`](document-type.md) | A enumeration class that defines the type of document to scan, such as ID cards or passports. |
 | [`DocumentSide`](document-side.md) | An enumeration class that defines which side of a document is referenced when retrieving images from a scan result. |
+| [`ErrorCode`](error-code.md) | An enumeration class that defines the error codes owned by the MRZ Scanner bundle. |
