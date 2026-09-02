@@ -142,8 +142,8 @@ Retrieve the images from the scan result:
 >1. 
 ```objc
 DSImageData *portrait = [result getPortraitImage];
-DSImageData *docImage = [result getDocumentImage:DSDocumentSideMRZ];
-DSImageData *original = [result getOriginalImage:DSDocumentSideMRZ];
+DSImageData *docImage = [result getDocumentImage:DSDocumentSideMrz];
+DSImageData *original = [result getOriginalImage:DSDocumentSideMrz];
 
 // For two-sided ID cards, also retrieve the opposite side:
 DSImageData *opposite = [result getDocumentImage:DSDocumentSideOpposite];

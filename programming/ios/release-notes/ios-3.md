@@ -26,7 +26,7 @@ noTitleIndex: true
   - **Portrait image**: The detected portrait extracted from the document, available via `getPortraitImage()`. Returned by default.
   - For two-sided ID cards, images for both sides are accessible by passing `DocumentSide.mrz` or `DocumentSide.opposite` to `getDocumentImage()` and `getOriginalImage()`.
 
-- **New `DocumentSide` enumeration**: Added `DSDocumentSide` (`DocumentSide` in Swift) with values `DSDocumentSideMRZ` / `.mrz` (the side containing the MRZ) and `DSDocumentSideOpposite` / `.opposite` (the reverse side) to identify which side of a document an image belongs to.
+- **New `DocumentSide` enumeration**: Added `DSDocumentSide` (`DocumentSide` in Swift) with values `DSDocumentSideMrz` / `.mrz` (the side containing the MRZ) and `DSDocumentSideOpposite` / `.opposite` (the reverse side) to identify which side of a document an image belongs to.
 
 - **Image return configuration**: Added three new `MRZScannerConfig` properties to control which images are included in the scan result:
   - `returnDocumentImage` (default: `true`)

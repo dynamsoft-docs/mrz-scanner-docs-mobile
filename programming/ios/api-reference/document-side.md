@@ -14,7 +14,7 @@ breadcrumbText: DSDocumentSide
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.xcframework
+*Assembly:* DynamsoftMRZScannerBundle.xcframework
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -24,7 +24,7 @@ breadcrumbText: DSDocumentSide
 ```objc
 typedef NS_ENUM(NSInteger, DSDocumentSide)
 {
-        DSDocumentSideMRZ = 0,
+        DSDocumentSideMrz = 0,
         DSDocumentSideOpposite = 1
 };
 ```
@@ -40,5 +40,5 @@ typedef NS_ENUM(NSInteger, DSDocumentSide)
 
 | Member | Value | Description |
 | ------ | ----- | ----------- |
-| `DSDocumentSideMRZ` / `mrz` | 0 | The side of the document that contains the MRZ. |
+| `DSDocumentSideMrz` / `mrz` | 0 | The side of the document that contains the MRZ. |
 | `DSDocumentSideOpposite` / `opposite` | 1 | The other side of the document. Only applicable when the MRZ and the portrait are on opposite sides (e.g., certain ID cards). |
