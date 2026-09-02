@@ -10,7 +10,7 @@ noTitleIndex: true
 
 # Release Notes for Android SDK - 3.x
 
-## 3.6.2000 (TBD)
+## 3.6.2000 (09/08/2026)
 
 The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dynamsoft Capture Vision base the SDK ships against. There were no public 3.5.x or 3.6.1000 releases.
 
@@ -30,7 +30,10 @@ The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dyna
 ### Fixes & Improvements
 
 - Upgraded the Dynamsoft Capture Vision base to 3.6.2000, addressing a known CVE and including crash fixes. Also adds MRZ text-line orientation detection, so an MRZ rotated 180° can be read.
-- Constrained the scan region to the guide frame. Previously the full camera preview was analyzed, so a document held outside the guide could be accepted.
+- Fixed a memory leak that retained the native image buffers of every completed scan, so sustained scanning could eventually exhaust memory. Passing a scan result between activities requires no manual image handling.
+- Constrained the scan region to the guide frame. Previously the full camera preview was analyzed, so a document held outside the guide could be accepted. When the guide frame is hidden with `setGuideFrameVisible(false)`, the whole preview is scanned instead, and the prompt text is now hidden along with the frame.
+- Fixed small documents going undetected after the user switched format with the bottom selector. The document area threshold was applied only to the format the scanner started with.
+- Fixed the guide frame border reverting to white at the moment the success message appeared, so the two now overlap as intended.
 - Fixed an `UnsatisfiedLinkError` that could occur when an `MRZScanResult` was restored in a freshly started process.
 
 ## 3.4.1300 (05/20/2026)

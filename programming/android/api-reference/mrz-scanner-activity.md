@@ -78,9 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 ImageData oppositeSideImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE);
                 // Access the portrait image. Null if not detected or if setReturnPortraitImage(false).
                 ImageData portraitImage = result.getPortraitImage();
-                // If you need to pass the result to another activity via Intent,
-                // call result.retainAllImageInstances() before startActivity()
-                // to prevent the native image instances from being recycled.
+                // The result can be passed to another activity via Intent as-is;
+                // the images are reference counted and need no extra handling.
              } else if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
                 // The user closed the scanner before completing a scan.
              } else if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
@@ -103,51 +102,50 @@ class MainActivity : AppCompatActivity() {
           setContentView(R.layout.activity_main)
           // Configure the MRZ scanner.
           val config = MRZScannerConfig().apply {
-             setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9")
+             license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
              // Set the document type to scan (default: DT_ALL).
-             setDocumentType(EnumDocumentType.DT_ALL)
+             documentType = EnumDocumentType.DT_ALL
              // Configure which images to include in the result.
-             setReturnDocumentImage(true)   // Cropped document image (default: true).
-             setReturnPortraitImage(true)   // Portrait image (default: true).
-             setReturnOriginalImage(false)  // Original full-frame image (default: false).
+             isReturnDocumentImage = true   // Cropped document image (default: true).
+             isReturnPortraitImage = true   // Portrait image (default: true).
+             isReturnOriginalImage = false  // Original full-frame image (default: false).
              // Configure UI element visibility.
-             setCloseButtonVisible(true)
-             setTorchButtonVisible(true)
-             setCameraToggleButtonVisible(true)
-             setBeepButtonVisible(true)
-             setVibrateButtonVisible(true)
-             setFormatSelectorVisible(true)
+             isCloseButtonVisible = true
+             isTorchButtonVisible = true
+             isCameraToggleButtonVisible = true
+             isBeepButtonVisible = true
+             isVibrateButtonVisible = true
+             isFormatSelectorVisible = true
              // Configure feedback on successful scan.
-             setBeepEnabled(true)
-             setVibrateEnabled(false)
+             isBeepEnabled = true
+             isVibrateEnabled = false
           }
           // Register the activity result callback.
           launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
-             when (result.getResultStatus()) {
+             when (result.resultStatus) {
                 MRZScanResult.EnumResultStatus.RS_FINISHED -> {
                    // Scan completed successfully.
-                   val data = result.getData()
-                   val mrzText = data.getMrzText()
-                   val firstName = data.getFirstName()
-                   val lastName = data.getLastName()
+                   val data = result.data
+                   val mrzText = data.mrzText
+                   val firstName = data.firstName
+                   val lastName = data.lastName
                    // ... access other MRZData fields as needed.
                    // Access the cropped document images.
                    // These may be null — see MRZScanResult.getDocumentImage for details.
                    val mrzSideImage = result.getDocumentImage(EnumDocumentSide.DS_MRZ)
                    val oppositeSideImage = result.getDocumentImage(EnumDocumentSide.DS_OPPOSITE)
-                   // Access the portrait image. Null if not detected or if setReturnPortraitImage(false).
-                   val portraitImage = result.getPortraitImage()
-                   // If you need to pass the result to another activity via Intent,
-                   // call result.retainAllImageInstances() before startActivity()
-                   // to prevent the native image instances from being recycled.
+                   // Access the portrait image. Null if not detected or if isReturnPortraitImage = false.
+                   val portraitImage = result.portraitImage
+                   // The result can be passed to another activity via Intent as-is;
+                   // the images are reference counted and need no extra handling.
                 }
                 MRZScanResult.EnumResultStatus.RS_CANCELED -> {
                    // The user closed the scanner before completing a scan.
                 }
                 else -> {
                    // RS_EXCEPTION: an error occurred during initialization or scanning.
-                   val errorCode = result.getErrorCode()
-                   val errorMessage = result.getErrorString()
+                   val errorCode = result.errorCode
+                   val errorMessage = result.errorString
                 }
              }
           }

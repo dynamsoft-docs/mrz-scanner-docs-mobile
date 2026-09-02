@@ -15,7 +15,8 @@ Dynamsoft MRZ Scanner SDK Android Edition is designed to scan the MRZ code from 
 
 - Supported OS: Android 5.0 (API Level 21) or higher.
 - Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
-- Development Environment: Android Studio 2022.2.1 or higher.
+- Development Environment: Android Studio 2024.3.2 suggested; JDK 17 or higher; Gradle 8.0 or higher.
+- Hardware: a physical Android device. The Android Emulator does not expose a camera.
 
 ## User Guide
 
@@ -27,6 +28,7 @@ Dynamsoft MRZ Scanner SDK Android Edition is designed to scan the MRZ code from 
 ## Samples and Demos
 
 - [Samples & Demos](samples/index.md)
+- [ScanMRZ Demo App](samples/scanmrz-walkthrough.md)
 
 ## API Reference
 
