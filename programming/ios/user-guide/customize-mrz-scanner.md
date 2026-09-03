@@ -167,7 +167,7 @@ With `isGuideFrameVisible = false`:
 - **The whole camera preview is scanned.** While the frame is visible, capture is limited to the area inside it. With no frame on screen the user has no way to know where to aim, so the restriction is lifted rather than left invisibly in place.
 - **Each frame costs more to process.** A larger scan region means more pixels through the recognition pipeline on every frame, which raises CPU and GPU load and drains the battery faster. On a screen the user may sit on for a while, that is worth weighing against the cleaner look.
 - **The prompt text is hidden as well.** The prompt is anchored to the frame and reads as a label on it, so the two are shown and hidden together.
-- **The scanning spinner and the flip prompt remain.** Both are positioned independently, and they carry feedback the user still needs.
+- **The scanning spinner and the flip prompt remain.** They are siblings of the guide frame rather than its subviews, and a hidden view still participates in Auto Layout, so centering on the frame keeps both exactly where they sit when it is drawn. Both carry feedback the user still needs.
 
 Account for that wider capture area if you hide the frame. With the entire preview in play, the scanner may pick up a document elsewhere in the shot.
 
@@ -297,4 +297,4 @@ The scanner then suppresses its alert but still reports the denial through `MRZS
 
 ## Further Customization
 
-If you have other customization requirements on the `MRZScanner` component, you can modify it with the [open source code on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/).
+If you have other customization requirements for the `MRZScanner` component, you can modify it with the [open source code on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/).
