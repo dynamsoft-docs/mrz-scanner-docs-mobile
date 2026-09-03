@@ -752,7 +752,9 @@ Your App Store privacy answers cover your whole app, SDKs included, so they need
 
 ## Next Steps
 
-- **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
+- **Demo app** — Work through the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image switcher, per-field validation explanations, and camera-permission recovery.
+- **SwiftUI** — [Using the Scanner from SwiftUI](../samples/swiftui-walkthrough.md) covers the `UIViewControllerRepresentable` bridge and both SwiftUI samples.
+- **Samples** — Browse all four iOS samples on the [Demo and Samples](../samples/index.md) page.
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [iOS API Reference](../api-reference/index.md) for all classes and methods.
 - **License** — See the [License Activation](license-activation.md) guide for production license setup.
