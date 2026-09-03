@@ -24,7 +24,7 @@ noTitleIndex: true
 
 ### Deprecated
 
-- The methods `set/getTemplateFilePath` are deprecated. Please use [`set/getTemplateFile`](../api-reference/mrz-scanner-config.md#templatefile) instead.
+- The methods `set/getTemplateFilePath` are deprecated. Please use [`set/getTemplateFile`](../api-reference/mrz-scanner-config.md#settemplatefile) instead.
 
 ## 2.0.0 (01/09/2025)
 

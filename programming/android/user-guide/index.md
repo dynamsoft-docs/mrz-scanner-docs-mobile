@@ -25,7 +25,7 @@ The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning com
 The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
 
 > [!NOTE]
-> For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
+> To request support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ## System Requirements
 
@@ -653,9 +653,11 @@ The scanner narrates its own progress, so the prompt text is the main thing a us
 | Stage | On screen |
 | ----- | --------- |
 | Waiting for a document | **Scan the MRZ side first** |
-| Text lines detected in frame | A spinner beside the guide frame |
+| Text lines detected in frame | A spinner at the center of the guide frame |
 | MRZ read, nothing further needed | **MRZ scanned ✓** |
 | MRZ read, portrait found on the same side | **MRZ scanned ✓ / Portrait scanned ✓** |
+| MRZ read, still looking for a portrait | **MRZ scanned ✓ / Finding portrait...** |
+| No portrait found after five seconds | **MRZ scanned ✓ / No portrait detected** |
 | MRZ read, opposite side needed | **MRZ scanned ✓ / Flip and scan the other side**, with an animated flip prompt |
 | Both sides captured | **MRZ scanned ✓ / Both sides scanned ✓** |
 
@@ -664,7 +666,7 @@ The spinner is not a generic busy indicator. It is driven by per-frame text-line
 > [!NOTE]
 > The prompt is hidden along with the guide frame, since it reads as a label on it. Hiding the frame also widens the scanned area to the whole preview — see [Hiding the guide frame](customize-mrz-scanner.md#hiding-the-guide-frame).
 
-The last three rows are covered in detail in the next section.
+The last four rows are covered in detail in the next section.
 
 ## Scanning Two-Sided Documents
 
@@ -786,7 +788,7 @@ The SDK's native libraries are built for devices whose kernels use a 16 KB memor
 
 ## Next Steps
 
-- **Go further** — Work through the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
+- **Demo app** — Work through the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
 - **Samples** — Browse all four Android samples on the [Demo and Samples](../samples/index.md) page.
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [Android API Reference](../api-reference/index.md) for all classes and methods.
