@@ -518,7 +518,40 @@ private func addRow(_ caption: String, _ value: String, _ status: ValidationStat
 }
 ```
 
-For the full list of fields available on `MRZData`, see the [MRZData API reference](../api-reference/mrz-data.md).
+**Key APIs in use**
+
+- **[`MRZScannerConfig`](../api-reference/mrz-scanner-config.md)** — carries your license and any optional settings. A fresh one is built on each tap here; holding a single instance and reusing it works just as well, since the scanner reads it when it starts.
+- **[`MRZScannerViewController`](../api-reference/mrz-scanner-view-controller.md)** — the scanner itself. Assign `config`, assign `onScannedResult`, then present it. It supplies its own full-screen camera UI, so nothing you wrote above appears while scanning.
+- **[`onScannedResult`](../api-reference/mrz-scanner-view-controller.md#onscannedresult)** — one callback for all three outcomes, called once per presentation. Two things about it shape the code above: it arrives **off the main thread**, and the scanner **does not close itself**.
+- **[`resultStatus`](../api-reference/mrz-scan-result.md#resultstatus)** — one of `.finished`, `.canceled`, or `.exception`. Handle all three: cancellation and failure are reported through the same path as success rather than thrown, so a scanner that seems to produce nothing is usually an unhandled status rather than a crash.
+- **[`errorString`](../api-reference/mrz-scan-result.md#errorstring)** — a readable message that accompanies `.exception`. [`errorCode`](../api-reference/mrz-scan-result.md#errorcode) gives the machine-readable code behind it.
+- **[`data`](../api-reference/mrz-scan-result.md#data)** — the parsed [`MRZData`](../api-reference/mrz-data.md), holding every field read from the document. It is `nil` for the other two statuses, which is why the code unwraps it.
+- **[`getPortraitImage()`](../api-reference/mrz-scan-result.md#getportraitimage)** — the portrait cropped from the document, or `nil` when none was found. `toUIImage()` throws, so it is called with `try?`.
+
+**Reading a field's validation status**
+
+Most MRZ fields are protected by a check digit, and [`getFieldValidationStatus`](../api-reference/mrz-data.md#getfieldvalidationstatus) reports whether the value read from the document matched it. It takes the same field names as the properties on `MRZData`:
+
+```swift
+addRow("Document Number", data.documentNumber,
+       data.getFieldValidationStatus("documentNumber"))
+```
+
+The result is `.succeeded`, `.none` when the field carries no check digit, or `.failed` when the value and its check digit disagree — meaning the document may be misread, invalid, or altered. `addRow` colors the row amber in that case. Note that the value is still returned either way, so you can decide whether to accept it, prompt for a re-scan, or ask for manual correction.
+
+The full name is the one field that needs two lookups, because the single line on screen joins two separately validated fields:
+
+```swift
+let firstNameStatus = data.getFieldValidationStatus("firstName")
+let nameStatus = firstNameStatus == .failed
+    ? firstNameStatus
+    : data.getFieldValidationStatus("lastName")
+```
+
+The displayed line should be flagged if either half failed, so a failed `firstName` is used when present, and the status of `lastName` otherwise. Document type is left at the default `.none`, since it is derived from the MRZ layout itself rather than read from a field with a check digit.
+
+> [!TIP]
+> The [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) shows a richer treatment of the same API: an error icon, an underline marking the row as tappable, and a dialog explaining what a failed check digit means.
 
 ### Step 7: Run the Project
 
