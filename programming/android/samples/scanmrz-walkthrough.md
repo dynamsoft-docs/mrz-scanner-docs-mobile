@@ -863,7 +863,7 @@ public class ResultActivity extends AppCompatActivity {
        }
        // Swaps Re-Scan for Open Settings when the scan failed because camera access was
        // unavailable. Re-Scan is dropped deliberately: reaching this screen means the user
-       // already saw the scanner's own permission dialog and cancelled it, so retrying would
+       // already saw the scanner's own permission dialog and canceled it, so retrying would
        // only replay what they declined, and once the denial is permanent it loops back here.
        private void showCameraPermissionAction(int errorCode) {
           // EC_CAMERA_PERMISSION_RESTRICTED means device policy withholds the camera and
@@ -1099,7 +1099,7 @@ class ResultActivity : AppCompatActivity() {
        }
        // Swaps Re-Scan for Open Settings when the scan failed because camera access was
        // unavailable. Re-Scan is dropped deliberately: reaching this screen means the user
-       // already saw the scanner's own permission dialog and cancelled it, so retrying would
+       // already saw the scanner's own permission dialog and canceled it, so retrying would
        // only replay what they declined, and once the denial is permanent it loops back here.
        private fun showCameraPermissionAction(errorCode: Int) {
           // EC_CAMERA_PERMISSION_RESTRICTED means device policy withholds the camera and
