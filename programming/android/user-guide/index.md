@@ -148,7 +148,7 @@ Add the two strings the screen needs to **strings.xml** in the same folder. Your
 
 ```xml
 <string name="scan_an_mrz">Scan an MRZ</string>
-<string name="scan_cancelled">Scan cancelled</string>
+<string name="scan_canceled">Scan canceled</string>
 ```
 
 Finally, replace **themes.xml** in the same folder:
@@ -214,13 +214,13 @@ Open **activity_main.xml** in **src/main/res/layout/** and replace its contents.
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Carries the cancelled message and any error string. -->
+            <!-- Carries the canceled message and any error string. -->
             <TextView
                 android:id="@+id/tv_status"
                 style="@style/FieldValue"
                 android:textSize="16sp"
                 android:visibility="gone"
-                tools:text="Scan cancelled"
+                tools:text="Scan canceled"
                 tools:visibility="visible" />
 
             <LinearLayout
@@ -284,7 +284,7 @@ Open **activity_main.xml** in **src/main/res/layout/** and replace its contents.
 | -- | ------- |
 | `main` | The root view. Window insets are applied to it so content clears the status and navigation bars. |
 | `btn_scan` | Launches the scanner. |
-| `tv_status` | Carries the "Scan cancelled" message and any error string. Hidden until one of them applies. |
+| `tv_status` | Carries the "Scan canceled" message and any error string. Hidden until one of them applies. |
 | `result_panel` | Wraps the whole result area. Starts `gone`, becomes visible only after a successful scan. |
 | `iv_portrait` | The portrait cropped from the document, when one was found. |
 | `tv_full_name` … `tv_raw_mrz` | One `TextView` per parsed field. |
@@ -358,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
         View resultPanel = findViewById(R.id.result_panel);
         if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
             // The user closed the scanner. There is no data and nothing went wrong.
-            tvStatus.setText(R.string.scan_cancelled);
+            tvStatus.setText(R.string.scan_canceled);
             tvStatus.setVisibility(View.VISIBLE);
             resultPanel.setVisibility(View.GONE);
             return;
@@ -470,7 +470,7 @@ class MainActivity : AppCompatActivity() {
         val resultPanel = findViewById<View>(R.id.result_panel)
         if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
             // The user closed the scanner. There is no data and nothing went wrong.
-            tvStatus.setText(R.string.scan_cancelled)
+            tvStatus.setText(R.string.scan_canceled)
             tvStatus.visibility = View.VISIBLE
             resultPanel.visibility = View.GONE
             return
