@@ -607,6 +607,48 @@ What is worth planning for is **size**, not lifetime. `ImageData` holds uncompre
 > [!NOTE]
 > This differs from Android, where the same getters return images backed by native buffers with their own reference counting. iOS has no equivalent mechanism and nothing corresponding to Android's `retainAllImageInstances()`.
 
+## The Scanner Screen
+
+`MRZScannerViewController` supplies its own full-screen UI, so nothing you wrote above controls what the user sees while scanning. It is worth knowing what that UI already tells them, because it decides how much your own screens still need to explain.
+
+The screen is a live camera preview with a **guide frame** marking where to place the document, a **toolbar** across the top carrying the close, torch, camera-toggle, beep, and vibrate buttons, a **format selector** along the bottom for choosing between ID, passport, or both, and a **prompt** that updates as the scan progresses. Every one of these can be hidden — see [Configure the UI Elements](customize-mrz-scanner.md#configure-the-ui-elements).
+
+<div align="center">
+    <p><img src="../../assets/mrz-scanner-default-ios-362000.png" width="34%" alt="The MRZ Scanner screen waiting for a document, showing the guide frame and the prompt to scan the MRZ side first"></p>
+    <p>The scanner waiting for a document</p>
+</div>
+
+### What the user is told
+
+The scanner narrates its own progress, so the prompt text is the main thing a user follows:
+
+| Stage | On screen |
+| ----- | --------- |
+| Waiting for a document | **Scan the MRZ side first** |
+| Text lines detected in frame | A spinner at the center of the guide frame |
+| MRZ read, nothing further needed | **MRZ scanned ✓** |
+| MRZ read, portrait found on the same side | **MRZ scanned ✓ / Portrait scanned ✓** |
+| MRZ read, still looking for a portrait | **MRZ scanned ✓ / Finding portrait...** |
+| No portrait found after five seconds | **MRZ scanned ✓ / No portrait detected** |
+| MRZ read, opposite side needed | **MRZ scanned ✓ / Flip and scan the other side**, with an animated flip prompt |
+| Both sides captured | **MRZ scanned ✓ / Both sides scanned ✓** |
+
+The confirmed lines are drawn in amber above the frame, and the frame border turns green at the same moment:
+
+<div align="center">
+    <p><img src="../../assets/mrz-scanner-success-ios-362000.png" width="34%" alt="The MRZ Scanner reporting MRZ scanned and Portrait scanned, with the guide frame border turned green"></p>
+    <p>A completed single-side scan</p>
+</div>
+
+The border stays green through the handover when the scanner is about to return a result. It reverts to white only in the states where scanning continues — while a portrait is still being looked for, or while the user is being asked to flip the document.
+
+The spinner is not a generic busy indicator. It is driven by per-frame text-line detection, so it appears when the scanner can see MRZ-like text and is working on it, and disappears when the document moves out of frame. Once the MRZ is confirmed it stops for the rest of the session. For the user it is the cue that holding the device steady is paying off.
+
+> [!NOTE]
+> The prompt is hidden along with the guide frame, since it reads as a label on it. Hiding the frame also widens the scanned area to the whole preview — see [Hiding the guide frame](customize-mrz-scanner.md#hiding-the-guide-frame).
+
+The last four rows are covered in detail in the next section.
+
 ## Next Steps
 
 - **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
