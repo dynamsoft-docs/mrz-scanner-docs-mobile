@@ -40,7 +40,7 @@ Within each pair the SwiftUI version is a port of the UIKit one with the same sc
 > [!NOTE]
 > Both SwiftUI samples require **iOS 16** or later — newer than the SDK's own iOS 13 minimum — because they use the SwiftUI app lifecycle. The UIKit samples target iOS 13.
 
-Both SwiftUI samples wrap `MRZScannerViewController` in a `UIViewControllerRepresentable` called `MRZScannerView`. That bridge is the pattern to copy when adding the scanner to a SwiftUI app of your own; the user guide walks through it in [Using the Scanner from SwiftUI](../user-guide/index.md#using-the-scanner-from-swiftui).
+Both SwiftUI samples wrap `MRZScannerViewController` in a `UIViewControllerRepresentable` called `MRZScannerView`. That bridge is the pattern to copy when adding the scanner to a SwiftUI app of your own — [Using the Scanner from SwiftUI](swiftui-walkthrough.md) walks through it.
 
 > [!NOTE]
 > A physical device is required to run any of the samples. The iOS Simulator does not expose a camera.

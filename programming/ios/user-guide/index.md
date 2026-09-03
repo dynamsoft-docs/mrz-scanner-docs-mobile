@@ -92,7 +92,7 @@ Before you start, have these ready:
 - **A document to scan** — any passport or ID card carrying a TD1, TD2, or TD3 machine-readable zone. See [Supported Document Types](../../shared/supported-document-types.md) for what each format looks like.
 
 > [!NOTE]
-> The steps below build the UIKit version. If you prefer SwiftUI, follow Steps 1 through 3, then see [Using the Scanner from SwiftUI](#using-the-scanner-from-swiftui) instead of Steps 4 through 6.
+> The steps below build the UIKit version. If you prefer SwiftUI, follow Steps 1 through 3, then see [Using the Scanner from SwiftUI](../samples/swiftui-walkthrough.md) instead of Steps 4 through 6.
 
 ### Step 1: Create a New Project
 
