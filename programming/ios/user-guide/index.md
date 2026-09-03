@@ -56,7 +56,7 @@ You can include the `DynamsoftMRZScannerBundle` library in your app in two ways:
 
 2. In the search field at the top right of the window, enter `https://github.com/Dynamsoft/mrz-scanner-spm`.
 
-3. Select **mrz-scanner-spm**, choose **Exact Version**, enter **3.4.1300**, then click **Add Package**.
+3. Select **mrz-scanner-spm**, choose **Exact Version**, enter **3.6.2000**, then click **Add Package**.
 
 4. Check all the **xcframeworks** and add them.
 
@@ -67,7 +67,7 @@ You can include the `DynamsoftMRZScannerBundle` library in your app in two ways:
    ```sh
    target 'TargetName' do
       use_frameworks!
-      pod 'DynamsoftMRZScannerBundle', '3.4.1300'
+      pod 'DynamsoftMRZScannerBundle', '3.6.2000'
    end
    ```
 
