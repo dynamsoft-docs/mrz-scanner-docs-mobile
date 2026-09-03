@@ -14,7 +14,7 @@ breadcrumbText: EnumResultStatus
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.xcframework
+*Assembly:* DynamsoftMRZScannerBundle.xcframework
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -24,8 +24,8 @@ breadcrumbText: EnumResultStatus
 ```objc
 typedef NS_ENUM(NSInteger, DSResultStatus)
 {
-        DSResultStatusFinished = 0
-        DSResultStatusCanceled = 1
+        DSResultStatusFinished = 0,
+        DSResultStatusCanceled = 1,
         DSResultStatusException = 2
 };
 ```

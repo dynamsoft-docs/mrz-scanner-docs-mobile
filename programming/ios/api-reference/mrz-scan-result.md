@@ -14,7 +14,7 @@ breadcrumbText: DSMRZScanResult
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.xcframework
+*Assembly:* DynamsoftMRZScannerBundle.xcframework
 
 <div class="sample-code-prefix"></div>
 >- Objective-C

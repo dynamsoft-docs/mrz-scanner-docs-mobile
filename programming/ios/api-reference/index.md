@@ -9,6 +9,8 @@ keywords: MRZScanner, api reference, iOS
 
 `MRZScanner` is a ready-to-use component that enables developers to quickly set up an app for scanning MRZ codes on passports and ID cards. With the built-in `MRZScannerViewController`, it simplifies the integration of MRZ scanning functionality into any application, making it easy to extract and process information from travel and identity documents.
 
+New to the SDK? The [MRZ Scanner User Guide](../user-guide/index.md) builds a working scanner from an empty project, and [Customizing the MRZ Scanner](../user-guide/customize-mrz-scanner.md) covers the configuration options in context.
+
 ## Classes
 
 | Class | Description |
@@ -20,3 +22,4 @@ keywords: MRZScanner, api reference, iOS
 | [`ResultStatus`](result-status.md) | A enumeration class that describes the result status. |
 | [`DocumentType`](document-type.md) | A enumeration class that defines the type of document to scan, such as ID cards or passports. |
 | [`DocumentSide`](document-side.md) | An enumeration class that defines which side of a document is referenced when retrieving images from a scan result. |
+| [`ErrorCode`](error-code.md) | An enumeration class that defines the error codes owned by the MRZ Scanner bundle. |

@@ -14,7 +14,7 @@ breadcrumbText: DSDocumentType
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.xcframework
+*Assembly:* DynamsoftMRZScannerBundle.xcframework
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -24,8 +24,8 @@ breadcrumbText: DSDocumentType
 ```objc
 typedef NS_ENUM(NSInteger, DSDocumentType)
 {
-        DSDocumentTypeAll = 0
-        DSDocumentTypeId= 1
+        DSDocumentTypeAll = 0,
+        DSDocumentTypeId = 1,
         DSDocumentTypePassport = 2
 };
 ```

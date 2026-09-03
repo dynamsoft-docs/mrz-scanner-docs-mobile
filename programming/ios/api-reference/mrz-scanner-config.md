@@ -14,7 +14,7 @@ breadcrumbText: MRZScannerConfig
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.xcframework
+*Assembly:* DynamsoftMRZScannerBundle.xcframework
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -48,6 +48,7 @@ class MRZScannerConfig : NSObject
 | [`returnDocumentImage`](#returndocumentimage) | *BOOL* | Sets/Returns whether to return a cropped document image in the scan result. |
 | [`returnPortraitImage`](#returnportraitimage) | *BOOL* | Sets/Returns whether to return a cropped portrait image in the scan result. |
 | [`returnOriginalImage`](#returnoriginalimage) | *BOOL* | Sets/Returns whether to return the original frame image in the scan result. |
+| [`isCameraPermissionPromptEnabled`](#iscamerapermissionpromptenabled) | *BOOL* | Sets/Returns whether the scanner presents its own alert when camera access is unavailable. |
 
 ### license
 
@@ -303,3 +304,31 @@ Sets or returns whether to return the original full-frame image in the scan resu
 ```swift
 var returnOriginalImage: Bool { get set }
 ```
+
+### isCameraPermissionPromptEnabled
+
+Sets or returns whether the scanner presents its own alert when camera access is unavailable. Enabled by default.
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+@property(nonatomic, assign) BOOL isCameraPermissionPromptEnabled;
+```
+2. 
+```swift
+var isCameraPermissionPromptEnabled: Bool { get set }
+```
+
+**Remarks**
+
+When enabled, `MRZScannerViewController` presents a **Camera Access Needed** alert before reporting, offering **Open Settings** and **Cancel**. An integrator who has written no permission handling still gets a usable flow rather than a scanner that closes with no explanation.
+
+Set it to `false` to suppress that alert and handle the denial entirely from `onScannedResult`. The denial is still reported either way, as a result status of `.exception` carrying [`cameraPermissionDenied`](error-code.md) (1001) or [`cameraPermissionRestricted`](error-code.md) (1002).
+
+> [!IMPORTANT]
+> The camera is never started without access, regardless of this setting. Disabling the prompt changes who explains the problem to the user, not whether the scanner will open the camera.
+
+Read the error code to decide what to present. `cameraPermissionDenied` is worth offering a route into Settings; `cameraPermissionRestricted` is not, because device policy withholds the camera and the per-app toggle is absent from Settings in that state. See [`DSMRZErrorCode`](error-code.md) for the full remediation flow.
