@@ -77,7 +77,7 @@ Two things about this callback are easy to get wrong:
 - **It is not called on the main thread.** Dispatch to the main queue before touching any UI or SwiftUI state.
 - **The scanner does not dismiss itself.** Whoever presented `MRZScannerViewController` is responsible for dismissing or popping it when the result arrives.
 
-Convert any images you need with `toUIImage()` inside the callback, before dispatching. The `ImageData` objects on the result are backed by native buffers that the scanner releases once it tears down; a `UIImage` produced from them has ordinary lifetime and is safe to keep.
+The images on the result are ARC-managed `ImageData` objects, so they stay valid for as long as you hold the result — there is no window in which they expire and nothing to convert early. Call `toUIImage()` when you want a `UIImage` to hand to a view, or to keep independently of the result.
 
 The callback is invoked exactly once per presentation, for all three values of [`resultStatus`](mrz-scan-result.md#resultstatus) — success, cancellation, and failure all arrive here rather than through separate paths.
 
@@ -119,7 +119,7 @@ The callback is invoked exactly once per presentation, for all three values of [
    vc.config = config;
    __weak typeof(self) weakSelf = self;
    vc.onScannedResult = ^(DSMRZScanResult *result) {
-      // Convert the images now, while the result still holds its native buffers.
+      // Convert to UIImage here, or later from the result — either works.
       NSError *error = nil;
       UIImage *portrait = [[result getPortraitImage] toUIImage:&error];
       UIImage *mrzSide = [[result getDocumentImage:DSDocumentSideMrz] toUIImage:&error];
@@ -187,7 +187,7 @@ class ViewController: UIViewController {
       let vc = MRZScannerViewController()
       vc.config = config
       vc.onScannedResult = { [weak self] result in
-         // Convert the images now, while the result still holds its native buffers.
+         // Convert to UIImage here, or later from the result — either works.
          let portrait = try? result.getPortraitImage()?.toUIImage()
          let mrzSide = try? result.getDocumentImage(.mrz)?.toUIImage()
          let oppositeSide = try? result.getDocumentImage(.opposite)?.toUIImage()

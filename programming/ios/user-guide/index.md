@@ -570,6 +570,43 @@ Tap **Scan an MRZ** and point the camera at the machine-readable zone of a passp
 > [!NOTE]
 > A physical iOS device is required. The camera is not available in the iOS Simulator, so the scanner cannot run there.
 
+## Results and Image Lifetime
+
+The scanner is a view controller you present, which shapes how results reach you and what you can do with the images in them.
+
+### How the result arrives
+
+`onScannedResult` is a closure you assign to the instance you are about to present — not a delegate protocol, and not something you register in advance. Three things follow from that:
+
+- **It is called off the main thread.** Dispatch to the main queue before touching UIKit or SwiftUI state. Every sample does this, and it is the most common source of trouble in a first integration.
+- **The scanner does not close itself.** Dismiss or pop it from the callback. Nothing else will, so a missing dismissal leaves the camera on screen after a successful scan.
+- **All three statuses arrive here.** Success, cancellation, and failure share one path; nothing is thrown and there is no separate error callback. A scan that appears to do nothing is usually an unhandled `resultStatus` rather than a crash.
+
+The config is read when the scanner starts, so creating a fresh `MRZScannerViewController` per scan and reusing one behave the same way. `ScanMRZBasic` creates one on each tap, which keeps the license and settings in a single place; holding one and re-presenting it also works, since the scanner resets its own scan state each time it appears.
+
+### How long the images stay valid
+
+`getDocumentImage(_:)`, `getOriginalImage(_:)` and `getPortraitImage()` return `ImageData`, an ordinary Objective-C object whose pixels live in an `NSData` property. It is reference-counted by ARC like anything else, which means:
+
+- The images stay valid as long as you hold the `MRZScanResult`, or the `ImageData` itself.
+- There is nothing to retain or release by hand, and no window in which they expire.
+- Reading them before or after dispatching to the main queue is equally fine.
+
+Call `toUIImage()` when you want a `UIImage` — to put in an image view, or to hold independently of the result:
+
+```swift
+if let portrait = try? result.getPortraitImage()?.toUIImage() {
+    // An ordinary UIImage, no longer tied to the result.
+}
+```
+
+`toUIImage()` throws when the pixel format cannot be converted, which is why the samples call it with `try?`.
+
+What is worth planning for is **size**, not lifetime. `ImageData` holds uncompressed pixels at capture resolution rather than an encoded JPEG, and `returnOriginalImage` produces one full frame per document side. Leave it `false` unless you need the uncropped frame, and convert or discard what you receive rather than accumulating whole results.
+
+> [!NOTE]
+> This differs from Android, where the same getters return images backed by native buffers with their own reference counting. iOS has no equivalent mechanism and nothing corresponding to Android's `retainAllImageInstances()`.
+
 ## Next Steps
 
 - **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
