@@ -20,7 +20,7 @@ There are 2 ways in which you can include the `DynamsoftMRZScannerBundle` librar
 
 #### Option 1: Add the xcframeworks via Swift Package Manager
 
-1. In your Xcode project, go to **File --> AddPackages**.
+1. In your Xcode project, go to **File > Add Packages**.
 
 2. In the top-right section of the window, search "https://github.com/Dynamsoft/mrz-scanner-spm"
 
@@ -63,7 +63,6 @@ The `data` property on [`MRZScanResult`](../api-reference/mrz-scan-result.md) is
 ```objc
 // Before
 NSString *firstName = result.data.firstName;
-
 // After
 if (result.data != nil) {
         NSString *firstName = result.data.firstName;
@@ -73,7 +72,6 @@ if (result.data != nil) {
 ```swift
 // Before
 let firstName = result.data.firstName
-
 // After
 guard let data = result.data else { return }
 let firstName = data.firstName
@@ -91,7 +89,6 @@ The `errorMessage` property on [`MRZScanResult`](../api-reference/mrz-scan-resul
 ```objc
 // Before
 NSLog(@"%@", result.errorMessage);
-
 // After
 NSLog(@"%@", result.errorString);
 ```
@@ -99,7 +96,6 @@ NSLog(@"%@", result.errorString);
 ```swift
 // Before
 print(result.errorMessage)
-
 // After
 print(result.errorString)
 ```
@@ -144,7 +140,6 @@ Retrieve the images from the scan result:
 DSImageData *portrait = [result getPortraitImage];
 DSImageData *docImage = [result getDocumentImage:DSDocumentSideMrz];
 DSImageData *original = [result getOriginalImage:DSDocumentSideMrz];
-
 // For two-sided ID cards, also retrieve the opposite side:
 DSImageData *opposite = [result getDocumentImage:DSDocumentSideOpposite];
 ```
@@ -153,7 +148,6 @@ DSImageData *opposite = [result getDocumentImage:DSDocumentSideOpposite];
 let portrait = result.getPortraitImage()
 let docImage = result.getDocumentImage(.mrz)
 let original = result.getOriginalImage(.mrz)
-
 // For two-sided ID cards, also retrieve the opposite side:
 let opposite = result.getDocumentImage(.opposite)
 ```
@@ -168,7 +162,7 @@ There are 2 ways in which you can include the `DynamsoftMRZScannerBundle` librar
 
 #### Option 1: Add the xcframeworks via Swift Package Manager
 
-1. In your Xcode project, go to **File --> AddPackages**.
+1. In your Xcode project, go to **File > Add Packages**.
 
 2. In the top-right section of the window, search "https://github.com/Dynamsoft/mrz-scanner-spm"
 

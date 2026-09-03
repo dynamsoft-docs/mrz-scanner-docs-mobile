@@ -58,7 +58,7 @@ The sections below show these properties in use.
 
 ### Using the API
 
-Specifies the type of document to scan, such as ID cards or passports. It also improves the processing speed and the accuracy.
+Setting the document type narrows what the scanner looks for, which improves both speed and accuracy. Use it whenever you know in advance that your users will only present one kind of document.
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -77,15 +77,15 @@ config.documentType = .passport
 
 ### Using a customized template file
 
-A template file is a JSON file that includes a series of algorithm parameter settings. It is always used to customize the performance for different usage scenarios. [Contact us](https://www.dynamsoft.com/company/customer-service/#contact) to get a customized template for your scanner.
+A template file is a JSON file holding a set of algorithm parameters. It tunes recognition for a specific scanning scenario, and is only needed when the default behavior does not suit your documents or conditions. [Contact us](https://www.dynamsoft.com/company/customer-service/#contact) for a template tailored to your use case.
 
-1. Create a `DynamsoftResources` folder in the finder. Under the `DynamsoftResources` folder create a new folder, `Templates`.
+1. In Finder, create a folder named `DynamsoftResources`, and inside it create another folder named `Templates`.
 
-2. Put your customized template json file under the `Templates` folder.
+2. Put your JSON template file in the `Templates` folder.
 
-3. Rename the `DynamsoftResources` folder's extension name to .bundle and drag the `DynamsoftResources.bundle` into your project on Xcode. Select Create groups for the Added folders option.
+3. Rename `DynamsoftResources` to `DynamsoftResources.bundle`, then drag it into your project in Xcode. Choose **Create groups** when Xcode asks how to add the folder.
 
-4. Specify the template file via `templateFile` property
+4. Point the config at it with the `templateFile` property:
 
    <div class="sample-code-prefix"></div>
    >- Objective-C
@@ -106,8 +106,8 @@ A template file is a JSON file that includes a series of algorithm parameter set
 
 **Related APIs**
 
-- [`documentType`]({{ site.ios_api }}mrz-scanner-config.html#documenttype)
-- [`templateFile`]({{ site.ios_api }}mrz-scanner-config.html#templatefile)
+- [`documentType`](../api-reference/mrz-scanner-config.md#documenttype)
+- [`templateFile`](../api-reference/mrz-scanner-config.md#templatefile)
 
 ## Configure the UI Elements
 

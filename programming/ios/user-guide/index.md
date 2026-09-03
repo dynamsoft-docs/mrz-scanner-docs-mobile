@@ -48,32 +48,30 @@ A valid license key is required to use the SDK. If you are just getting started,
 
 ## Add the SDK
 
-There are two ways in which you can include the `DynamsoftMRZScannerBundle` library in your app:
+You can include the `DynamsoftMRZScannerBundle` library in your app in two ways:
 
 ### Option 1: Add the xcframeworks via Swift Package Manager
 
-1. In your Xcode project, go to **File --> AddPackages**.
+1. In your Xcode project, go to **File > Add Packages**.
 
-2. In the top-right section of the window, search "https://github.com/Dynamsoft/mrz-scanner-spm"
+2. In the search field at the top right of the window, enter `https://github.com/Dynamsoft/mrz-scanner-spm`.
 
-3. Select `mrz-scanner-spm`, choose `Exact version`, enter **3.4.1300**, then click **Add Package**.
+3. Select **mrz-scanner-spm**, choose **Exact Version**, enter **3.4.1300**, then click **Add Package**.
 
 4. Check all the **xcframeworks** and add them.
 
 ### Option 2: Add the Frameworks via CocoaPods
 
-1. Add the frameworks in your **Podfile**, replace `TargetName` with your real target name.
+1. Add the frameworks to your **Podfile**, replacing `TargetName` with your real target name:
 
    ```sh
    target 'TargetName' do
       use_frameworks!
-
-   pod 'DynamsoftMRZScannerBundle','3.4.1300'
-
+      pod 'DynamsoftMRZScannerBundle', '3.4.1300'
    end
    ```
 
-2. Execute the pod command to install the frameworks and generate workspace(**[TargetName].xcworkspace**):
+2. Run the pod command to install the frameworks and generate the workspace (**[TargetName].xcworkspace**):
 
    ```sh
    pod install
@@ -555,7 +553,7 @@ The displayed line should be flagged if either half failed, so a failed `firstNa
 
 ### Step 7: Run the Project
 
-Before running, complete these steps in Xcode:
+Before running, complete these steps:
 
 1. **Configure signing** — Select the project in the navigator, open the **Signing & Capabilities** tab, and set a valid **Team**. Without this the project will not build for a device.
 
@@ -582,17 +580,17 @@ The scanner is a view controller you present, which shapes how results reach you
 - **The scanner does not close itself.** Dismiss or pop it from the callback. Nothing else will, so a missing dismissal leaves the camera on screen after a successful scan.
 - **All three statuses arrive here.** Success, cancellation, and failure share one path; nothing is thrown and there is no separate error callback. A scan that appears to do nothing is usually an unhandled `resultStatus` rather than a crash.
 
-The config is read when the scanner starts, so creating a fresh `MRZScannerViewController` per scan and reusing one behave the same way. `ScanMRZBasic` creates one on each tap, which keeps the license and settings in a single place; holding one and re-presenting it also works, since the scanner resets its own scan state each time it appears.
+The config is read when the scanner starts, so it makes no difference whether you create a fresh `MRZScannerViewController` for each scan or reuse one. `ScanMRZBasic` creates one on each tap, which keeps the license and settings in a single place; holding one and re-presenting it also works, since the scanner resets its own scan state each time it appears.
 
 ### How long the images stay valid
 
 `getDocumentImage(_:)`, `getOriginalImage(_:)` and `getPortraitImage()` return `ImageData`, an ordinary Objective-C object whose pixels live in an `NSData` property. It is reference-counted by ARC like anything else, which means:
 
-- The images stay valid as long as you hold the `MRZScanResult`, or the `ImageData` itself.
+- The images stay valid as long as you hold the `MRZScanResult` or the `ImageData` itself.
 - There is nothing to retain or release by hand, and no window in which they expire.
 - Reading them before or after dispatching to the main queue is equally fine.
 
-Call `toUIImage()` when you want a `UIImage` — to put in an image view, or to hold independently of the result:
+Call `toUIImage()` when you want a `UIImage` — to display in an image view, or to keep independently of the result:
 
 ```swift
 if let portrait = try? result.getPortraitImage()?.toUIImage() {
@@ -725,7 +723,7 @@ Most of the footprint is the Dynamsoft Capture Vision engine and its models, not
 
 Since the frameworks are prebuilt binaries, a Release archive comes out close to this — almost none of the total is your own compiled code.
 
-There is no equivalent of Android's ABI filtering to do here. Each xcframework's device slice is **arm64 only**, so an App Store build already carries a single architecture. The simulator slice lives in the xcframework but is never embedded in a device build or an archive.
+Android's ABI filtering has no counterpart here. Each xcframework's device slice is **arm64 only**, so an App Store build already carries a single architecture. The simulator slice lives in the xcframework but is never embedded in a device build or an archive.
 
 ### Privacy manifests
 
