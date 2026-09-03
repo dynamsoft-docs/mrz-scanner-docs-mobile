@@ -649,6 +649,107 @@ The spinner is not a generic busy indicator. It is driven by per-frame text-line
 
 The last four rows are covered in detail in the next section.
 
+## Scanning Two-Sided Documents
+
+On a passport the machine-readable zone and the portrait share one page, so a single capture collects everything. On most TD1 and TD2 ID cards they are on opposite sides, and the scanner has to see both. It handles this itself — the app you built above needs no extra code — but it changes what the scan looks like to the user and what comes back in the result.
+
+The scanner always reads the **MRZ side first**, whichever physical side that is. The API names the sides `.mrz` and `.opposite` for that reason: document layouts vary by country, so there is no guarantee the MRZ is on the back or that the portrait is on the front.
+
+### What happens during a scan
+
+1. The user scans the MRZ side. This fills the images returned for `.mrz`.
+2. The scanner looks for a portrait on that same side. If it finds one — the usual case for a passport — the scan ends there and **`.opposite` stays `nil`**.
+3. If no portrait is found and the document is not a passport, the scanner shows **"Flip and scan the other side"** with an animated flip prompt. Once the opposite side is captured, its images fill `.opposite` and the portrait is taken from it.
+
+<div align="center">
+    <p><img src="../../assets/mrz-scanner-flip-ios-362000.png" width="34%" alt="The MRZ Scanner asking the user to flip the document, with the animated flip prompt over the guide frame"></p>
+    <p>The flip prompt on a two-sided ID card</p>
+</div>
+
+A passport that yields no portrait is treated differently: the scanner keeps looking on the same page rather than asking for a flip, since flipping a passport would not help. The document is recognized as a passport from its MRZ layout, so this decision needs nothing from you.
+
+> [!NOTE]
+> Five seconds after the scanner starts waiting for a portrait, the prompt changes to **"No portrait detected"** and a tappable **"Continue scanning or tap to finish →"** label appears below the guide frame. It lets the user finish with whatever has been captured so far, which is the way out when a document has no portrait to find. Ending the scan this way leaves `.opposite` and the portrait `nil`, so treat both as optional in your result handling.
+
+### What you get back
+
+Assuming default settings:
+
+| Document | `getDocumentImage(.mrz)` | `getDocumentImage(.opposite)` | `getPortraitImage()` |
+| -------- | ------------------------ | ----------------------------- | -------------------- |
+| Passport (TD3) | populated | `nil` | populated, from the MRZ side |
+| ID card (TD1 / TD2) | populated | populated | populated, from the opposite side |
+| Any document, with `returnPortraitImage = false` | populated | `nil` | `nil` |
+
+The same pattern applies to `getOriginalImage(_:)` once `returnOriginalImage` is set to `true`.
+
+### Turning it off
+
+Two-sided scanning is driven entirely by the portrait. It is on by default because `returnPortraitImage` defaults to `true`; setting it to `false` ends every scan as soon as the MRZ is read:
+
+<div class="sample-code-prefix"></div>
+>- Objective-C
+>- Swift
+>
+>1. 
+```objc
+config.returnPortraitImage = NO;
+```
+2. 
+```swift
+config.returnPortraitImage = false
+```
+
+That is the right choice when you only need the parsed text, and it makes every scan a single capture. `getPortraitImage()` and `getDocumentImage(.opposite)` then always return `nil`.
+
+For an example that displays the document images from both sides, see the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md).
+
+## Preparing for Release
+
+Two things are worth knowing before you ship a build that includes the scanner: what it adds to your app's size, and what its privacy manifests declare on your behalf.
+
+### App size
+
+Most of the footprint is the Dynamsoft Capture Vision engine and its models, not the MRZ layer. Measured from a device build of `ScanMRZBasic`:
+
+| Component | Size |
+| --------- | ---- |
+| `DynamsoftCaptureVisionBundle.framework` | ~12 MB |
+| — the engine binary | ~10 MB |
+| — parser resources and character tables | ~1.7 MB |
+| `DynamsoftMRZScannerBundle.framework` | ~3.3 MB |
+| — the MRZ Core ML models | ~2.9 MB |
+| — the scanner binary, assets, and template | ~0.4 MB |
+| Your own code | negligible |
+| **Total app** | **~16 MB** |
+
+Since the frameworks are prebuilt binaries, a Release archive comes out close to this — almost none of the total is your own compiled code.
+
+There is no equivalent of Android's ABI filtering to do here. Each xcframework's device slice is **arm64 only**, so an App Store build already carries a single architecture. The simulator slice lives in the xcframework but is never embedded in a device build or an archive.
+
+### Privacy manifests
+
+Both frameworks ship an Apple privacy manifest, and both are embedded automatically when you integrate through Swift Package Manager or CocoaPods:
+
+```
+Frameworks/DynamsoftCaptureVisionBundle.framework/PrivacyInfo.xcprivacy
+Frameworks/DynamsoftMRZScannerBundle.framework/PrivacyInfo.xcprivacy
+```
+
+There is nothing to add, but there is something to be consistent with. Each manifest declares:
+
+- **Accessed API categories** — disk space and file timestamps, with Apple's required reason codes.
+- **Collected data types** — device ID and other usage data, both marked as **not** used for tracking.
+- **`NSPrivacyTracking: false`**, and no tracking domains.
+
+Your App Store privacy answers cover your whole app, SDKs included, so they need to agree with those declarations. If you copy the frameworks into your project by hand rather than letting the package manager embed them, make sure the `.xcprivacy` files come along — App Store Connect reads them from inside each framework bundle.
+
+### What you do not need to configure
+
+- **No symbol-stripping or obfuscation rules.** Android needs ProGuard rules kept so the native bindings survive R8; the iOS frameworks are prebuilt binaries, so your app's stripping and optimization settings do not reach inside them.
+- **No bitcode.** Apple deprecated it in Xcode 14 and App Store Connect no longer accepts it. Neither framework contains a bitcode segment.
+- **No camera entitlement.** The camera needs the usage description string from [Step 3](#step-3-declare-the-camera-usage-description), not a capability or entitlement.
+
 ## Next Steps
 
 - **Samples** — Explore the complete [ScanMRZ sample on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/ios/samples/ScanMRZ).
