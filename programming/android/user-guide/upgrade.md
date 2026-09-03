@@ -12,6 +12,109 @@ enableLanguageSelection: true
 
 # How to Upgrade
 
+## From v3.4.x to v3.6.x
+
+### Update the Libraries
+
+1. Open the file `[App Project Root Path]\app\build.gradle` and update the dependency version:
+
+   <div class="sample-code-prefix"></div>
+   >- groovy
+   >- kts
+   >
+   >1. 
+   ```groovy
+   dependencies {
+      implementation 'com.dynamsoft:mrzscannerbundle:{version-number}'
+   }
+   ```
+   2. 
+   ```kotlin
+   dependencies {
+      implementation("com.dynamsoft:mrzscannerbundle:{version-number}")
+   }
+   ```
+
+   > [!NOTE] Please view [user guide](index.md#add-the-sdk) for the correct version number.
+
+2. Click **Sync Now**. After the synchronization is complete, the updated SDK is added to the project.
+
+### Handle Behavior Changes
+
+No public API was removed or renamed in 3.6.x, so an existing integration keeps compiling. Three changes to how the scanner *behaves* can still affect it.
+
+#### Results That Fail Check-Digit Validation Are Now Delivered
+
+Through 3.4.x, the scanner discarded any result whose MRZ lines failed check-digit validation and simply carried on scanning. A damaged, misread, or altered document produced **no result at all** — from the app's point of view the scan never finished.
+
+3.6.x delivers the result and reports the failure per field instead:
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+int status = data.getFieldValidationStatus("documentNumber");
+if (status == EnumValidationStatus.VS_FAILED) {
+       // The value is present but disagrees with its check digit.
+}
+```
+2. 
+```kotlin
+val status = data.getFieldValidationStatus("documentNumber")
+if (status == EnumValidationStatus.VS_FAILED) {
+       // The value is present but disagrees with its check digit.
+}
+```
+
+Any code that assumed every delivered result was check-digit-clean now has to make that check explicitly. See [Reading a field's validation status](index.md#step-5-launch-the-scanner-and-show-the-result) in the user guide, and [`getFieldValidationStatus`](../api-reference/mrz-data.md#getfieldvalidationstatus) for the accepted field names.
+
+#### Camera Access Is Now Gated and Reported
+
+Through 3.4.x, `MRZScannerActivity` opened the camera regardless of whether the `CAMERA` permission was held. Without it the preview stayed blank and nothing was reported — the symptom customers described as being stuck on a loading screen.
+
+3.6.x requests the permission on first launch, never opens the camera without it, and reports a denial as `RS_EXCEPTION` carrying [`EC_CAMERA_PERMISSION_DENIED`](../api-reference/error-code.md) (1001) or [`EC_CAMERA_PERMISSION_RESTRICTED`](../api-reference/error-code.md) (1002).
+
+Two things to check in existing code:
+
+- **Handle `RS_EXCEPTION`.** A branch that ignored it will now silently swallow a permission denial that the SDK is reporting properly.
+- **If your app already requests the camera permission itself or presents its own rationale UI**, suppress the scanner's dialog so the user does not see two:
+
+<div class="sample-code-prefix"></div>
+>- Java
+>- Kotlin
+>
+>1. 
+```java
+config.setCameraPermissionPromptEnabled(false);
+```
+2. 
+```kotlin
+config.isCameraPermissionPromptEnabled = false
+```
+
+The denial is still reported either way. See [Handling Camera Permission](customize-mrz-scanner.md#handling-camera-permission) for the full flow.
+
+> [!NOTE]
+> Choosing **Open Settings** in the scanner's dialog does not finish the activity. Granting the permission in Settings does not kill the Android process either, so the scanner starts the camera in place when the user returns — no result is reported and no restart is needed. This differs from iOS, where changing the setting terminates the app.
+
+#### The Scan Region Is Now the Guide Frame
+
+Through 3.4.x the whole camera preview was analyzed, so a document held outside the guide frame could still be read. 3.6.x limits capture to the area inside the frame, which is what the frame appeared to promise all along.
+
+If you relied on the wider area — or your users are used to aiming loosely — hiding the guide frame lifts the restriction back to the whole preview. Note that it also hides the prompt text; see [Hiding the guide frame](customize-mrz-scanner.md#hiding-the-guide-frame).
+
+### Adopt the New APIs
+
+These are additive, so adopting them is optional:
+
+- [`getFieldValidationStatus`](../api-reference/mrz-data.md#getfieldvalidationstatus) — per-field check-digit status.
+- [`EnumErrorCode`](../api-reference/error-code.md) — the bundle's own error codes, currently both about camera access.
+- [`setCameraPermissionPromptEnabled`](../api-reference/mrz-scanner-config.md#setcamerapermissionpromptenabled) — suppress the built-in permission dialog.
+
+Your users will also notice two additions to the scanner UI that need no code from you: a progress spinner while MRZ-like text is being processed, and a flip prompt for TD1 and TD2 ID cards whose portrait is on the opposite side. Both are described in [The Scanner Screen](index.md#the-scanner-screen).
+
 ## From v3.2.x to v3.4.x
 
 ### Update the Libraries
