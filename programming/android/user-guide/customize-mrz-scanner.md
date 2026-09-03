@@ -79,7 +79,7 @@ val config = MRZScannerConfig().apply {
 
 A template file is a JSON file holding a set of algorithm parameters. It tunes recognition for a specific scanning scenario, and is only needed when the default behavior does not suit your documents or conditions. [Contact us](https://www.dynamsoft.com/company/customer-service/#contact) for a template tailored to your use case.
 
-1. Add a **Templates** folder to the assets folder of your project at **src\main\assets\Templates**. Put your JSON file in the **Templates** folder.
+1. Add a **Templates** folder to the assets folder of your project at **src/main/assets/Templates**, and put your JSON file in it.
 
 2. Point the config at it with `setTemplateFile`:
 
@@ -166,7 +166,7 @@ With `setGuideFrameVisible(false)`:
 
 - **The whole camera preview is scanned.** While the frame is visible, capture is limited to the area inside it. With no frame on screen the user has no way to know where to aim, so the restriction is lifted rather than left invisibly in place.
 - **The prompt text is hidden as well.** The prompt is anchored to the frame and reads as a label on it, so the two are shown and hidden together.
-- **The scanning progress spinner and the flip prompt remain.** Both are positioned independently, and they carry feedback the user still needs.
+- **The scanning progress spinner and the flip prompt remain.** They are siblings of the guide frame rather than children of it, and the frame is hidden without being removed from the layout, so their anchors survive and they stay visible. Both carry feedback the user still needs.
 
 Account for that wider capture area if you hide the frame. With the entire preview in play, the scanner may pick up a document elsewhere in the shot.
 
@@ -264,7 +264,12 @@ If access is unavailable, the scanner explains the situation and offers whatever
 | The permission is permanently denied | **Open Settings** — opens the app's page in the system settings. |
 | Camera access is blocked by device policy | Explanation only — there is no action the user can take. |
 
-**Cancel** is available in every case. Whichever route the user takes, the activity finishes and the outcome is reported through the normal result path as `RS_EXCEPTION`, with an error code of `EC_CAMERA_PERMISSION_DENIED` (1001) or `EC_CAMERA_PERMISSION_RESTRICTED` (1002).
+**Cancel** is available in every case, and taking it finishes the activity and reports the outcome through the normal result path as `RS_EXCEPTION`, with an error code of `EC_CAMERA_PERMISSION_DENIED` (1001) or `EC_CAMERA_PERMISSION_RESTRICTED` (1002).
+
+The two actionable routes deliberately do **not** report or finish:
+
+- **Allow camera access** re-requests the permission in place. If the user grants it, scanning begins; if they deny it again, the dialog returns.
+- **Open Settings** leaves the scanner on the back stack. Granting the permission there does not restart the Android process, so the activity survives the trip and `onResume` starts the camera when the user comes back. Reporting at that point would finish the scanner and strand the user on a stale "access denied" screen immediately after they had granted access.
 
 ### Presenting your own permission UI
 
