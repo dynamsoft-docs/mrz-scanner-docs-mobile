@@ -30,7 +30,7 @@ This page replaces Steps 4 through 6 of the [MRZ Scanner User Guide](../user-gui
 > SwiftUI requires Swift. The Objective-C tabs in the user guide have no counterpart on this page.
 
 > [!IMPORTANT]
-> Both SwiftUI samples require **iOS 16** or later because they use the SwiftUI app lifecycle — newer than the SDK's own **iOS 13** minimum. The bridge shown below works on iOS 13; it is the surrounding app structure that raises the floor.
+> The SwiftUI app lifecycle used by these samples requires **iOS 16** or later, which is also the SDK's own minimum.
 
 ## The bridge
 
