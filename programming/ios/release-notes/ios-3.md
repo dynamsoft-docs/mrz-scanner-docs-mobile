@@ -14,6 +14,9 @@ noTitleIndex: true
 
 The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dynamsoft Capture Vision base the SDK ships against. There were no public 3.5.x or 3.6.1000 releases.
 
+> [!IMPORTANT]
+> **The minimum supported iOS version is now 16.0**, raised from 13.0, as required by the Core ML models the scanner ships. Apps on an earlier deployment target must raise it to iOS 16.0 or later to adopt this release.
+
 ### New
 
 - **Per-field MRZ validation**: `MRZData.getFieldValidationStatus(_:)` reports whether a parsed field agrees with its check digit, returning a `ValidationStatus` of `.none`, `.succeeded`, or `.failed`. It accepts the same field names as the `MRZData` properties. The composite fields `dateOfBirth`, `dateOfExpire`, and `mrzText` report the worst status among their components.

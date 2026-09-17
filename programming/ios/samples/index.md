@@ -38,7 +38,7 @@ A complete app built on the same SDK calls, adding a dedicated result screen, a 
 Within each pair the SwiftUI version is a port of the UIKit one with the same screens, result layout, and scanner flow, so pick whichever UI framework matches your project.
 
 > [!NOTE]
-> Both SwiftUI samples require **iOS 16** or later — newer than the SDK's own iOS 13 minimum — because they use the SwiftUI app lifecycle. The UIKit samples target iOS 13.
+> All four samples target **iOS 16**, matching the SDK's own minimum.
 
 Both SwiftUI samples wrap `MRZScannerViewController` in a `UIViewControllerRepresentable` called `MRZScannerView`. That bridge is the pattern to copy when adding the scanner to a SwiftUI app of your own — [Using the Scanner from SwiftUI](swiftui-walkthrough.md) walks through it.
 

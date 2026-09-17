@@ -29,9 +29,9 @@ The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **T
 
 ## System Requirements
 
-- Supported OS: **iOS 13** or higher.
+- Supported OS: **iOS 16** or higher — required by the Core ML models the scanner ships.
 - Supported ABI: **arm64** and **x86_64**.
-- Development Environment: **Xcode 13** and above (**Xcode 14.1+** recommended).
+- Development Environment: **Xcode 14.1** or higher.
 - Hardware: **a physical iOS device**. The iOS Simulator does not expose a camera, so the scanner cannot run on it.
 
 ## Licensing
