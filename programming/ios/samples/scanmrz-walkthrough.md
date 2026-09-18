@@ -31,74 +31,97 @@ Everything on this page is presentation. It uses the same SDK calls the user gui
 | Images | portrait only | portrait, plus a Processed/Original switcher for both document sides |
 | Failed validation | value colored amber | amber, underlined, with an inline icon and an explanatory dialog |
 | Permission denial | error string on screen | error string plus an **Open Settings** button |
-| Extras | — | long-press a document image to save it to Photos |
+| Extras | — | long-press the portrait or a document image to save it to Photos |
 
 ## Project structure
 
-`ScanMRZ` keeps its storyboard, which is the one structural difference from `ScanMRZBasic`. **Main.storyboard** holds a `UINavigationController` whose root view controller is `ViewController`; the user guide's app deletes the storyboard and installs its root in `SceneDelegate` instead.
+Neither app has a storyboard — both build their root view controller in `SceneDelegate`. The one structural difference is that `ScanMRZ` wraps its root in a `UINavigationController`:
 
-That navigation controller is what makes the rest possible. The scanner and the result screen are *pushed* rather than presented, so **Re-scan** can pop one screen and **Return Home** can pop to the root.
+```swift
+guard let windowScene = (scene as? UIWindowScene) else { return }
+let window = UIWindow(windowScene: windowScene)
+let rootViewController = ViewController()
+let navigationController = UINavigationController(rootViewController: rootViewController)
+window.rootViewController = navigationController
+self.window = window
+window.makeKeyAndVisible()
+```
 
-`ViewController` hides the navigation bar for the home and scanner screens and `ResultViewController` shows it again, so the bar appears only where there is something to title.
+That navigation controller is what makes the rest possible. The scanner and the result screen are *pushed* rather than presented, so **Re-scan** can pop one screen and **Return home** can pop to the root.
+
+The navigation bar is toggled per screen: `ViewController` hides it in `viewWillAppear` and `ResultViewController` shows it there, so it appears only where there is something to title. `viewWillAppear` rather than `viewDidLoad`, because the home screen has to hide the bar again every time the result screen is popped off it.
 
 ## ViewController
 
 ### Pushing the scanner
 
-The configuration is identical to the user guide's. The difference is what happens with the result: instead of rendering it in place, `ViewController` converts the images and hands everything to a result screen.
+Only the license is required, exactly as in the user guide. `ScanMRZ` doubles as a catalog of the rest: every remaining `MRZScannerConfig` setting appears commented out and assigned the opposite of its default, so uncommenting a single line is enough to see what that setting changes.
 
 ```swift
 @objc func buttonTapped() {
-    let vc = MRZScannerViewController()
     let config = MRZScannerConfig()
     config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-    vc.config = config
 
+    // Everything below is left at its default, which is what this sample means to
+    // show: the scanner as it ships. A few of the listed settings:
+    //config.documentType = .passport         // Default is .all, which reads both.
+    //config.isTorchButtonVisible = false     // Every scanner control is visible by default.
+    //config.isBeepEnabled = true             // Scan feedback is off by default.
+    //config.returnOriginalImage = true       // The full camera frame is not returned by default.
+
+    let vc = MRZScannerViewController()
+    vc.config = config
     vc.onScannedResult = { [weak self] result in
-        guard let self = self else { return }
-        switch result.resultStatus {
-        case .finished:
-            if let data = result.data {
-                DispatchQueue.main.async {
-                    let resultVC = ResultViewController()
-                    resultVC.mrzData = data
-                    resultVC.portraitImage = try? result.getPortraitImage()?.toUIImage()
-                    resultVC.primaryDocumentImage = try? result.getDocumentImage(.mrz)?.toUIImage()
-                    resultVC.primaryOriginalImage = try? result.getOriginalImage(.mrz)?.toUIImage()
-                    resultVC.secondaryDocumentImage = try? result.getDocumentImage(.opposite)?.toUIImage()
-                    resultVC.secondaryOriginalImage = try? result.getOriginalImage(.opposite)?.toUIImage()
-                    self.navigationController?.pushViewController(resultVC, animated: true)
-                }
-            }
-        case .canceled:
-            DispatchQueue.main.async {
-                self.label.isHidden = false
-                self.label.text = "Scan canceled"
-                self.navigationController?.popViewController(animated: true)
-            }
-        case .exception:
-            DispatchQueue.main.async {
-                self.label.isHidden = false
-                self.label.text = result.errorString
-                self.settingsButton.isHidden =
-                    result.errorCode != ErrorCode.cameraPermissionDenied.rawValue
-                self.navigationController?.popViewController(animated: true)
-            }
-        default:
-            break
-        }
+        // The result arrives off the main thread, so hop back before touching UIKit.
+        DispatchQueue.main.async { self?.handle(result) }
     }
-    self.label.isHidden = true
-    self.settingsButton.isHidden = true
-    DispatchQueue.main.async {
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
+
+    label.isHidden = true
+    settingsButton.isHidden = true
+    navigationController?.pushViewController(vc, animated: true)
 }
 ```
 
-All six images are converted to `UIImage` here and passed as plain properties, so `ResultViewController` never holds the `MRZScanResult`. Four of the six are normally `nil` — `getOriginalImage(_:)` returns nothing unless `returnOriginalImage` is set, and both `.opposite` getters return nothing for a passport. The result screen collapses whatever is missing rather than reserving space for it.
+[Customizing the MRZ Scanner](../user-guide/customize-mrz-scanner.md) covers what each setting does.
 
-Because the scanner was pushed, both the cancel and error branches pop it. The success branch does not: it pushes the result screen on top, and the scanner is removed from the stack when **Re-scan** pops back to it.
+The callback itself does nothing but hop to the main thread, which leaves one place where all three statuses are handled:
+
+```swift
+private func handle(_ result: MRZScanResult) {
+    switch result.resultStatus {
+    case .finished:
+        guard let data = result.data else { return }
+        let resultVC = ResultViewController()
+        resultVC.mrzData = data
+        resultVC.portraitImage = try? result.getPortraitImage()?.toUIImage()
+        resultVC.primaryDocumentImage = try? result.getDocumentImage(.mrz)?.toUIImage()
+        resultVC.primaryOriginalImage = try? result.getOriginalImage(.mrz)?.toUIImage()
+        resultVC.secondaryDocumentImage = try? result.getDocumentImage(.opposite)?.toUIImage()
+        resultVC.secondaryOriginalImage = try? result.getOriginalImage(.opposite)?.toUIImage()
+        navigationController?.pushViewController(resultVC, animated: true)
+    case .canceled:
+        // The user closed the scanner. There is no data and nothing went wrong.
+        report("Scan canceled")
+    case .exception:
+        report(result.errorString ?? "")
+        settingsButton.isHidden =
+            result.errorCode != ErrorCode.cameraPermissionDenied.rawValue
+    @unknown default:
+        break
+    }
+}
+
+/// Leaves `message` on this screen and returns to it from the scanner.
+private func report(_ message: String) {
+    label.text = message
+    label.isHidden = false
+    navigationController?.popViewController(animated: true)
+}
+```
+
+All five images are converted to `UIImage` here and passed as plain properties, so `ResultViewController` never holds the `MRZScanResult`. Three of the five are normally `nil` — `getOriginalImage(_:)` returns nothing unless `returnOriginalImage` is set, and both `.opposite` getters return nothing for a passport. The result screen collapses whatever is missing rather than reserving space for it.
+
+Because the scanner was pushed, the cancel and error branches both pop it, which is what `report` does after leaving its message behind. The success branch does not: it pushes the result screen on top, and the scanner is removed from the stack when **Re-scan** pops back to it.
 
 ### Recovering from a permission denial
 
@@ -107,7 +130,7 @@ This is the part with no counterpart in `ScanMRZBasic`, and the reason it exists
 ```swift
 /// Shown only when the scanner reported a camera-permission denial, since that is the
 /// one failure the user can resolve themselves.
-let settingsButton = UIButton()
+private let settingsButton = ViewController.makeStyledButton(title: "Open Settings", fontSize: 16)
 
 /// The scanner's own alert already offers this, but the message stays on screen after
 /// the scanner closes — so the route into Settings has to remain reachable from here.
@@ -117,14 +140,9 @@ let settingsButton = UIButton()
 }
 ```
 
-The button appears only for `cameraPermissionDenied`:
+The `.exception` branch above shows the button only for `cameraPermissionDenied`. A camera withheld by device policy reports [`cameraPermissionRestricted`](../api-reference/error-code.md) instead, and in that state the per-app camera toggle is absent from Settings — so offering the button would be a dead end. The error string still explains the situation.
 
-```swift
-self.settingsButton.isHidden =
-    result.errorCode != ErrorCode.cameraPermissionDenied.rawValue
-```
-
-A camera withheld by device policy reports [`cameraPermissionRestricted`](../api-reference/error-code.md) instead, and in that state the per-app camera toggle is absent from Settings — so offering the button would be a dead end. The error string still explains the situation.
+Suppressing the scanner's own alert entirely is one of the settings in the config catalog: `isCameraPermissionPromptEnabled = false` leaves the denial to `onScannedResult` alone, which is where the button above already comes from.
 
 ## ResultViewController
 
@@ -286,7 +304,7 @@ applyLabel(mrzValueLabel,
 
 `mrzText` aggregates whole MRZ lines, so it can report `.failed` when every individual field passes — see [`getFieldValidationStatus`](../api-reference/mrz-data.md#getfieldvalidationstatus).
 
-### Re-scan and Return Home
+### Re-scan and Return home
 
 Both actions are navigation, which is the payoff for pushing rather than presenting:
 
@@ -300,7 +318,7 @@ Both actions are navigation, which is the payoff for pushing rather than present
 }
 ```
 
-**Re-scan** pops back to the scanner, which is still on the stack and resets its own state in `viewWillAppear`. **Return Home** pops all the way to `ViewController`.
+**Re-scan** pops back to the scanner, which is still on the stack and resets its own state in `viewWillAppear`. **Return home** pops all the way to `ViewController`.
 
 ### Saving an image to Photos
 
