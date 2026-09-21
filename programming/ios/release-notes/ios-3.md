@@ -19,24 +19,26 @@ The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dyna
 
 ### New
 
-- **Per-field MRZ validation**: `MRZData.getFieldValidationStatus(_:)` reports whether a parsed field agrees with its check digit, returning a `ValidationStatus` of `.none`, `.succeeded`, or `.failed`. It accepts the same field names as the `MRZData` properties. The composite fields `dateOfBirth`, `dateOfExpire`, and `mrzText` report the worst status among their components.
-  - **Behavior change**: scans that fail check-digit validation are no longer discarded. The parsed values are returned with their validation status, so you can accept them, prompt for a re-scan, or request manual correction.
+- **Per-field MRZ validation**: `MRZData.getFieldValidationStatus(_:)` returns a field's check-digit result as a `ValidationStatus` of `.none`, `.succeeded`, or `.failed`. It takes the same field names as the `MRZData` properties; the composites `dateOfBirth`, `dateOfExpire`, and `mrzText` report their worst component.
+  - **Behavior change**: scans failing check-digit validation are no longer discarded. Values are returned with their status, so you can accept them, re-scan, or request correction.
 
-- **Camera permission handling**: `MRZScannerViewController` now gates the camera on `AVCaptureDevice` authorization and never opens it without access. When access is unavailable it shows an alert offering **Open Settings**, then reports the outcome.
-  - New `ErrorCode` (`DSMRZErrorCode` in Objective-C): `cameraPermissionDenied` (1001), which the user can resolve through Settings, and `cameraPermissionRestricted` (1002), withheld by device policy. Both are returned by `errorCode` with a status of `.exception`. The bundle owns codes 1000–1999; Capture Vision codes are all `<= 0`.
+- **Camera permission handling**: `MRZScannerViewController` now gates the camera on `AVCaptureDevice` authorization and never opens it without access. When unavailable it offers **Open Settings**, then reports the outcome.
+  - New `ErrorCode` (`DSMRZErrorCode` in Objective-C): `cameraPermissionDenied` (1001), resolvable through Settings, and `cameraPermissionRestricted` (1002), withheld by device policy. Both are reported by `errorCode` with `.exception`. The bundle owns codes 1000–1999; Capture Vision codes are all `<= 0`.
   - New `isCameraPermissionPromptEnabled` (default: `true`) suppresses the alert for integrators presenting their own UI. Denials are still reported.
 
 - **Scanning progress indicator**: Shown while the scanner is actively processing frames, prompting the user to hold the device steady.
 
-- **Flip document prompt**: For TD1 and TD2 IDs with the portrait on the opposite side, the scanner now prompts the user to flip the document after the MRZ is captured.
+- **Flip document prompt**: For TD1 and TD2 IDs with the portrait on the opposite side, the scanner now prompts a flip after the MRZ is captured.
 
 ### Fixes & Improvements
 
-- Upgraded the Dynamsoft Capture Vision base to 3.6.2000, addressing a known CVE and including crash fixes. Also adds MRZ text-line orientation detection, so an MRZ rotated 180° can be read.
-- Constrained the scan region to the guide frame. Previously the full camera preview was analyzed, so a document held outside the guide could be accepted.
-- Fixed the scan region staying clipped to an invisible box when the guide frame was hidden with `isGuideFrameVisible = false`. Hiding the frame previously hid only its drawing while its constraints still limited capture; the whole preview is now scanned. The scanning spinner and flip prompt were also reparented so they survive the frame being hidden.
-- Fixed small documents going undetected. Capture Vision's automatic quadrilateral filtering rejected documents occupying a small share of the preview once the scan region covered all of it.
-- Fixed the guide frame border finishing its fade to white 300 ms before the result view appeared, leaving the success message above a white frame. The green is now held through the handover.
+- Upgraded the Dynamsoft Capture Vision base to 3.6.2000, addressing a known CVE and adding crash fixes. An MRZ rotated 180° can now be read.
+- Constrained the scan region to the guide frame; previously a document held outside the guide could be accepted.
+- Fixed capture staying clipped to an invisible box when `isGuideFrameVisible = false`. The whole preview is now scanned, and the spinner and flip prompt remain visible.
+- Fixed small documents going undetected once the scan region covered the whole preview.
+- Fixed the guide frame fading to white before the result view appeared; the green is now held through the handover.
+- Fixed image assets failing to load when `DSMRZScannerViewController` is subclassed from Objective-C. Swift integrators were unaffected.
+- Reduced memory retained after dismissal; the last frame's full-resolution image buffers are now released on teardown.
 - The `DynamsoftMRZScannerBundle.xcframework` is now published unsigned, so archive builds no longer require access to the signing team that produced it.
 
 ## 3.4.1300 (04/27/2026)
@@ -91,7 +93,7 @@ The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dyna
 ### Fixes & Improvements
 
 - Resolved an issue where scanning could take longer than expected.
-- Fixes & Improvements a potential crash that could occur in certain scenarios.
+- Fixed a potential crash that could occur in certain scenarios.
 
 ## 3.2.1000 (10/16/2025)
 
@@ -101,7 +103,7 @@ The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dyna
 
 ### Fixes & Improvements
 
-- Fixes & Improvements an xcframework signature issue.
+- Fixed an xcframework signature issue.
 
 ## 3.0.5100 (08/05/2025)
 
@@ -114,7 +116,7 @@ The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dyna
 ### Fixes & Improvements
 
 - **Default Camera Changed**: To address short-distance focusing issues on Pro Max iPhones, the default camera has been switched to `BackDualWideAuto`, enabling automatic switching between the wide and ultra-wide cameras.
-- Fixes & Improvements various minor bugs and improved overall stability.
+- Fixed various minor bugs and improved overall stability.
 
 ## 3.0.0 (05/15/2025)
 
