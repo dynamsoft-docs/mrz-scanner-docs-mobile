@@ -34,7 +34,7 @@ This page replaces Steps 4 through 6 of the [MRZ Scanner User Guide](../user-gui
 
 ## The bridge
 
-Add a new Swift file named `MRZScannerView.swift`. This is reusable as written — it is the same file in both SwiftUI samples:
+Add a new Swift file named `MRZScannerView.swift`. The bridge is the same in both SwiftUI samples; only the config differs, and `ScanMRZSwiftUI` adds the commented-out catalog to its copy:
 
 ```swift
 import SwiftUI

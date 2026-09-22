@@ -57,7 +57,7 @@ var data: MRZData? {get}
 
 ### resultStatus
 
-The status of the result represented as an [`EnumResultStatus`](result-status.md).
+The status of the result, represented as a [`ResultStatus`](result-status.md).
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
