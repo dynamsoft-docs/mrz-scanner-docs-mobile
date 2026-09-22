@@ -229,9 +229,6 @@ config.templateFilePath = "CustomizedTemplate.json"
 config.templateFile = "CustomizedTemplate.json"
 ```
 
-> [!NOTE]
-> The Android edition still exposes `setTemplateFilePath` and `getTemplateFilePath` as deprecated methods, so cross-platform code that shares a migration checklist will find them present there and absent here.
-
 ### Adopt the New Image Capture APIs
 
 v3.4.x adds the ability to retrieve captured images alongside the parsed MRZ data. Three types of images are available via [`MRZScanResult`](../api-reference/mrz-scan-result.md):
