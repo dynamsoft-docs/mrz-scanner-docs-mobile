@@ -28,7 +28,7 @@ Everything on this page is presentation. It uses the same SDK calls the user gui
 | Screens | one view controller | `ViewController` plus a dedicated `ResultViewController` |
 | Navigation | scanner presented modally | `UINavigationController`, scanner and result pushed |
 | Result data | seven fields, plain text | full field set, grouped into personal and document sections |
-| Images | portrait only | portrait, plus a Processed/Original switcher for both document sides |
+| Images | portrait only | portrait, plus both document sides, with a Processed/Original switcher when originals are returned |
 | Failed validation | value colored amber | amber, underlined, with an inline icon and an explanatory dialog |
 | Permission denial | error string on screen | error string plus an **Open Settings** button |
 | Extras | — | long-press the portrait or a document image to save it to Photos |
@@ -170,7 +170,7 @@ Because these are `UIImage` values rather than `ImageData`, the result screen ha
 
 ### The Processed / Original switcher
 
-The two document sides are shown side by side, with a custom segmented control choosing between the cropped ("Processed") and full-frame ("Original") versions. It is built from two buttons with underline views rather than a `UISegmentedControl`, so the selected tab can be underlined:
+The two document sides are shown side by side. When both the cropped ("Processed") and full-frame ("Original") versions came back, a custom segmented control chooses between them. It is built from two buttons with underline views rather than a `UISegmentedControl`, so the selected tab can be underlined:
 
 ```swift
 @objc private func processedTapped() {
@@ -180,7 +180,7 @@ The two document sides are shown side by side, with a custom segmented control c
 }
 ```
 
-The interesting part is what happens when a set is missing. With default settings `returnOriginalImage` is `false`, so there is no Original set at all — and a tab leading to an empty view is worse than no tab:
+The interesting part is what happens when a set is missing. With default settings `returnOriginalImage` is `false`, so there is no Original set at all — and a tab bar with a single tab is a control with nothing to switch between. In that case the switcher is replaced by a plain header naming what is on screen, styled like the section headers below it:
 
 ```swift
 private func updateImageSectionVisibility() {
@@ -188,15 +188,16 @@ private func updateImageSectionVisibility() {
     let hasOriginal = primaryOriginalImage != nil || secondaryOriginalImage != nil
     let hasAnyImage = hasProcessed || hasOriginal
 
-    if !(hasProcessed && hasOriginal) {
+    let showsTabs = hasProcessed && hasOriginal
+    if !showsTabs {
         isProcessedSelected = hasProcessed
     }
     updateSegmentAppearance()
 
-    processedSegmentStackView.isHidden = !hasProcessed
-    originalSegmentStackView.isHidden = !hasOriginal
+    segmentContainerView.isHidden = !showsTabs
+    imagesHeaderLabel.isHidden = showsTabs || !hasAnyImage
+    imagesHeaderLabel.text = hasProcessed ? "Processed Image(s)" : "Original Image(s)"
 
-    segmentContainerView.isHidden = !hasAnyImage
     segmentTopConstraint.constant = hasAnyImage ? 24 : 0
     segmentHeightConstraint.constant = hasAnyImage ? 30 : 0
 
@@ -206,7 +207,7 @@ private func updateImageSectionVisibility() {
 }
 ```
 
-Note that hiding is not enough. A hidden view still occupies whatever space its constraints reserve, so the heights and the gaps above them are zeroed as well — which is why those four constraints are held as properties. The two segments themselves are arranged subviews of a stack view, so they collapse on their own.
+Note that hiding is not enough. A hidden view still occupies whatever space its constraints reserve, so the heights and the gaps above them are zeroed as well — which is why those four constraints are held as properties. The header label shares the switcher's slot, so the images below stay anchored to the same place whichever one is showing.
 
 ### Showing a failed field
 
