@@ -122,6 +122,15 @@ Create **activity_results.xml** in **src/main/res/layout/**. This layout contain
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tv_images_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="24dp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_images"
                 android:layout_width="match_parent"
@@ -673,7 +682,7 @@ The code below reads one string resource, so add it to **strings.xml** alongside
 <string name="scan_no_data">Scan returned no data</string>
 ```
 
-**The image tabs.** A tab appears only when its own set of images came back, and `returnOriginalImage` is off by default, so normally just **Processed** is shown. Page 0 is the processed pair whenever processed images exist, otherwise the single page holds the original pair. The `TabLayoutMediator` is attached in every case, so the surviving tab is still labelled when there is only one.
+**The image tabs.** Tabs appear only when both sets came back, since a tab bar with one tab is a control with nothing to switch between. `returnOriginalImage` is off by default, so the usual case is a single set, which gets a plain **Processed Image(s)** header styled like the sections below it. Page 0 is the processed pair whenever processed images exist, otherwise the single page holds the original pair.
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -869,14 +878,19 @@ public class ResultActivity extends AppCompatActivity {
           ImageData oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE);
           TabLayout tabImages = findViewById(R.id.tab_images);
           ViewPager2 vpImages = findViewById(R.id.vp_images);
+          TextView tvImagesHeader = findViewById(R.id.tv_images_header);
           boolean hasProcessed = mrzSideDocumentImage != null || oppositeSideDocumentImage != null;
           boolean hasOriginal = mrzSideOriginalImage != null || oppositeSideOriginalImage != null;
           if (!hasProcessed && !hasOriginal) {
+             tvImagesHeader.setVisibility(View.GONE);
              tabImages.setVisibility(View.GONE);
              vpImages.setVisibility(View.GONE);
              return;
           }
-          tabImages.setVisibility(View.VISIBLE);
+          boolean showsTabs = hasProcessed && hasOriginal;
+          tabImages.setVisibility(showsTabs ? View.VISIBLE : View.GONE);
+          tvImagesHeader.setVisibility(showsTabs ? View.GONE : View.VISIBLE);
+          tvImagesHeader.setText(hasProcessed ? "Processed Image(s)" : "Original Image(s)");
           vpImages.setVisibility(View.VISIBLE);
           vpImages.setAdapter(new FragmentStateAdapter(this) {
              @NonNull
@@ -893,13 +907,10 @@ public class ResultActivity extends AppCompatActivity {
                 return hasProcessed && hasOriginal ? 2 : 1;
              }
           });
-          new TabLayoutMediator(tabImages, vpImages, (tab, position) -> {
-             if (position == 0 && hasProcessed) {
-                tab.setText("Processed");
-             } else {
-                tab.setText("Original");
-             }
-          }).attach();
+          if (showsTabs) {
+             new TabLayoutMediator(tabImages, vpImages, (tab, position) ->
+                     tab.setText(position == 0 ? "Processed" : "Original")).attach();
+          }
        }
 }
 ```
@@ -1089,14 +1100,19 @@ class ResultActivity : AppCompatActivity() {
           val oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE)
           val tabImages = findViewById<TabLayout>(R.id.tab_images)
           val vpImages = findViewById<ViewPager2>(R.id.vp_images)
+          val tvImagesHeader = findViewById<TextView>(R.id.tv_images_header)
           val hasProcessed = mrzSideDocumentImage != null || oppositeSideDocumentImage != null
           val hasOriginal = mrzSideOriginalImage != null || oppositeSideOriginalImage != null
           if (!hasProcessed && !hasOriginal) {
+             tvImagesHeader.visibility = View.GONE
              tabImages.visibility = View.GONE
              vpImages.visibility = View.GONE
              return
           }
-          tabImages.visibility = View.VISIBLE
+          val showsTabs = hasProcessed && hasOriginal
+          tabImages.visibility = if (showsTabs) View.VISIBLE else View.GONE
+          tvImagesHeader.visibility = if (showsTabs) View.GONE else View.VISIBLE
+          tvImagesHeader.text = if (hasProcessed) "Processed Image(s)" else "Original Image(s)"
           vpImages.visibility = View.VISIBLE
           vpImages.adapter = object : FragmentStateAdapter(this) {
              override fun createFragment(position: Int): Fragment {
@@ -1110,9 +1126,11 @@ class ResultActivity : AppCompatActivity() {
                 return if (hasProcessed && hasOriginal) 2 else 1
              }
           }
-          TabLayoutMediator(tabImages, vpImages) { tab, position ->
-             tab.text = if (position == 0 && hasProcessed) "Processed" else "Original"
-          }.attach()
+          if (showsTabs) {
+             TabLayoutMediator(tabImages, vpImages) { tab, position ->
+                tab.text = if (position == 0) "Processed" else "Original"
+             }.attach()
+          }
        }
        companion object {
           const val REQUEST_CODE = 1024
