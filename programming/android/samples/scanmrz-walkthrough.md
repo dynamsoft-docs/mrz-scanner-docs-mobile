@@ -428,9 +428,11 @@ Open **AndroidManifest.xml** and declare `ResultActivity` inside the `<applicati
 ```xml
 <activity
     android:name=".ResultActivity"
-    android:exported="true"
+    android:exported="false"
     android:screenOrientation="portrait" />
 ```
+
+`exported="false"` matters here. `MainActivity` starts this screen with an explicit `Intent`, which never requires the activity to be exported — and leaving it exported would let any other app on the device launch it with a scan result of its own choosing.
 
 > [!NOTE]
 > `MRZScannerActivity` is already declared in the library manifest with a default `screenOrientation` of `portrait`. If you need to override its orientation, redeclare it in your app manifest with `tools:replace="android:screenOrientation"`.
@@ -439,7 +441,7 @@ Open **AndroidManifest.xml** and declare `ResultActivity` inside the `<applicati
 
 `ImagesFragment` renders one or two document images side by side. The `ViewPager2` adapter in `ResultActivity` uses it to show the cropped and original scan images.
 
-The images reach the fragment through `setArguments(Bundle)` rather than a constructor. `FragmentManager` recreates fragments by reflection, so it needs a public no-arg constructor and can only restore state it finds in the arguments `Bundle`. Because `ImageData` is not itself serializable into a `Bundle`, each image is encoded to JPEG bytes on the way in and decoded on the way out.
+The images reach the fragment through `setArguments(Bundle)` rather than a constructor. `FragmentManager` recreates fragments by reflection, so it needs a public no-arg constructor and can only restore state it finds in the arguments `Bundle`. Because `ImageData` is not itself serializable into a `Bundle`, each image is encoded to JPEG bytes on the way in and decoded on the way out. The JPEG quality and maximum dimension are sized against the roughly 1 MB Binder transaction that carries saved instance state: 85% quality and a 1024 px cap keep each image under about 100 KB, comfortably clear of the limit even when both slots are used.
 
 > [!IMPORTANT]
 > Do not pass `ImageData` through the fragment's constructor. That form compiles, but `ResultActivity` will crash at `super.onCreate(...)` whenever the activity is recreated — after a configuration change, under **Don't keep activities**, or following process death.
@@ -469,13 +471,8 @@ import java.io.ByteArrayOutputStream;
 public class ImagesFragment extends Fragment {
        private static final String ARG_IMAGE_1 = "image1";
        private static final String ARG_IMAGE_2 = "image2";
-       // The JPEG quality and maximum dimension below keep the Bundle payload well under
-       // the ~1 MB Binder transaction limit that carries saved instance state.
        private static final int JPEG_QUALITY = 85;
        private static final int MAX_DIMENSION_PX = 1024;
-       // A public no-arg constructor is required: FragmentManager recreates fragments by
-       // reflection. The images are passed through setArguments(Bundle) so they survive
-       // configuration changes and process death.
        public ImagesFragment() {
           super();
        }
@@ -498,8 +495,7 @@ public class ImagesFragment extends Fragment {
              ByteArrayOutputStream out = new ByteArrayOutputStream();
              bmp.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out);
              return out.toByteArray();
-          } catch (CoreException e) {
-             e.printStackTrace();
+          } catch (CoreException ignored) {
              return null;
           }
        }
@@ -538,7 +534,6 @@ public class ImagesFragment extends Fragment {
           byte[] bytes2 = args.getByteArray(ARG_IMAGE_2);
           addImageView(root, bytes1);
           if (bytes1 != null && bytes2 != null) {
-             // 16dp spacer between the two images
              root.addView(new View(requireContext()),
                      new LinearLayout.LayoutParams(
                              (int) (16 * getResources().getDisplayMetrics().density),
@@ -579,10 +574,6 @@ import com.dynamsoft.core.basic_structures.ImageData
 import java.io.ByteArrayOutputStream
 import kotlin.math.max
 import kotlin.math.roundToInt
-// Kotlin supplies the required public no-arg constructor for free: FragmentManager
-// recreates fragments by reflection. The images are passed through setArguments(Bundle)
-// so they survive configuration changes and process death. Do not be tempted to hand
-// ImageData to a Kotlin primary constructor instead.
 class ImagesFragment : Fragment() {
        override fun onCreateView(
           inflater: LayoutInflater,
@@ -608,7 +599,6 @@ class ImagesFragment : Fragment() {
           val bytes2 = args.getByteArray(ARG_IMAGE_2)
           addImageView(root, bytes1)
           if (bytes1 != null && bytes2 != null) {
-             // 16dp spacer between the two images
              root.addView(
                 View(requireContext()),
                 LinearLayout.LayoutParams(
@@ -634,8 +624,6 @@ class ImagesFragment : Fragment() {
        companion object {
           private const val ARG_IMAGE_1 = "image1"
           private const val ARG_IMAGE_2 = "image2"
-          // The JPEG quality and maximum dimension below keep the Bundle payload well
-          // under the ~1 MB Binder transaction limit that carries saved instance state.
           private const val JPEG_QUALITY = 85
           private const val MAX_DIMENSION_PX = 1024
           fun newInstance(imageData1: ImageData?, imageData2: ImageData?): ImagesFragment {
@@ -653,8 +641,7 @@ class ImagesFragment : Fragment() {
                 val out = ByteArrayOutputStream()
                 bmp.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
                 out.toByteArray()
-             } catch (e: CoreException) {
-                e.printStackTrace()
+             } catch (ignored: CoreException) {
                 null
              }
           }
@@ -676,7 +663,17 @@ class ImagesFragment : Fragment() {
 
 **Per-field validation.** The `applyField` helper renders any field whose [`getFieldValidationStatus`](../api-reference/mrz-data.md#getfieldvalidationstatus) is `VS_FAILED` in amber with a trailing error icon, underlines it to signal that it is tappable, and opens a short explanation when tapped. The top summary block is deliberately left unstyled: it combines several values on one line, so flagging it on a single field's status would imply that everything on that line is suspect.
 
+**Reading the data.** A finished scan normally carries data, but `getData()` is guarded rather than assumed — a `null` there shows the same empty-state text as an error instead of crashing. The gender field is title-cased with `Locale.ROOT`, since it is an ICAO code rather than localized text. `Doc. Type` is passed `VS_NONE` because it is derived from the MRZ code type rather than read from a field with its own check digit. The raw MRZ text is tappable for a reason that is easy to miss: a line-level failure can flag it when no individual field failed, which is what happens when the corruption lands in a field that carries no check digit of its own, such as name, nationality or sex.
+
 **Camera-permission failures.** `showCameraPermissionAction` replaces **Re-Scan** with **Open Settings** for [`EC_CAMERA_PERMISSION_DENIED`](../api-reference/error-code.md), and `onResume` re-checks the permission so that granting it in Settings and returning starts a new scan instead of leaving a stale error on screen. **Open Settings** is not offered for `EC_CAMERA_PERMISSION_RESTRICTED`, because device policy withholds the camera and the per-app toggle is absent from Settings in that state.
+
+The code below reads one string resource, so add it to **strings.xml** alongside the entries the layouts use:
+
+```xml
+<string name="scan_no_data">Scan returned no data</string>
+```
+
+**The image tabs.** A tab appears only when its own set of images came back, and `returnOriginalImage` is off by default, so normally just **Processed** is shown. Page 0 is the processed pair whenever processed images exist, otherwise the single page holds the original pair. The `TabLayoutMediator` is attached in every case, so the surviving tab is still labelled when there is only one.
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -717,13 +714,13 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZData;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import java.util.Locale;
 public class ResultActivity extends AppCompatActivity {
        public static final int REQUEST_CODE = 1024;
        public static final String EXTRA_RESULT = "RESULT";
        public static final String EXTRA_ACTION = "ACTION";
        public static final int ACTION_RESCAN = 0;
        public static final int ACTION_RETURN_HOME = 1;
-       // True while this screen is showing a camera-permission denial rather than a result.
        private boolean isShowingCameraPermissionError = false;
        @Override
        protected void onCreate(Bundle savedInstanceState) {
@@ -750,9 +747,6 @@ public class ResultActivity extends AppCompatActivity {
        @Override
        protected void onResume() {
           super.onResume();
-          // The user may have granted camera access in Settings and come straight back.
-          // Leaving a stale "access denied" message on screen would tell them to fix
-          // something they have just fixed, so hand control back for another scan.
           if (isShowingCameraPermissionError && hasCameraPermission()) {
              setResult(RESULT_OK, getIntent().putExtra(EXTRA_ACTION, ACTION_RESCAN));
              finish();
@@ -776,16 +770,19 @@ public class ResultActivity extends AppCompatActivity {
              showCameraPermissionAction(result.getErrorCode());
              return;
           }
+          MRZData data = result.getData();
+          if (data == null) {
+             findViewById(R.id.result_view).setVisibility(View.GONE);
+             TextView tvNoData = findViewById(R.id.no_result_view);
+             tvNoData.setVisibility(View.VISIBLE);
+             tvNoData.setText(R.string.scan_no_data);
+             return;
+          }
           findViewById(R.id.result_view).setVisibility(View.VISIBLE);
           findViewById(R.id.no_result_view).setVisibility(View.GONE);
-          MRZData data = result.getData();
-          // Sex can be empty when the field was not parsed, so capitalize only if non-empty.
           String sexText = data.getSex();
-          String genderText = sexText.isEmpty() ? "" : sexText.substring(0, 1).toUpperCase() + sexText.substring(1).toLowerCase();
-          // The top summary is a plain overview with no validation highlighting. Field-level
-          // validation is surfaced by the Personal Info and Document Info sections below;
-          // flagging a compound line such as "gender, age" on one field's status would
-          // imply both values are invalid.
+          String genderText = sexText.isEmpty() ? "" : sexText.substring(0, 1).toUpperCase(Locale.ROOT)
+                  + sexText.substring(1).toLowerCase(Locale.ROOT);
           ((TextView) findViewById(R.id.tv_full_name)).setText((data.getFirstName() + " " + data.getLastName()).trim());
           ((TextView) findViewById(R.id.tv_gender_and_age)).setText(
                   genderText.isEmpty() && data.getAge() == 0
@@ -802,15 +799,12 @@ public class ResultActivity extends AppCompatActivity {
           } else {
              ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder);
           }
-          // Images view pager
           showImages(result);
-          // Personal info
           applyField(findViewById(R.id.tv_given_name), data.getFirstName(), data.getFieldValidationStatus("firstName"));
           applyField(findViewById(R.id.tv_surname), data.getLastName(), data.getFieldValidationStatus("lastName"));
           applyField(findViewById(R.id.tv_date_of_birth), data.getDateOfBirth(), data.getFieldValidationStatus("dateOfBirth"));
           applyField(findViewById(R.id.tv_gender), genderText, data.getFieldValidationStatus("sex"));
           applyField(findViewById(R.id.tv_nationality), data.getNationality(), data.getFieldValidationStatus("nationality"));
-          // Document info
           String docTypeText;
           switch (data.getDocumentType() == null ? "" : data.getDocumentType()) {
              case "MRTD_TD1_ID":       docTypeText = "ID (TD1)"; break;
@@ -818,29 +812,24 @@ public class ResultActivity extends AppCompatActivity {
              case "MRTD_TD3_PASSPORT": docTypeText = "Passport (TD3)"; break;
              default:                  docTypeText = ""; break;
           }
-          // documentType comes from the MRZ code type, not an independently validated field.
           applyField(findViewById(R.id.tv_doc_type), docTypeText, EnumValidationStatus.VS_NONE);
           applyField(findViewById(R.id.tv_doc_number), data.getDocumentNumber(), data.getFieldValidationStatus("documentNumber"));
           applyField(findViewById(R.id.tv_expiry_date), data.getDateOfExpire(), data.getFieldValidationStatus("dateOfExpire"));
-          // The raw MRZ text is tappable too: a line-level failure can flag the raw MRZ when
-          // no individual field failed, for example corruption in a field that carries no
-          // check digit of its own such as name, nationality or sex.
           applyField(findViewById(R.id.tv_raw_mrz), data.getMrzText(), data.getFieldValidationStatus("mrzText"));
        }
-       // Renders value into tv, appending a circular error icon and coloring the row amber
-       // when validation failed. Empty values render as "N/A" so it is clear which fields the
-       // parser could not extract at all. Failed rows are tappable and open an explanation.
        private void applyField(TextView tv, String value, int status) {
           boolean failed = status == EnumValidationStatus.VS_FAILED;
           boolean empty = value == null || value.isEmpty();
           String text = empty ? "N/A" : value;
           if (failed) {
-             SpannableString spannable = new SpannableString(text + "  ￼");
              Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_error_circle);
-             int iconSize = Math.round(tv.getTextSize() * 1.2f);
-             icon.setBounds(0, 0, iconSize, iconSize);
-             spannable.setSpan(new ImageSpan(icon, ImageSpan.ALIGN_BOTTOM),
-                     spannable.length() - 1, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+             SpannableString spannable = new SpannableString(icon == null ? text : text + "  ￼");
+             if (icon != null) {
+                int iconSize = Math.round(tv.getTextSize() * 1.2f);
+                icon.setBounds(0, 0, iconSize, iconSize);
+                spannable.setSpan(new ImageSpan(icon, ImageSpan.ALIGN_BOTTOM),
+                        spannable.length() - 1, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+             }
              spannable.setSpan(new UnderlineSpan(), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
              tv.setText(spannable);
           } else {
@@ -861,13 +850,7 @@ public class ResultActivity extends AppCompatActivity {
                   .setPositiveButton("OK", null)
                   .show();
        }
-       // Swaps Re-Scan for Open Settings when the scan failed because camera access was
-       // unavailable. Re-Scan is dropped deliberately: reaching this screen means the user
-       // already saw the scanner's own permission dialog and canceled it, so retrying would
-       // only replay what they declined, and once the denial is permanent it loops back here.
        private void showCameraPermissionAction(int errorCode) {
-          // EC_CAMERA_PERMISSION_RESTRICTED means device policy withholds the camera and
-          // Settings has no toggle to offer, so leave both buttons hidden in that case.
           if (errorCode != MRZScanResult.EnumErrorCode.EC_CAMERA_PERMISSION_DENIED) {
              return;
           }
@@ -886,9 +869,6 @@ public class ResultActivity extends AppCompatActivity {
           ImageData oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE);
           TabLayout tabImages = findViewById(R.id.tab_images);
           ViewPager2 vpImages = findViewById(R.id.vp_images);
-          // A tab is shown only when its own set of images came back. Original images are off
-          // by default, so normally only "Processed" appears — call
-          // config.setReturnOriginalImage(true) in MainActivity to get both.
           boolean hasProcessed = mrzSideDocumentImage != null || oppositeSideDocumentImage != null;
           boolean hasOriginal = mrzSideOriginalImage != null || oppositeSideOriginalImage != null;
           if (!hasProcessed && !hasOriginal) {
@@ -902,8 +882,6 @@ public class ResultActivity extends AppCompatActivity {
              @NonNull
              @Override
              public Fragment createFragment(int position) {
-                // Page 0 is the processed pair whenever processed images exist; otherwise
-                // the single page is the original pair.
                 if (position == 0 && hasProcessed) {
                    return ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage);
                 } else {
@@ -915,7 +893,6 @@ public class ResultActivity extends AppCompatActivity {
                 return hasProcessed && hasOriginal ? 2 : 1;
              }
           });
-          // Always attached, so the surviving tab is still labeled when there is only one.
           new TabLayoutMediator(tabImages, vpImages, (tab, position) -> {
              if (position == 0 && hasProcessed) {
                 tab.setText("Processed");
@@ -956,9 +933,9 @@ import com.dynamsoft.mrzscannerbundle.ui.EnumDocumentSide
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import java.util.Locale
 import kotlin.math.roundToInt
 class ResultActivity : AppCompatActivity() {
-       // True while this screen is showing a camera-permission denial rather than a result.
        private var isShowingCameraPermissionError = false
        override fun onCreate(savedInstanceState: Bundle?) {
           super.onCreate(savedInstanceState)
@@ -984,9 +961,6 @@ class ResultActivity : AppCompatActivity() {
        }
        override fun onResume() {
           super.onResume()
-          // The user may have granted camera access in Settings and come straight back.
-          // Leaving a stale "access denied" message on screen would tell them to fix
-          // something they have just fixed, so hand control back for another scan.
           if (isShowingCameraPermissionError && hasCameraPermission()) {
              setResult(RESULT_OK, intent.putExtra(EXTRA_ACTION, ACTION_RESCAN))
              finish()
@@ -1009,17 +983,19 @@ class ResultActivity : AppCompatActivity() {
              showCameraPermissionAction(result.errorCode)
              return
           }
+          val data = result.data
+          if (data == null) {
+             findViewById<View>(R.id.result_view).visibility = View.GONE
+             val tvNoData = findViewById<TextView>(R.id.no_result_view)
+             tvNoData.visibility = View.VISIBLE
+             tvNoData.setText(R.string.scan_no_data)
+             return
+          }
           findViewById<View>(R.id.result_view).visibility = View.VISIBLE
           findViewById<View>(R.id.no_result_view).visibility = View.GONE
-          val data = result.data
-          // Sex can be empty when the field was not parsed, so capitalize only if non-empty.
           val sexText = data.sex
           val genderText = if (sexText.isEmpty()) ""
-          else sexText.substring(0, 1).uppercase() + sexText.substring(1).lowercase()
-          // The top summary is a plain overview with no validation highlighting. Field-level
-          // validation is surfaced by the Personal Info and Document Info sections below;
-          // flagging a compound line such as "gender, age" on one field's status would
-          // imply both values are invalid.
+          else sexText.substring(0, 1).uppercase(Locale.ROOT) + sexText.substring(1).lowercase(Locale.ROOT)
           findViewById<TextView>(R.id.tv_full_name).text = (data.firstName + " " + data.lastName).trim()
           findViewById<TextView>(R.id.tv_gender_and_age).text =
              if (genderText.isEmpty() && data.age == 0) ""
@@ -1036,45 +1012,37 @@ class ResultActivity : AppCompatActivity() {
           } else {
              ivPortrait.setImageResource(R.drawable.ic_portrait_placeholder)
           }
-          // Images view pager
           showImages(result)
-          // Personal info
           applyField(findViewById(R.id.tv_given_name), data.firstName, data.getFieldValidationStatus("firstName"))
           applyField(findViewById(R.id.tv_surname), data.lastName, data.getFieldValidationStatus("lastName"))
           applyField(findViewById(R.id.tv_date_of_birth), data.dateOfBirth, data.getFieldValidationStatus("dateOfBirth"))
           applyField(findViewById(R.id.tv_gender), genderText, data.getFieldValidationStatus("sex"))
           applyField(findViewById(R.id.tv_nationality), data.nationality, data.getFieldValidationStatus("nationality"))
-          // Document info
           val docTypeText = when (data.documentType ?: "") {
              "MRTD_TD1_ID" -> "ID (TD1)"
              "MRTD_TD2_ID" -> "ID (TD2)"
              "MRTD_TD3_PASSPORT" -> "Passport (TD3)"
              else -> ""
           }
-          // documentType comes from the MRZ code type, not an independently validated field.
           applyField(findViewById(R.id.tv_doc_type), docTypeText, EnumValidationStatus.VS_NONE)
           applyField(findViewById(R.id.tv_doc_number), data.documentNumber, data.getFieldValidationStatus("documentNumber"))
           applyField(findViewById(R.id.tv_expiry_date), data.dateOfExpire, data.getFieldValidationStatus("dateOfExpire"))
-          // The raw MRZ text is tappable too: a line-level failure can flag the raw MRZ when
-          // no individual field failed, for example corruption in a field that carries no
-          // check digit of its own such as name, nationality or sex.
           applyField(findViewById(R.id.tv_raw_mrz), data.mrzText, data.getFieldValidationStatus("mrzText"))
        }
-       // Renders value into tv, appending a circular error icon and coloring the row amber
-       // when validation failed. Empty values render as "N/A" so it is clear which fields the
-       // parser could not extract at all. Failed rows are tappable and open an explanation.
        private fun applyField(tv: TextView, value: String?, status: Int) {
           val failed = status == EnumValidationStatus.VS_FAILED
           val text = if (value.isNullOrEmpty()) "N/A" else value
           if (failed) {
-             val spannable = SpannableString("$text  ￼")
-             val icon = ContextCompat.getDrawable(this, R.drawable.ic_error_circle)!!
-             val iconSize = (tv.textSize * 1.2f).roundToInt()
-             icon.setBounds(0, 0, iconSize, iconSize)
-             spannable.setSpan(
-                ImageSpan(icon, ImageSpan.ALIGN_BOTTOM),
-                spannable.length - 1, spannable.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-             )
+             val icon = ContextCompat.getDrawable(this, R.drawable.ic_error_circle)
+             val spannable = SpannableString(if (icon == null) text else "$text  ￼")
+             if (icon != null) {
+                val iconSize = (tv.textSize * 1.2f).roundToInt()
+                icon.setBounds(0, 0, iconSize, iconSize)
+                spannable.setSpan(
+                   ImageSpan(icon, ImageSpan.ALIGN_BOTTOM),
+                   spannable.length - 1, spannable.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+             }
              spannable.setSpan(UnderlineSpan(), 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
              tv.text = spannable
           } else {
@@ -1097,13 +1065,7 @@ class ResultActivity : AppCompatActivity() {
              .setPositiveButton("OK", null)
              .show()
        }
-       // Swaps Re-Scan for Open Settings when the scan failed because camera access was
-       // unavailable. Re-Scan is dropped deliberately: reaching this screen means the user
-       // already saw the scanner's own permission dialog and canceled it, so retrying would
-       // only replay what they declined, and once the denial is permanent it loops back here.
        private fun showCameraPermissionAction(errorCode: Int) {
-          // EC_CAMERA_PERMISSION_RESTRICTED means device policy withholds the camera and
-          // Settings has no toggle to offer, so leave both buttons hidden in that case.
           if (errorCode != MRZScanResult.EnumErrorCode.EC_CAMERA_PERMISSION_DENIED) {
              return
           }
@@ -1127,9 +1089,6 @@ class ResultActivity : AppCompatActivity() {
           val oppositeSideOriginalImage = result.getOriginalImage(EnumDocumentSide.DS_OPPOSITE)
           val tabImages = findViewById<TabLayout>(R.id.tab_images)
           val vpImages = findViewById<ViewPager2>(R.id.vp_images)
-          // A tab is shown only when its own set of images came back. Original images are off
-          // by default, so normally only "Processed" appears — set
-          // config.isReturnOriginalImage = true in MainActivity to get both.
           val hasProcessed = mrzSideDocumentImage != null || oppositeSideDocumentImage != null
           val hasOriginal = mrzSideOriginalImage != null || oppositeSideOriginalImage != null
           if (!hasProcessed && !hasOriginal) {
@@ -1141,8 +1100,6 @@ class ResultActivity : AppCompatActivity() {
           vpImages.visibility = View.VISIBLE
           vpImages.adapter = object : FragmentStateAdapter(this) {
              override fun createFragment(position: Int): Fragment {
-                // Page 0 is the processed pair whenever processed images exist; otherwise
-                // the single page is the original pair.
                 return if (position == 0 && hasProcessed) {
                    ImagesFragment.newInstance(mrzSideDocumentImage, oppositeSideDocumentImage)
                 } else {
@@ -1153,7 +1110,6 @@ class ResultActivity : AppCompatActivity() {
                 return if (hasProcessed && hasOriginal) 2 else 1
              }
           }
-          // Always attached, so the surviving tab is still labeled when there is only one.
           TabLayoutMediator(tabImages, vpImages) { tab, position ->
              tab.text = if (position == 0 && hasProcessed) "Processed" else "Original"
           }.attach()
@@ -1172,7 +1128,9 @@ class ResultActivity : AppCompatActivity() {
 
 The user guide's `MainActivity` renders the result on its own screen. Here it does one thing differently: it hands the result to `ResultActivity` and waits to hear what the user chose.
 
-Two changes make that work. The launcher callback packs the `MRZScanResult` into an `Intent` and starts `ResultActivity`, and `onActivityResult` reads the action that comes back — relaunching the scanner when the user tapped **Re-Scan**.
+Two changes make that work. The launcher callback packs the `MRZScanResult` into an `Intent` and starts `ResultActivity`, and `onActivityResult` reads the action that comes back — relaunching the scanner when the user tapped **Re-Scan**. `onActivityResult` is deprecated in favour of the Activity Result APIs; the sample keeps it so the hand-off mirrors the Java version one-for-one.
+
+The license below is a trial key, which needs a network connection. Request your own through [Request a Trial License](https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android).
 
 <div class="sample-code-prefix"></div>
 >- Java
@@ -1205,10 +1163,7 @@ public class MainActivity extends AppCompatActivity {
              v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
              return insets;
           });
-          // A trial license, so it needs a network connection. Request your own at
-          // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
           config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-          // Hand the result to ResultActivity rather than rendering it here.
           launcher = registerForActivityResult(new MRZScannerActivity.ResultContract(), result -> {
              Intent intent = new Intent(this, ResultActivity.class);
              intent.putExtra(ResultActivity.EXTRA_RESULT, result);
@@ -1216,8 +1171,6 @@ public class MainActivity extends AppCompatActivity {
           });
           findViewById(R.id.btn_start).setOnClickListener(v -> launcher.launch(config));
        }
-       // ResultActivity reports back which button the user pressed. Re-Scan relaunches
-       // the scanner with the same config; Return Home needs no action, since this is home.
        @Override
        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
           super.onActivityResult(requestCode, resultCode, data);
@@ -1255,10 +1208,7 @@ class MainActivity : AppCompatActivity() {
              v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
              insets
           }
-          // A trial license, so it needs a network connection. Request your own at
-          // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
           config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-          // Hand the result to ResultActivity rather than rendering it here.
           launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
              val intent = Intent(this, ResultActivity::class.java)
              intent.putExtra(ResultActivity.EXTRA_RESULT, result)
@@ -1266,10 +1216,6 @@ class MainActivity : AppCompatActivity() {
           }
           findViewById<View>(R.id.btn_start).setOnClickListener { launcher.launch(config) }
        }
-       // ResultActivity reports back which button the user pressed. Re-Scan relaunches
-       // the scanner with the same config; Return Home needs no action, since this is home.
-       // onActivityResult is deprecated in favor of the Activity Result APIs, but is kept
-       // here so the hand-off mirrors the Java sample one-for-one.
        @Deprecated("Deprecated in Java")
        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
           @Suppress("DEPRECATION")

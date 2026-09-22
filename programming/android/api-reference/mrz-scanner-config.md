@@ -59,13 +59,6 @@ final class MRZScannerConfig
 | [`setCameraPermissionPromptEnabled`](#setcamerapermissionpromptenabled) | Sets whether the scanner presents its own dialog when camera access is unavailable. |
 | [`isCameraPermissionPromptEnabled`](#iscamerapermissionpromptenabled) | Returns whether the scanner presents its own dialog when camera access is unavailable. |
 
-The following methods are deprecated:
-
-| Method | Description |
-| ------ | ----------- |
-| [`setTemplateFilePath`](#settemplatefilepath) | Sets the local file path for the JSON parameters template file. |
-| [`getTemplateFilePath`](#gettemplatefilepath) | Returns the local path of the settings template file. |
-
 ### setLicense
 
 Set the license.
@@ -454,27 +447,3 @@ boolean isCameraPermissionPromptEnabled();
 **Return Value**
 
 A boolean value that determines whether the scanner presents its own camera-permission dialog.
-
-### setTemplateFilePath
-
-Set a path for the SDK to load template file.
-
-```java
-void setTemplateFilePath(String templateFilePath);
-```
-
-**Parameter(s)**
-
-`templateFilePath`: The path of the JSON template file.
-
-### getTemplateFilePath
-
-Returns the local path of the settings template file.
-
-```java
-String getTemplateFilePath();
-```
-
-**Return Value**
-
-The path of the JSON template file.

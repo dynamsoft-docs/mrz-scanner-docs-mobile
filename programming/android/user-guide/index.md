@@ -144,11 +144,12 @@ Three resource files support the screen you build in Step 4. Start with **colors
 </resources>
 ```
 
-Add the two strings the screen needs to **strings.xml** in the same folder. Your project already has an `app_name` entry, generated when you created it:
+Add the three strings the screen needs to **strings.xml** in the same folder. Your project already has an `app_name` entry, generated when you created it:
 
 ```xml
 <string name="scan_an_mrz">Scan an MRZ</string>
 <string name="scan_canceled">Scan canceled</string>
+<string name="scan_no_data">Scan returned no data</string>
 ```
 
 Finally, replace **themes.xml** in the same folder:
@@ -327,9 +328,8 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZData;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-// Launches the built-in MRZ scanner and renders the result on this same screen.
-// The whole sample is this one activity. See the ScanMRZ sample for a fuller
-// app: document images, per-field explanations and permission recovery.
+// Launches the built-in MRZ scanner and renders the result on this same screen. The whole
+// sample is this one activity — see ScanMRZ for images, explanations and permission recovery.
 public class MainActivity extends AppCompatActivity {
     private final MRZScannerConfig config = new MRZScannerConfig();
     private ActivityResultLauncher<MRZScannerConfig> launcher;
@@ -346,8 +346,7 @@ public class MainActivity extends AppCompatActivity {
         // A trial license, so it needs a network connection. Request your own at
         // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
         config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-        // The scanner runs as its own activity, so its result arrives through the
-        // Activity Result API rather than a callback on this class.
+        // The scanner is its own activity, so results arrive via the Activity Result API.
         launcher = registerForActivityResult(
                 new MRZScannerActivity.ResultContract(), this::showResult);
         findViewById(R.id.btn_scan).setOnClickListener(v -> launcher.launch(config));
@@ -364,18 +363,23 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
-            // The scanner asks for camera access itself, so a denial lands here as a
-            // readable error string — this sample needs no permission code of its own.
+            // The scanner handles permission itself, so a denial arrives as an error string.
             tvStatus.setText(result.getErrorString());
+            tvStatus.setVisibility(View.VISIBLE);
+            resultPanel.setVisibility(View.GONE);
+            return;
+        }
+        // A finished scan normally carries data, but guard it rather than assume.
+        MRZData data = result.getData();
+        if (data == null) {
+            tvStatus.setText(R.string.scan_no_data);
             tvStatus.setVisibility(View.VISIBLE);
             resultPanel.setVisibility(View.GONE);
             return;
         }
         tvStatus.setVisibility(View.GONE);
         resultPanel.setVisibility(View.VISIBLE);
-        MRZData data = result.getData();
-        // Validation is per field, so a full name that joins two of them is flagged
-        // when either half fails.
+        // Validation is per field, so a joined full name is flagged when either half fails.
         int firstNameStatus = data.getFieldValidationStatus("firstName");
         int nameStatus = firstNameStatus == EnumValidationStatus.VS_FAILED
                 ? firstNameStatus
@@ -410,8 +414,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (CoreException ignored) {
         }
     }
-    // Shows value, or "N/A" when the parser extracted nothing, and colors the
-    // row amber when the value does not match its check digit.
+    // Shows value, or "N/A" when empty; amber when it fails its check digit.
     private void applyField(TextView tv, String value, int status) {
         boolean failed = status == EnumValidationStatus.VS_FAILED;
         tv.setText(value == null || value.isEmpty() ? "N/A" : value);
@@ -439,9 +442,8 @@ import com.dynamsoft.dcp.EnumValidationStatus
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
-// Launches the built-in MRZ scanner and renders the result on this same screen.
-// The whole sample is this one activity. See the ScanMRZ sample for a fuller app:
-// document images, per-field explanations and permission recovery.
+// Launches the built-in MRZ scanner and renders the result on this same screen. The whole
+// sample is this one activity — see ScanMRZ for images, explanations and permission recovery.
 class MainActivity : AppCompatActivity() {
     private val config = MRZScannerConfig()
     private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
@@ -457,8 +459,7 @@ class MainActivity : AppCompatActivity() {
         // A trial license, so it needs a network connection. Request your own at
         // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
         config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-        // The scanner runs as its own activity, so its result arrives through the
-        // Activity Result API rather than a callback on this class.
+        // The scanner is its own activity, so results arrive via the Activity Result API.
         launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
             showResult(result)
         }
@@ -476,18 +477,23 @@ class MainActivity : AppCompatActivity() {
             return
         }
         if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
-            // The scanner asks for camera access itself, so a denial lands here as a
-            // readable error string — this sample needs no permission code of its own.
+            // The scanner handles permission itself, so a denial arrives as an error string.
             tvStatus.text = result.errorString
+            tvStatus.visibility = View.VISIBLE
+            resultPanel.visibility = View.GONE
+            return
+        }
+        // A finished scan normally carries data, but guard it rather than assume.
+        val data = result.data
+        if (data == null) {
+            tvStatus.setText(R.string.scan_no_data)
             tvStatus.visibility = View.VISIBLE
             resultPanel.visibility = View.GONE
             return
         }
         tvStatus.visibility = View.GONE
         resultPanel.visibility = View.VISIBLE
-        val data = result.data
-        // Validation is per field, so a full name that joins two of them is flagged
-        // when either half fails.
+        // Validation is per field, so a joined full name is flagged when either half fails.
         val firstNameStatus = data.getFieldValidationStatus("firstName")
         val nameStatus = if (firstNameStatus == EnumValidationStatus.VS_FAILED) {
             firstNameStatus
@@ -524,8 +530,7 @@ class MainActivity : AppCompatActivity() {
         } catch (ignored: CoreException) {
         }
     }
-    // Shows value, or "N/A" when the parser extracted nothing, and colors the row
-    // amber when the value does not match its check digit.
+    // Shows value, or "N/A" when empty; amber when it fails its check digit.
     private fun applyField(tv: TextView, value: String?, status: Int) {
         val failed = status == EnumValidationStatus.VS_FAILED
         tv.text = if (value.isNullOrEmpty()) "N/A" else value
