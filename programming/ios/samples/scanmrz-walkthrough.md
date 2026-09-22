@@ -58,12 +58,14 @@ The navigation bar is toggled per screen: `ViewController` hides it in `viewWill
 Only the license is required, exactly as in the user guide. `ScanMRZ` doubles as a catalog of the rest: every remaining `MRZScannerConfig` setting appears commented out and assigned the opposite of its default, so uncommenting a single line is enough to see what that setting changes.
 
 ```swift
+private typealias ScannedImages = (portrait: UIImage?, primaryDoc: UIImage?,
+                                   primaryOrig: UIImage?, secondaryDoc: UIImage?,
+                                   secondaryOrig: UIImage?)
+
 @objc func buttonTapped() {
     let config = MRZScannerConfig()
     config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
 
-    // Everything below is left at its default, which is what this sample means to
-    // show: the scanner as it ships. A few of the listed settings:
     //config.documentType = .passport         // Default is .all, which reads both.
     //config.isTorchButtonVisible = false     // Every scanner control is visible by default.
     //config.isBeepEnabled = true             // Scan feedback is off by default.
@@ -72,8 +74,14 @@ Only the license is required, exactly as in the user guide. `ScanMRZ` doubles as
     let vc = MRZScannerViewController()
     vc.config = config
     vc.onScannedResult = { [weak self] result in
-        // The result arrives off the main thread, so hop back before touching UIKit.
-        DispatchQueue.main.async { self?.handle(result) }
+        let images: ScannedImages = (
+            portrait:      try? result.getPortraitImage()?.toUIImage(),
+            primaryDoc:    try? result.getDocumentImage(.mrz)?.toUIImage(),
+            primaryOrig:   try? result.getOriginalImage(.mrz)?.toUIImage(),
+            secondaryDoc:  try? result.getDocumentImage(.opposite)?.toUIImage(),
+            secondaryOrig: try? result.getOriginalImage(.opposite)?.toUIImage()
+        )
+        DispatchQueue.main.async { self?.handle(result, images) }
     }
 
     label.isHidden = true
@@ -84,23 +92,25 @@ Only the license is required, exactly as in the user guide. `ScanMRZ` doubles as
 
 [Customizing the MRZ Scanner](../user-guide/customize-mrz-scanner.md) covers what each setting does.
 
-The callback itself does nothing but hop to the main thread, which leaves one place where all three statuses are handled:
+`onScannedResult` arrives off the main thread, so the callback decodes the images there — with `returnOriginalImage` on they are full camera frames, and converting those on the main thread stalls the UI — then hops once, which leaves one place where all three statuses are handled:
 
 ```swift
-private func handle(_ result: MRZScanResult) {
+private func handle(_ result: MRZScanResult, _ images: ScannedImages) {
     switch result.resultStatus {
     case .finished:
-        guard let data = result.data else { return }
+        guard let data = result.data else {
+            report("Scan returned no data")
+            return
+        }
         let resultVC = ResultViewController()
         resultVC.mrzData = data
-        resultVC.portraitImage = try? result.getPortraitImage()?.toUIImage()
-        resultVC.primaryDocumentImage = try? result.getDocumentImage(.mrz)?.toUIImage()
-        resultVC.primaryOriginalImage = try? result.getOriginalImage(.mrz)?.toUIImage()
-        resultVC.secondaryDocumentImage = try? result.getDocumentImage(.opposite)?.toUIImage()
-        resultVC.secondaryOriginalImage = try? result.getOriginalImage(.opposite)?.toUIImage()
+        resultVC.portraitImage = images.portrait
+        resultVC.primaryDocumentImage = images.primaryDoc
+        resultVC.primaryOriginalImage = images.primaryOrig
+        resultVC.secondaryDocumentImage = images.secondaryDoc
+        resultVC.secondaryOriginalImage = images.secondaryOrig
         navigationController?.pushViewController(resultVC, animated: true)
     case .canceled:
-        // The user closed the scanner. There is no data and nothing went wrong.
         report("Scan canceled")
     case .exception:
         report(result.errorString ?? "")
@@ -111,7 +121,6 @@ private func handle(_ result: MRZScanResult) {
     }
 }
 
-/// Leaves `message` on this screen and returns to it from the scanner.
 private func report(_ message: String) {
     label.text = message
     label.isHidden = false
@@ -119,7 +128,9 @@ private func report(_ message: String) {
 }
 ```
 
-All five images are converted to `UIImage` here and passed as plain properties, so `ResultViewController` never holds the `MRZScanResult`. Three of the five are normally `nil` — `getOriginalImage(_:)` returns nothing unless `returnOriginalImage` is set, and both `.opposite` getters return nothing for a passport. The result screen collapses whatever is missing rather than reserving space for it.
+All five images reach the result screen as plain `UIImage` properties, so `ResultViewController` never holds the `MRZScanResult`. Three of the five are normally `nil` — `getOriginalImage(_:)` returns nothing unless `returnOriginalImage` is set, and both `.opposite` getters return nothing for a passport. The result screen collapses whatever is missing rather than reserving space for it.
+
+A `.finished` result with no data reports rather than returning silently: the scanner was pushed, so an early `return` would leave the user staring at it with no feedback.
 
 Because the scanner was pushed, the cancel and error branches both pop it, which is what `report` does after leaving its message behind. The success branch does not: it pushes the result screen on top, and the scanner is removed from the stack when **Re-scan** pops back to it.
 
@@ -128,12 +139,8 @@ Because the scanner was pushed, the cancel and error branches both pop it, which
 This is the part with no counterpart in `ScanMRZBasic`, and the reason it exists is specific to iOS. The scanner shows its own alert offering **Open Settings**, but changing a privacy setting there **terminates the app**. By the time the user returns, the scanner and its alert are long gone — so the home screen keeps its own route into Settings:
 
 ```swift
-/// Shown only when the scanner reported a camera-permission denial, since that is the
-/// one failure the user can resolve themselves.
 private let settingsButton = ViewController.makeStyledButton(title: "Open Settings", fontSize: 16)
 
-/// The scanner's own alert already offers this, but the message stays on screen after
-/// the scanner closes — so the route into Settings has to remain reachable from here.
 @objc func openSettingsTapped() {
     guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
     UIApplication.shared.open(url)
@@ -176,16 +183,11 @@ The two document sides are shown side by side, with a custom segmented control c
 The interesting part is what happens when a set is missing. With default settings `returnOriginalImage` is `false`, so there is no Original set at all — and a tab leading to an empty view is worse than no tab:
 
 ```swift
-/// Shows each segment only when its own image set came back, so the label above the
-/// images always says what they are, and collapses the whole section when no images
-/// arrived at all.
 private func updateImageSectionVisibility() {
     let hasProcessed = primaryDocumentImage != nil || secondaryDocumentImage != nil
     let hasOriginal = primaryOriginalImage != nil || secondaryOriginalImage != nil
     let hasAnyImage = hasProcessed || hasOriginal
 
-    // With only one segment there is nothing to switch to, so don't leave the selection
-    // pointing at a set that isn't there.
     if !(hasProcessed && hasOriginal) {
         isProcessedSelected = hasProcessed
     }
@@ -211,7 +213,6 @@ Note that hiding is not enough. A hidden view still occupies whatever space its 
 The user guide colors a failed value amber. `ScanMRZ` goes further: it underlines the value so it reads as tappable, appends an inline amber icon, and opens a dialog explaining what a failed check digit means.
 
 ```swift
-/// Amber (#FFC107) used to color values whose MRZ check digit failed.
 private static let warningAmber = UIColor(red: 1.0, green: 193.0/255.0, blue: 7.0/255.0, alpha: 1.0)
 
 private static func applyFailedValue(_ text: String, to label: UILabel) {
@@ -229,8 +230,6 @@ private static func applyFailedValue(_ text: String, to label: UILabel) {
         withConfiguration: UIImage.SymbolConfiguration(pointSize: iconHeight)
     )?.withTintColor(warningAmber, renderingMode: .alwaysOriginal)
     if let icon = attachment.image {
-        // The symbol is slightly wider than tall, so derive the width from its own aspect
-        // ratio. Sitting it on the text baseline rather than the line box matches Android.
         attachment.bounds = CGRect(x: 0, y: font.descender,
                                    width: iconHeight * icon.size.width / icon.size.height,
                                    height: iconHeight)
@@ -240,8 +239,6 @@ private static func applyFailedValue(_ text: String, to label: UILabel) {
     result.append(NSAttributedString(attachment: attachment))
 
     label.attributedText = result
-    // The icon carries no accessible text and color alone isn't a cue, so spell the
-    // failure out for VoiceOver.
     label.accessibilityLabel = "\(text), validation failed"
 }
 ```
@@ -290,12 +287,9 @@ Three decisions in that block are worth noting:
 - **`Doc. Type` is passed no status.** It is derived from the MRZ layout rather than read from a field with a check digit, so it has nothing to validate against. The sample maps it to friendly text: `data.documentType == "MRTD_TD3_PASSPORT" ? "Passport" : "ID"`.
 - **Nationality uses `nationalityRaw`.** That is the three-letter ICAO code as it appears in the MRZ, rather than the expanded country name.
 
-The raw MRZ text is tappable too, for a reason that is easy to miss:
+The raw MRZ text is tappable too, for a reason that is easy to miss: a line-composite failure can flag the raw MRZ when no individual field failed — corruption in a field that has no check digit of its own, such as name, nationality or sex.
 
 ```swift
-// Raw MRZ Text — tappable too, because a line-composite failure can flag the
-// raw MRZ when no individual field is failed (e.g. corruption in a field without
-// its own check digit like name/nationality/sex).
 applyLabel(mrzValueLabel,
            text: data.mrzText,
            status: data.getFieldValidationStatus("mrzText"),
@@ -339,7 +333,6 @@ A long press on the portrait or either document image offers to save it:
     })
     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 
-    // Support for iPad popovers
     if let popoverController = alert.popoverPresentationController {
         popoverController.sourceView = imageView
         popoverController.sourceRect = imageView.bounds
