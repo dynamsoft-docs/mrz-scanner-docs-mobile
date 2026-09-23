@@ -74,8 +74,21 @@ You can include the `DynamsoftMRZScannerBundle` library in your app in two ways:
 2. Run the pod command to install the frameworks and generate the workspace (**[TargetName].xcworkspace**):
 
    ```sh
-   pod install
+   pod install --repo-update
    ```
+
+   `--repo-update` refreshes your local spec cache first. Without it, a recently released version can be reported as not found even though it is published.
+
+#### Xcode 15 and later: turn off User Script Sandboxing
+
+Projects created with Xcode 15 or later fail to build after adding the pod with the following error:
+
+```
+Sandbox: rsync(12345) deny(1) file-read-data
+.../XCFrameworkIntermediates/DynamsoftCaptureVisionBundle/DynamsoftCaptureVisionBundle.framework/_CodeSignature
+```
+
+CocoaPods copies frameworks with `rsync`, which Xcode's User Script Sandboxing blocks. Select your app target, open **Build Settings**, search for **User Script Sandboxing**, and set it to **No**, which is Xcode's own default for the setting. Swift Package Manager integrations are unaffected.
 
 ## Building the MRZ Scanner Application
 
@@ -754,6 +767,7 @@ Your App Store privacy answers cover your whole app, SDKs included, so they need
 - **SwiftUI** — [Using the Scanner from SwiftUI](../samples/swiftui-walkthrough.md) covers the `UIViewControllerRepresentable` bridge and both SwiftUI samples.
 - **Samples** — Browse all four iOS samples on the [Demo and Samples](../samples/index.md) page.
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
+- **Build from source** — When `MRZScannerConfig` cannot express what you need, the component's source is published and you can build the framework yourself. See [Building from Source](build-from-source.md).
 - **API Reference** — Browse the full [iOS API Reference](../api-reference/index.md) for all classes and methods.
 - **License** — See the [License Activation](license-activation.md) guide for production license setup.
 - **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
