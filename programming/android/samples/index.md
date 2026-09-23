@@ -29,7 +29,7 @@ The smallest thing that scans an MRZ and shows the result: one activity, a butto
 
 ### ScanMRZ
 
-A complete app built on the same SDK calls, adding a dedicated result screen, a tabbed pager for the document images from both sides, per-field validation explanations, and camera-permission recovery. The [ScanMRZ Sample Walkthrough](scanmrz-walkthrough.md) goes through it section by section.
+A complete app built on the same SDK calls, adding a dedicated result screen, a tabbed pager for the document images from both sides, per-field validation explanations, and camera-permission recovery. The [ScanMRZ Demo App](scanmrz-walkthrough.md) goes through it section by section.
 
 - [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZ){:target="_blank"}
 - [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZKt){:target="_blank"}
@@ -42,6 +42,6 @@ Within each pair the Kotlin version is a direct translation that shares the layo
 ## Next Steps
 
 - [MRZ Scanner User Guide](../user-guide/index.md) — build `ScanMRZBasic` from an empty project.
-- [ScanMRZ Sample Walkthrough](scanmrz-walkthrough.md) — how the complete sample builds its result screen.
+- [ScanMRZ Demo App](scanmrz-walkthrough.md) — how the complete sample builds its result screen.
 - [Customizing the MRZ Scanner](../user-guide/customize-mrz-scanner.md) — document type, UI elements, feedback, and camera permission.
 - [Android API Reference](../api-reference/index.md) — all classes and methods.

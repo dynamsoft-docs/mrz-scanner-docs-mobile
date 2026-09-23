@@ -15,7 +15,7 @@ enableLanguageSelection: true
 The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning component that lets you add MRZ reading to your app with minimal setup. This guide walks through building an MRZ scanning app from scratch using `MRZScannerActivity` — the built-in activity that handles the camera UI, scanning logic, and result delivery.
 
 > [!TIP]
-> The app built here is **ScanMRZBasic**, available on GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) and [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt). For a fuller app with a dedicated result screen, document images, and camera-permission recovery, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+> The app built here is **ScanMRZBasic**, available on GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) and [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt). For a fuller app with a dedicated result screen, document images, and camera-permission recovery, see the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md).
 
 > [!IMPORTANT]
 > Upgrading an existing integration rather than starting fresh? See the [Upgrade Guide](upgrade.md) first.
@@ -25,7 +25,7 @@ The Dynamsoft MRZ Scanner (Android Edition) provides a ready-to-use scanning com
 The SDK supports three ICAO Machine Readable Travel Document (MRTD) formats: **TD1** (ID cards, 3-line MRZ), **TD2** (ID cards, 2-line MRZ), and **TD3** (passports, 2-line MRZ). For a visual reference of each format, see [Supported Document Types](../../shared/supported-document-types.md).
 
 > [!NOTE]
-> For support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
+> To request support for other MRTD types, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).
 
 ## System Requirements
 
@@ -82,7 +82,7 @@ A valid license key is required to use the SDK. If you are just getting started,
                }
            }
    }
-```
+   ```
 
 2. Open **build.gradle** (Module: app) for Groovy DSL — or **build.gradle.kts** (Module: app) for Kotlin DSL — and add the dependency:
 
@@ -101,7 +101,7 @@ A valid license key is required to use the SDK. If you are just getting started,
    dependencies {
            implementation("com.dynamsoft:mrzscannerbundle:3.6.2000")
    }
-```
+   ```
 
 3. Click **Sync Now**. After the synchronization completes, the SDK is added to the project.
 
@@ -109,11 +109,11 @@ A valid license key is required to use the SDK. If you are just getting started,
 
 The following steps build **ScanMRZBasic** — the smallest app that scans an MRZ and shows the parsed result. You can download the finished project from GitHub in [Java](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasic) or [Kotlin](https://github.com/Dynamsoft/mrz-scanner-mobile/tree/main/android/samples/ScanMRZBasicKt).
 
-The whole app is a single activity: a button launches the scanner, and the result renders on the same screen. For a fuller app with a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+The whole app is a single activity: a button launches the scanner, and the result renders on the same screen. For a fuller app with a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery, see the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md).
 
 Before you start, have these ready:
 
-- **A license key** — a trial key is embedded in the snippets below, but you can request your own from the [Licensing](#licensing) section.
+- **A license key** — a trial key is embedded in the snippets below. See [Licensing](#licensing) to request your own.
 - **A physical Android device**, connected over USB. Step 6 covers enabling USB debugging if you have not done so before.
 - **A document to scan** — any passport or ID card carrying a TD1, TD2, or TD3 machine-readable zone. See [Supported Document Types](../../shared/supported-document-types.md) for what each format looks like.
 
@@ -144,11 +144,12 @@ Three resource files support the screen you build in Step 4. Start with **colors
 </resources>
 ```
 
-Add the two strings the screen needs to **strings.xml** in the same folder. Your project already has an `app_name` entry, generated when you created it:
+Add the three strings the screen needs to **strings.xml** in the same folder. Your project already has an `app_name` entry, generated when you created it:
 
 ```xml
 <string name="scan_an_mrz">Scan an MRZ</string>
-<string name="scan_cancelled">Scan cancelled</string>
+<string name="scan_canceled">Scan canceled</string>
+<string name="scan_no_data">Scan returned no data</string>
 ```
 
 Finally, replace **themes.xml** in the same folder:
@@ -180,7 +181,7 @@ Finally, replace **themes.xml** in the same folder:
 </resources>
 ```
 
-The theme parents to `Theme.AppCompat` because this project does not use Material Components. `FieldLabel` and `FieldValue` are ordinary layout styles that keep each field row in the next step to a single line; neither carries any SDK behavior.
+The theme inherits from `Theme.AppCompat` because this project does not use Material Components. `FieldLabel` and `FieldValue` are ordinary layout styles that keep each field row in the next step to a single line; neither carries any SDK behavior.
 
 ### Step 4: Set Up the Layout
 
@@ -214,13 +215,13 @@ Open **activity_main.xml** in **src/main/res/layout/** and replace its contents.
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Carries the cancelled message and any error string. -->
+            <!-- Carries the canceled message and any error string. -->
             <TextView
                 android:id="@+id/tv_status"
                 style="@style/FieldValue"
                 android:textSize="16sp"
                 android:visibility="gone"
-                tools:text="Scan cancelled"
+                tools:text="Scan canceled"
                 tools:visibility="visible" />
 
             <LinearLayout
@@ -278,22 +279,22 @@ Open **activity_main.xml** in **src/main/res/layout/** and replace its contents.
 </LinearLayout>
 ```
 
-`MainActivity` looks up six things in this layout, so the IDs matter:
+`MainActivity` finds every view it needs by ID, so these have to match:
 
 | ID | Purpose |
 | -- | ------- |
 | `main` | The root view. Window insets are applied to it so content clears the status and navigation bars. |
 | `btn_scan` | Launches the scanner. |
-| `tv_status` | Carries the "Scan cancelled" message and any error string. Hidden until one of them applies. |
+| `tv_status` | Carries the "Scan canceled" message and any error string. Hidden until one of them applies. |
 | `result_panel` | Wraps the whole result area. Starts `gone`, becomes visible only after a successful scan. |
 | `iv_portrait` | The portrait cropped from the document, when one was found. |
 | `tv_full_name` … `tv_raw_mrz` | One `TextView` per parsed field. |
 
-Keeping `result_panel` hidden until there is something to show means the screen never displays a set of empty labels.
+Keeping `result_panel` hidden until a scan succeeds means the user never sees a screen of empty labels.
 
 ### Step 5: Launch the Scanner and Show the Result
 
-Open **MainActivity** and replace its contents. This is the whole application: it provides a license, launches `MRZScannerActivity`, and renders whichever of the three result statuses comes back.
+Open **MainActivity** and replace its contents. This is the whole application: it supplies the license, launches `MRZScannerActivity`, and handles whichever of the three result statuses comes back.
 
 For optional config settings like document type filtering, UI visibility, and image capture, see the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 
@@ -327,9 +328,8 @@ import com.dynamsoft.mrzscannerbundle.ui.MRZData;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity;
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig;
-// Launches the built-in MRZ scanner and renders the result on this same screen.
-// The whole sample is this one activity. See the ScanMRZ sample for a fuller
-// app: document images, per-field explanations and permission recovery.
+// Launches the built-in MRZ scanner and renders the result on this same screen. The whole
+// sample is this one activity — see ScanMRZ for images, explanations and permission recovery.
 public class MainActivity extends AppCompatActivity {
     private final MRZScannerConfig config = new MRZScannerConfig();
     private ActivityResultLauncher<MRZScannerConfig> launcher;
@@ -346,8 +346,7 @@ public class MainActivity extends AppCompatActivity {
         // A trial license, so it needs a network connection. Request your own at
         // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
         config.setLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-        // The scanner runs as its own activity, so its result arrives through the
-        // Activity Result API rather than a callback on this class.
+        // The scanner is its own activity, so results arrive via the Activity Result API.
         launcher = registerForActivityResult(
                 new MRZScannerActivity.ResultContract(), this::showResult);
         findViewById(R.id.btn_scan).setOnClickListener(v -> launcher.launch(config));
@@ -358,24 +357,29 @@ public class MainActivity extends AppCompatActivity {
         View resultPanel = findViewById(R.id.result_panel);
         if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_CANCELED) {
             // The user closed the scanner. There is no data and nothing went wrong.
-            tvStatus.setText(R.string.scan_cancelled);
+            tvStatus.setText(R.string.scan_canceled);
             tvStatus.setVisibility(View.VISIBLE);
             resultPanel.setVisibility(View.GONE);
             return;
         }
         if (result.getResultStatus() == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
-            // The scanner asks for camera access itself, so a denial lands here as a
-            // readable error string — this sample needs no permission code of its own.
+            // The scanner handles permission itself, so a denial arrives as an error string.
             tvStatus.setText(result.getErrorString());
+            tvStatus.setVisibility(View.VISIBLE);
+            resultPanel.setVisibility(View.GONE);
+            return;
+        }
+        // A finished scan normally carries data, but guard it rather than assume.
+        MRZData data = result.getData();
+        if (data == null) {
+            tvStatus.setText(R.string.scan_no_data);
             tvStatus.setVisibility(View.VISIBLE);
             resultPanel.setVisibility(View.GONE);
             return;
         }
         tvStatus.setVisibility(View.GONE);
         resultPanel.setVisibility(View.VISIBLE);
-        MRZData data = result.getData();
-        // Validation is per field, so a full name that joins two of them is flagged
-        // when either half fails.
+        // Validation is per field, so a joined full name is flagged when either half fails.
         int firstNameStatus = data.getFieldValidationStatus("firstName");
         int nameStatus = firstNameStatus == EnumValidationStatus.VS_FAILED
                 ? firstNameStatus
@@ -410,8 +414,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (CoreException ignored) {
         }
     }
-    // Shows value, or "N/A" when the parser extracted nothing, and colors the
-    // row amber when the value does not match its check digit.
+    // Shows value, or "N/A" when empty; amber when it fails its check digit.
     private void applyField(TextView tv, String value, int status) {
         boolean failed = status == EnumValidationStatus.VS_FAILED;
         tv.setText(value == null || value.isEmpty() ? "N/A" : value);
@@ -439,9 +442,8 @@ import com.dynamsoft.dcp.EnumValidationStatus
 import com.dynamsoft.mrzscannerbundle.ui.MRZScanResult
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerActivity
 import com.dynamsoft.mrzscannerbundle.ui.MRZScannerConfig
-// Launches the built-in MRZ scanner and renders the result on this same screen.
-// The whole sample is this one activity. See the ScanMRZ sample for a fuller app:
-// document images, per-field explanations and permission recovery.
+// Launches the built-in MRZ scanner and renders the result on this same screen. The whole
+// sample is this one activity — see ScanMRZ for images, explanations and permission recovery.
 class MainActivity : AppCompatActivity() {
     private val config = MRZScannerConfig()
     private lateinit var launcher: ActivityResultLauncher<MRZScannerConfig>
@@ -457,8 +459,7 @@ class MainActivity : AppCompatActivity() {
         // A trial license, so it needs a network connection. Request your own at
         // https://www.dynamsoft.com/customer/license/trialLicense?product=mrz&utm_source=samples&package=android
         config.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-        // The scanner runs as its own activity, so its result arrives through the
-        // Activity Result API rather than a callback on this class.
+        // The scanner is its own activity, so results arrive via the Activity Result API.
         launcher = registerForActivityResult(MRZScannerActivity.ResultContract()) { result ->
             showResult(result)
         }
@@ -470,24 +471,29 @@ class MainActivity : AppCompatActivity() {
         val resultPanel = findViewById<View>(R.id.result_panel)
         if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_CANCELED) {
             // The user closed the scanner. There is no data and nothing went wrong.
-            tvStatus.setText(R.string.scan_cancelled)
+            tvStatus.setText(R.string.scan_canceled)
             tvStatus.visibility = View.VISIBLE
             resultPanel.visibility = View.GONE
             return
         }
         if (result.resultStatus == MRZScanResult.EnumResultStatus.RS_EXCEPTION) {
-            // The scanner asks for camera access itself, so a denial lands here as a
-            // readable error string — this sample needs no permission code of its own.
+            // The scanner handles permission itself, so a denial arrives as an error string.
             tvStatus.text = result.errorString
+            tvStatus.visibility = View.VISIBLE
+            resultPanel.visibility = View.GONE
+            return
+        }
+        // A finished scan normally carries data, but guard it rather than assume.
+        val data = result.data
+        if (data == null) {
+            tvStatus.setText(R.string.scan_no_data)
             tvStatus.visibility = View.VISIBLE
             resultPanel.visibility = View.GONE
             return
         }
         tvStatus.visibility = View.GONE
         resultPanel.visibility = View.VISIBLE
-        val data = result.data
-        // Validation is per field, so a full name that joins two of them is flagged
-        // when either half fails.
+        // Validation is per field, so a joined full name is flagged when either half fails.
         val firstNameStatus = data.getFieldValidationStatus("firstName")
         val nameStatus = if (firstNameStatus == EnumValidationStatus.VS_FAILED) {
             firstNameStatus
@@ -524,8 +530,7 @@ class MainActivity : AppCompatActivity() {
         } catch (ignored: CoreException) {
         }
     }
-    // Shows value, or "N/A" when the parser extracted nothing, and colors the row
-    // amber when the value does not match its check digit.
+    // Shows value, or "N/A" when empty; amber when it fails its check digit.
     private fun applyField(tv: TextView, value: String?, status: Int) {
         val failed = status == EnumValidationStatus.VS_FAILED
         tv.text = if (value.isNullOrEmpty()) "N/A" else value
@@ -565,10 +570,10 @@ int nameStatus = firstNameStatus == EnumValidationStatus.VS_FAILED
         : data.getFieldValidationStatus("lastName");
 ```
 
-Either half failing should flag the whole line, so a failed `firstName` wins; otherwise the status of `lastName` is used. Document type is passed `VS_NONE` explicitly, since it is derived from the MRZ layout itself rather than read from a field with a check digit.
+The displayed line should be flagged if either half failed, so a failed `firstName` is used when present, and the status of `lastName` otherwise. Document type is passed `VS_NONE` explicitly, since it is derived from the MRZ layout itself rather than read from a field with a check digit.
 
 > [!TIP]
-> The [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md) shows a richer treatment of the same API: an error icon, an underline marking the row as tappable, and a dialog explaining what a failed check digit means.
+> The [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) shows a richer treatment of the same API: an error icon, an underline marking the row as tappable, and a dialog explaining what a failed check digit means.
 
 ### Step 6: Run the Project
 
@@ -582,7 +587,7 @@ Before running, complete these steps on your Android device:
 
 4. **Click Run.**
 
-Tap **Scan an MRZ**, point the camera at the machine-readable zone of a passport or ID card, and the parsed fields appear on the screen behind the scanner.
+Tap **Scan an MRZ** and point the camera at the machine-readable zone of a passport or ID card. The scanner closes as soon as it has what it needs, and the parsed fields appear on the screen underneath.
 
 > [!NOTE]
 > A physical Android device is required. The camera is not available on the Android Emulator.
@@ -642,7 +647,7 @@ if (portrait != null) {
 
 ## The Scanner Screen
 
-`MRZScannerActivity` supplies its own full-screen UI, so nothing above defines what the user sees while scanning. Knowing what it presents is worth a moment, because it determines how much guidance your own screens need to provide.
+`MRZScannerActivity` supplies its own full-screen UI, so nothing you wrote above controls what the user sees while scanning. It is worth knowing what that UI already tells them, because it decides how much your own screens still need to explain.
 
 The screen is a live camera preview with a **guide frame** marking where to place the document, a **toolbar** across the top carrying the close, torch, camera-toggle, beep, and vibrate buttons, a **format selector** along the bottom for choosing between ID, passport, or both, and a **prompt** that updates as the scan progresses. Every one of these can be hidden — see [Configure the UI Elements](customize-mrz-scanner.md#configure-the-ui-elements).
 
@@ -653,18 +658,20 @@ The scanner narrates its own progress, so the prompt text is the main thing a us
 | Stage | On screen |
 | ----- | --------- |
 | Waiting for a document | **Scan the MRZ side first** |
-| Text lines detected in frame | A spinner beside the guide frame |
+| Text lines detected in frame | A spinner at the center of the guide frame |
 | MRZ read, nothing further needed | **MRZ scanned ✓** |
 | MRZ read, portrait found on the same side | **MRZ scanned ✓ / Portrait scanned ✓** |
+| MRZ read, still looking for a portrait | **MRZ scanned ✓ / Finding portrait...** |
+| No portrait found after five seconds | **MRZ scanned ✓ / No portrait detected** |
 | MRZ read, opposite side needed | **MRZ scanned ✓ / Flip and scan the other side**, with an animated flip prompt |
 | Both sides captured | **MRZ scanned ✓ / Both sides scanned ✓** |
 
-The spinner is not a generic busy indicator. It is driven by per-frame text-line detection, so it appears when the scanner can see MRZ-like text and is working on it, and disappears when the document moves out of frame. Once the MRZ is confirmed it stops for the rest of the session. Treated as a signal, it tells the user that holding steady is worthwhile.
+The spinner is not a generic busy indicator. It is driven by per-frame text-line detection, so it appears when the scanner can see MRZ-like text and is working on it, and disappears when the document moves out of frame. Once the MRZ is confirmed it stops for the rest of the session. For the user it is the cue that holding the device steady is paying off.
 
 > [!NOTE]
 > The prompt is hidden along with the guide frame, since it reads as a label on it. Hiding the frame also widens the scanned area to the whole preview — see [Hiding the guide frame](customize-mrz-scanner.md#hiding-the-guide-frame).
 
-The last three rows are covered in detail in the next section.
+The last four rows are covered in detail in the next section.
 
 ## Scanning Two-Sided Documents
 
@@ -719,7 +726,7 @@ config.isReturnPortraitImage = false
 
 That is the right choice when you only need the parsed text, and it makes every scan a single capture. `getPortraitImage()` and both `DS_OPPOSITE` getters then always return `null`.
 
-For an example that displays the document images from both sides, see the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md).
+For an example that displays the document images from both sides, see the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md).
 
 ## Preparing for Release
 
@@ -727,9 +734,9 @@ Two things are worth checking before you ship a build that includes the scanner:
 
 ### Shrinking and obfuscation
 
-The SDK needs no keep rules of its own, so a project using Android's default configuration builds correctly with `minifyEnabled true` and nothing added.
+You do not need to add any ProGuard rules for the SDK. A project that keeps Android's default configuration will build and run correctly with `minifyEnabled true`.
 
-That default matters, though. Several SDK classes declare `native` methods that the native layer resolves **by name**, so renaming or removing them breaks the binding at runtime rather than at build time. The rule that protects them ships in `proguard-android-optimize.txt`, which new projects reference by default:
+That default is doing real work, though. Several SDK classes declare `native` methods that the native layer resolves **by name**, so if R8 renames or removes them, the binding fails at runtime rather than at build time. The rule that prevents this ships in `proguard-android-optimize.txt`, the file new projects reference by default:
 
 ```
 -keepclasseswithmembernames class * {
@@ -737,7 +744,7 @@ That default matters, though. Several SDK classes declare `native` methods that 
 }
 ```
 
-If your project uses a hand-written configuration instead of the default file, carry that rule across.
+If your project uses a hand-written ProGuard configuration instead of the default file, make sure it includes that rule.
 
 ### App size
 
@@ -786,7 +793,7 @@ The SDK's native libraries are built for devices whose kernels use a 16 KB memor
 
 ## Next Steps
 
-- **Go further** — Work through the [ScanMRZ Sample Walkthrough](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
+- **Demo app** — Work through the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
 - **Samples** — Browse all four Android samples on the [Demo and Samples](../samples/index.md) page.
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
 - **API Reference** — Browse the full [Android API Reference](../api-reference/index.md) for all classes and methods.
