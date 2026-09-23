@@ -22,6 +22,7 @@ Dynamsoft MRZ Scanner SDK Android Edition is designed to scan the MRZ code from 
 
 - [MRZ Scanner User Guide (Android Edition)](user-guide/index.md)
 - [Customizing the MRZ Scanner](user-guide/customize-mrz-scanner.md)
+- [Building from Source](user-guide/build-from-source.md)
 - [License Initialization](user-guide/license-activation.md)
 - [Upgrade Guide](user-guide/upgrade.md)
 
@@ -45,4 +46,4 @@ To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an 
 
 ## Contact Us
 
-Feel free to [contact us](https://www.dynamsoft.com/company/customer-service/#contact){:target="_blank"} if you have any questions.
+Feel free to [contact us](https://www.dynamsoft.com/contact/){:target="_blank"} if you have any questions.

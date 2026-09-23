@@ -23,7 +23,7 @@ needAutoGenerateSidebar: true
 
 2. **`documentType`** - specifies the type of document that the MRZ Scanner will recognize. This property accepts values defined in `DocumentType` such as `.all`, `.id`, or `.passport`. It helps the scanner to optimize its processing based on the expected document type. To learn more about the different document types that are supported, please refer to the [Supported Document Types](../../shared/supported-document-types.md) page.
 
-3. **`templateFile`** - a template file is a JSON file or JSON string that contains a series of algorithm parameter settings (called Capture Vision templates) that is usually used for very specific and customized scanning and parsing scenarios. The `templateFile` points to the location of the JSON file. The MRZ Scanner comes with a default template file, but you may choose to use a custom template to target specialized use cases. We recommend contacting the [Dynamsoft Technical Support Team](https://www.dynamsoft.com/company/contact/) for assistance with template customization.
+3. **`templateFile`** - a template file is a JSON file or JSON string that contains a series of algorithm parameter settings (called Capture Vision templates) that is usually used for very specific and customized scanning and parsing scenarios. The `templateFile` points to the location of the JSON file. The MRZ Scanner comes with a default template file, but you may choose to use a custom template to target specialized use cases. We recommend contacting the [Dynamsoft Technical Support Team](https://www.dynamsoft.com/contact/) for assistance with template customization.
 
 4. **`isBeepEnabled`** (default value `false`) - a boolean that determines whether a beep sound is triggered upon a successful MRZ scan. When enabled, the scanner will play a sound to provide audible feedback.
 
@@ -77,7 +77,7 @@ config.documentType = .passport
 
 ### Using a customized template file
 
-A template file is a JSON file holding a set of algorithm parameters. It tunes recognition for a specific scanning scenario, and is only needed when the default behavior does not suit your documents or conditions. [Contact us](https://www.dynamsoft.com/company/customer-service/#contact) for a template tailored to your use case.
+A template file is a JSON file holding a set of algorithm parameters. It tunes recognition for a specific scanning scenario, and is only needed when the default behavior does not suit your documents or conditions. [Contact us](https://www.dynamsoft.com/contact/) for a template tailored to your use case.
 
 1. In Finder, create a folder named `DynamsoftResources`, and inside it create another folder named `Templates`.
 
@@ -297,4 +297,6 @@ The scanner then suppresses its alert but still reports the denial through `MRZS
 
 ## Further Customization
 
-If you have other customization requirements for the `MRZScanner` component, you can modify it with the [open source code on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/).
+If you have other customization requirements for the `MRZScanner` component, its [source code is published on GitHub](https://github.com/Dynamsoft/mrz-scanner-mobile/) and you can modify it and build the framework yourself. See [Building the MRZ Scanner from Source](build-from-source.md) for the toolchain, the build steps, and how to use your build in an app.
+
+If you are unsure whether you need a source build, or get stuck along the way, contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/).

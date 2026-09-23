@@ -44,8 +44,10 @@ You can include the `DynamsoftMRZScannerBundle` library in your app in two ways:
 2. Run the pod command to install the frameworks and generate the workspace (**[TargetName].xcworkspace**):
 
    ```sh
-   pod install
+   pod install --repo-update
    ```
+
+   `--repo-update` refreshes your local spec cache first. Without it, a recently released version can be reported as not found even though it is published.
 
 ### Handle Behavior Changes
 
@@ -152,8 +154,10 @@ You can include the `DynamsoftMRZScannerBundle` library in your app in two ways:
 2. Run the pod command to install the frameworks and generate the workspace (**[TargetName].xcworkspace**):
 
    ```sh
-   pod install
+   pod install --repo-update
    ```
+
+   `--repo-update` refreshes your local spec cache first. Without it, a recently released version can be reported as not found even though it is published.
 
 ### Handle Breaking Changes
 
@@ -316,5 +320,7 @@ You can include the `DynamsoftMRZScannerBundle` library in your app in two ways:
 2. Run the pod command to install the frameworks and generate the workspace (**[TargetName].xcworkspace**):
 
    ```sh
-   pod install
+   pod install --repo-update
    ```
+
+   `--repo-update` refreshes your local spec cache first. Without it, a recently released version can be reported as not found even though it is published.

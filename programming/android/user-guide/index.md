@@ -796,6 +796,7 @@ The SDK's native libraries are built for devices whose kernels use a 16 KB memor
 - **Demo app** — Work through the [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md) to add a dedicated result screen, a document image pager, per-field validation explanations, and camera-permission recovery.
 - **Samples** — Browse all four Android samples on the [Demo and Samples](../samples/index.md) page.
 - **Customize** — Learn how to configure document type, UI elements, and feedback in the [Customize MRZ Scanner](customize-mrz-scanner.md) guide.
+- **Build from source** — When `MRZScannerConfig` cannot express what you need, the component's source is published and you can build the library yourself. See [Building from Source](build-from-source.md).
 - **API Reference** — Browse the full [Android API Reference](../api-reference/index.md) for all classes and methods.
 - **License** — See the [License Activation](license-activation.md) guide for production license setup.
 - **Support** — Contact the [Dynamsoft Support Team](https://www.dynamsoft.com/contact/) for help or custom requirements.
