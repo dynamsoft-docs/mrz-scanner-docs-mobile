@@ -14,9 +14,9 @@ breadcrumbText: MRZScanResult
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.aar
+*Assembly:* MRZScannerBundle.aar
 
-*Namespace:* com.dynamsoft.mrzscanner.ui
+*Namespace:* com.dynamsoft.mrzscannerbundle.ui
 
 ```java
 class MRZScanResult
@@ -65,7 +65,7 @@ The status of the result, which can be finished, canceled or exception.
 
 ### getErrorCode
 
-Returns the error code should something go wrong during the MRZ scanning process.
+Returns the error code should something go wrong during the MRZ scanning process. Only meaningful when [`getResultStatus`](#getresultstatus) returns `RS_EXCEPTION`.
 
 ```java
 int getErrorCode();
@@ -73,7 +73,14 @@ int getErrorCode();
 
 **Return Value**
 
-An integer representing a `EnumErrorCode`.
+An integer error code, drawn from one of two spaces:
+
+- Values **greater than 0** belong to the MRZ Scanner bundle's own [`EnumErrorCode`](error-code.md), which claims the range 1000 to 1999.
+- Values **less than or equal to 0** come from Dynamsoft Capture Vision and are not listed in [`EnumErrorCode`](error-code.md).
+
+The two spaces cannot collide, so the sign alone tells you which one a given value belongs to.
+
+The bundle currently defines two codes of its own, both concerning camera access: `EC_CAMERA_PERMISSION_DENIED` (1001) and `EC_CAMERA_PERMISSION_RESTRICTED` (1002). See [`EnumErrorCode`](error-code.md) for how they differ and which one is worth acting on.
 
 ### getErrorString
 

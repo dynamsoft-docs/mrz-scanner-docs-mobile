@@ -14,9 +14,9 @@ breadcrumbText: EnumResultStatus
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.aar
+*Assembly:* MRZScannerBundle.aar
 
-*Namespace:* com.dynamsoft.mrzscanner.ui
+*Namespace:* com.dynamsoft.mrzscannerbundle.ui
 
 ```java
 @IntDef(value = {RS_FINISHED, RS_CANCELED, RS_EXCEPTION})

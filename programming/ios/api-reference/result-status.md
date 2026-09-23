@@ -1,20 +1,20 @@
 ---
 layout: default-layout
-title: EnumResultStatus - Dynamsoft MRZ Scanner iOS Edition
-description: EnumResultStatus of DynamsoftMRZScanner iOS is an enumeration class that defines the result status of the MRZScanResult.
+title: DSResultStatus - Dynamsoft MRZ Scanner iOS Edition
+description: DSResultStatus of DynamsoftMRZScanner iOS is an enumeration class that defines the result status of the MRZScanResult.
 keywords: scanner, activity, startCapturing, license 
 needAutoGenerateSidebar: true
 needGenerateH3Content: true
-breadcrumbText: EnumResultStatus
+breadcrumbText: DSResultStatus
 ---
 
-# EnumResultStatus
+# DSResultStatus
 
-`EnumResultStatus` is a enumeration class that defines the result status of the `MRZScanResult`.
+`DSResultStatus` is an enumeration that defines the result status of the `MRZScanResult`.
 
 ## Definition
 
-*Assembly:* DynamsoftMRZScanner.xcframework
+*Assembly:* DynamsoftMRZScannerBundle.xcframework
 
 <div class="sample-code-prefix"></div>
 >- Objective-C
@@ -24,8 +24,8 @@ breadcrumbText: EnumResultStatus
 ```objc
 typedef NS_ENUM(NSInteger, DSResultStatus)
 {
-        DSResultStatusFinished = 0
-        DSResultStatusCanceled = 1
+        DSResultStatusFinished = 0,
+        DSResultStatusCanceled = 1,
         DSResultStatusException = 2
 };
 ```
