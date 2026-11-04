@@ -32,7 +32,7 @@ The version number jumps from 3.4.1300 to 3.6.2000 to stay aligned with the Dyna
 
 ### Fixes & Improvements
 
-- Upgraded the Dynamsoft Capture Vision base to 3.6.2000, addressing a known CVE and adding crash fixes. An MRZ rotated 180° can now be read.
+- Upgraded the Dynamsoft Capture Vision base to 3.6.2000, addressing a known CVE and adding crash fixes.
 - Constrained the scan region to the guide frame; previously a document held outside the guide could be accepted.
 - Fixed capture staying clipped to an invisible box when `isGuideFrameVisible = false`. The whole preview is now scanned, and the spinner and flip prompt remain visible.
 - Fixed small documents going undetected once the scan region covered the whole preview.
