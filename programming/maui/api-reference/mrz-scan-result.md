@@ -10,7 +10,7 @@ breadcrumbText: MRZScanResult
 
 # MRZScanResult
 
-`MRZScanResult` is a result class that contains the parsed MRZ information and the corresponding additional information.
+`MRZScanResult` is a result class that contains the parsed MRZ information, the captured images and the result status. [`MRZScanner.Start`](mrz-scanner.md#start) returns one for every scan.
 
 ## Definition
 
@@ -19,7 +19,7 @@ breadcrumbText: MRZScanResult
 *Namespace:* Dynamsoft.MRZScannerBundle.Maui
 
 ```csharp
-class MRZScanResult
+public class MRZScanResult
 ```
 
 ## Properties
@@ -27,13 +27,13 @@ class MRZScanResult
 | Property | Type | Description |
 | -------- | ---- | ----------- |
 | [`Data`](#data) | [*MRZData?*](mrz-data.md) | The parsed MRZ data. |
-| [`ResultStatus`](#resultstatus) | [*EnumResultStatus*](result-status.md) | The status of the result, which can be finished, canceled or exception. |
-| [`ErrorCode`](#errorcode) | *int* | The error code should something go wrong during the MRZ scanning process. |
-| [`ErrorString`](#errorstring) | *string?* | The error message associated with the error code should something go wrong during the MRZ scanning process. |
+| [`ResultStatus`](#resultstatus) | [*EnumResultStatus*](result-status.md) | The status of the result: finished, canceled or exception. |
+| [`ErrorCode`](#errorcode) | *int* | The error code when the scan fails. |
+| [`ErrorString`](#errorstring) | *string?* | The error message when the scan fails. |
 
 ### Data
 
-The parsed MRZ information as a [`MRZData`](mrz-data.md) object.
+The parsed MRZ information as an [`MRZData`](mrz-data.md) object. `null` unless the scan finished with a result.
 
 ```csharp
 MRZData? Data { get; }
@@ -41,27 +41,33 @@ MRZData? Data { get; }
 
 ### ResultStatus
 
-The status of the result represented as an [`EnumResultStatus`](result-status.md).
+The status of the result as an [`EnumResultStatus`](result-status.md).
 
 ```csharp
 EnumResultStatus ResultStatus { get; }
 ```
 
-- `Finished`: The MRZ scanning is finished.
-- `Canceled`: The MRZ scanning activity is closed before the process is finished.
-- `Exception`: Failed to start MRZ scanning or an error occurs when scanning the MRZ.
+- `Finished`: The scan finished.
+- `Canceled`: The user closed the scanner before a scan finished.
+- `Exception`: The scanner failed to start or failed during the scan.
 
 ### ErrorCode
 
-The error code should something go wrong during the MRZ scanning process.
+The error code when `ResultStatus` is `Exception`.
 
 ```csharp
 int ErrorCode { get; }
 ```
 
+**Remarks**
+
+- **Greater than `0`:** an [`EnumErrorCode`](error-code.md) value (range `1000`–`1999`), such as a denied camera permission.
+- **Less than `0`:** an error from Dynamsoft Capture Vision, such as an invalid license or template.
+- **`0`:** an error from the MAUI layer, which has no native code. See [Errors reported by the MAUI layer](error-code.md#errors-reported-by-the-maui-layer).
+
 ### ErrorString
 
-The error message associated with the error code should something go wrong during the MRZ scanning process.
+The error message when `ResultStatus` is `Exception`.
 
 ```csharp
 string? ErrorString { get; }
@@ -75,6 +81,8 @@ string? ErrorString { get; }
 | [`GetDocumentImage`](#getdocumentimage) | Returns the cropped document image for the specified document side. |
 | [`GetOriginalImage`](#getoriginalimage) | Returns the original full-frame image for the specified document side. |
 
+Each method returns an [`ImageData`](https://www.dynamsoft.com/capture-vision/docs/mobile/programming/maui/api-reference/core/image-data.html){:target="_blank"} (from the `Dynamsoft.Core.Maui` namespace). Call `ToImageSource()` to show it in a MAUI `Image`. The conversion copies and encodes the image on the calling thread, so run it off the UI thread for large images such as the originals.
+
 ### GetPortraitImage
 
 Returns the detected portrait image extracted from the document.
@@ -85,53 +93,44 @@ ImageData? GetPortraitImage();
 
 **Return Value**
 
-An `ImageData` object containing the portrait image, or `null` if not available. Call `.ToImageSource()` on the result to convert it to a MAUI `ImageSource`.
-
-Returns `null` in the following cases:
-
-- `ReturnPortraitImage` was set to `false` in [`MRZScannerConfig`](mrz-scanner-config.md).
-- No portrait was detected in the document.
+The portrait image, or `null` if [`ReturnPortraitImage`](mrz-scanner-config.md#returnportraitimage) is `false` or no portrait was detected.
 
 ### GetDocumentImage
 
 Returns the cropped document image for the specified side of the document.
 
 ```csharp
-ImageData? GetDocumentImage(EnumDocumentSide documentSide);
+ImageData? GetDocumentImage(EnumDocumentSide side);
 ```
 
 **Parameter(s)**
 
-`documentSide`: An [`EnumDocumentSide`](document-side.md) value specifying which side of the document to retrieve the image for.
+`side`: An [`EnumDocumentSide`](document-side.md) value specifying which side of the document to retrieve.
 
 **Return Value**
 
-An `ImageData` object containing the cropped document image, or `null` if not available. Call `.ToImageSource()` on the result to convert it to a MAUI `ImageSource`.
+The cropped document image, or `null` in the following cases:
 
-Returns `null` in the following cases:
-
-- `ReturnDocumentImage` was set to `false` in [`MRZScannerConfig`](mrz-scanner-config.md).
+- [`ReturnDocumentImage`](mrz-scanner-config.md#returndocumentimage) is `false`.
 - `EnumDocumentSide.Opposite` was requested but the document is single-sided (e.g. passports).
-- `EnumDocumentSide.Opposite` was requested but the opposite side could not be captured.
+- `EnumDocumentSide.Opposite` was requested but the opposite side wasn't captured, for example because the user finished before flipping the document.
 
 ### GetOriginalImage
 
-Returns the original full-frame camera image for the specified side of the document. Disabled by default — enable by setting `ReturnOriginalImage = true` in [`MRZScannerConfig`](mrz-scanner-config.md).
+Returns the original full-frame camera image for the specified side of the document.
 
 ```csharp
-ImageData? GetOriginalImage(EnumDocumentSide documentSide);
+ImageData? GetOriginalImage(EnumDocumentSide side);
 ```
 
 **Parameter(s)**
 
-`documentSide`: An [`EnumDocumentSide`](document-side.md) value specifying which side of the document to retrieve the image for.
+`side`: An [`EnumDocumentSide`](document-side.md) value specifying which side of the document to retrieve.
 
 **Return Value**
 
-An `ImageData` object containing the original full-frame image, or `null` if not available. Call `.ToImageSource()` on the result to convert it to a MAUI `ImageSource`.
+The original image, or `null` in the following cases:
 
-Returns `null` in the following cases:
-
-- `ReturnOriginalImage` was set to `false` in [`MRZScannerConfig`](mrz-scanner-config.md) (this is the default).
+- [`ReturnOriginalImage`](mrz-scanner-config.md#returnoriginalimage) is `false` (the default).
 - `EnumDocumentSide.Opposite` was requested but the document is single-sided (e.g. passports).
-- `EnumDocumentSide.Opposite` was requested but the opposite side could not be captured.
+- `EnumDocumentSide.Opposite` was requested but the opposite side wasn't captured.

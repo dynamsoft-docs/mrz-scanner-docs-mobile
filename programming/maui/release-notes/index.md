@@ -9,6 +9,8 @@ breadcrumbText: Release Notes
 
 # Dynamsoft MRZ Scanner MAUI SDK - Release Notes
 
+<!-- TODO before the docs go live: replace MM/DD/2026 and mmdd2026 with the 3.6.2000 release date. -->
+- [3.6.2000 (MM/DD/2026)]({{ site.maui_release_notes }}maui-3.html#362000-mmdd2026)
 - [3.4.1310 (05/20/2026)]({{ site.maui_release_notes }}maui-3.html#341310-05202026)
 - [3.4.1300 (05/07/2026)]({{ site.maui_release_notes }}maui-3.html#341300-05072026)
 - [3.4.1200 (04/17/2026)]({{ site.maui_release_notes }}maui-3.html#341200-04172026)
