@@ -9,39 +9,29 @@ breadcrumbText: MAUI
 
 # Dynamsoft MRZ Scanner MAUI Edition
 
-Dynamsoft MRZ Scanner SDK MAUI Edition is designed to scan the MRZ code from a passport or ID card for MAUI developers.
+Dynamsoft MRZ Scanner SDK MAUI Edition is designed to scan the MRZ code from a passport or ID card for .NET MAUI developers.
 
-## Using the SDK
+## System Requirements
 
-### System Requirements
+- .NET: .NET 10 SDK or later with the `maui` workload, and .NET MAUI 10.0.20 or later.
+- Android: Android 5.0 (API Level 21) or higher; ABIs **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**; JDK 17 or later.
+- iOS: iOS 16 or higher; **arm64**; a Mac with the Xcode version your .NET iOS workload requires.
+- Development Environment: Visual Studio Code with the C# Dev Kit and .NET MAUI extensions, or Visual Studio 2026.
+- Hardware: a physical device. Simulators and most emulators don't expose a camera.
 
-#### .NET
+## User Guide
 
-- .NET 8.0 / 9.0 / 10.0
-
-#### Android
-
-- Supported OS: **Android 5.0** (API Level 21) or higher.
-- Supported ABI: **armeabi-v7a**, **arm64-v8a**, **x86** and **x86_64**.
-- Development Environment: Visual Studio 2022 recommended.
-- JDK: 1.8+
-
-#### iOS
-
-- Supported OS: **iOS 13.0** or higher.
-- Supported ABI: **arm64** and **x86_64**.
-- Development Environment: Visual Studio 2022 for Mac and Xcode 14.3+ recommended.
-
-### User Guide
-
-- [MRZ Scanner User Guide](user-guide/index.md)
+- [MRZ Scanner User Guide (MAUI Edition)](user-guide/index.md)
 - [Customizing the MRZ Scanner](user-guide/customize-mrz-scanner.md)
+- [License Initialization](user-guide/license-activation.md)
+- [Upgrade Guide](user-guide/upgrade.md)
 
-### Samples and Demos
+## Samples and Demos
 
 - [Samples & Demos](samples/index.md)
+- [ScanMRZ Demo App](samples/scanmrz-walkthrough.md)
 
-### API Reference
+## API Reference
 
 - [API Reference](./api-reference/index.md)
 
@@ -49,12 +39,10 @@ Dynamsoft MRZ Scanner SDK MAUI Edition is designed to scan the MRZ code from a p
 
 - [Version 3.x](release-notes/maui-3.html)
 
-## License Subscription
+## Licensing
 
-To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key:
-
-- [Request a 30-day free trial license](https://www.dynamsoft.com/customer/license/trialLicense?utm_source=docs&product=mrz&package=maui){:target="_blank"}
+To develop and run your application with Dynamsoft MRZ Scanner SDK, you need an active license key. See [License Initialization](user-guide/license-activation.md) for details.
 
 ## Contact Us
 
-Feel free to [contact us](https://www.dynamsoft.com/company/customer-service/#contact){:target="_blank"} if you have any questions.
+Feel free to [contact us](https://www.dynamsoft.com/contact/){:target="_blank"} if you have any questions.
