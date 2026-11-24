@@ -10,9 +10,7 @@ noTitleIndex: true
 
 # Release Notes for MAUI SDK - 3.x
 
-<!-- TODO before the docs go live: replace MM/DD/2026 below with the release date, and update the matching link text and anchor in release-notes/index.md. -->
-
-## 3.6.2000 (MM/DD/2026)
+## 3.6.2000 (11/25/2026)
 
 The version jumps from 3.4.1310 to 3.6.2000 to align with the native MRZ Scanner and Dynamsoft Capture Vision.
 
