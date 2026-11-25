@@ -7,7 +7,7 @@ keywords: MRZScanner, api reference, MAUI
 
 # MRZScanner API References
 
-`MRZScanner` is a ready-to-use component for scanning the MRZ on passports and ID cards. A single call to [`MRZScanner.Start`](mrz-scanner.md#start) opens the built-in scanner UI on Android and iOS and returns the result when the scanner closes.
+`MRZScanner` is a ready-to-use component for scanning the MRZ on passports and ID cards. A single call to [`MRZScanner.Start`](mrz-scanner.md#start) opens the built-in scanner UI on Android and iOS and returns the result when the scan ends.
 
 New to the SDK? The [MRZ Scanner User Guide](../user-guide/index.md) builds a working scanner from an empty project, and [Customizing the MRZ Scanner](../user-guide/customize-mrz-scanner.md) covers the configuration options in context.
 

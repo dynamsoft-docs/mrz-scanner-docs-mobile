@@ -73,6 +73,7 @@ Through 3.4.x, the whole camera preview was scanned, so a document outside the g
 
 - **On iOS, `PersonalNumber`, `OptionalData1` and `OptionalData2` are `""` instead of `null`** when absent, matching Android. Check them with `string.IsNullOrEmpty`.
 - **`Start` no longer changes `TemplateFile`.** Through 3.4.x it could replace the property's value with the template's contents.
+- **A `TemplateFile` name that isn't an app asset no longer throws.** Through 3.4.x, `Start` threw `FileNotFoundException`; now the value is passed to native as a file path, and a failure comes back as an `Exception` result.
 - **`Start` reports failures to open the scanner** as an `Exception` result instead of never completing: on Android when there's no activity, and on iOS when another page is still animating. See [Starting the Scanner from a Modal Page](index.md#starting-the-scanner-from-a-modal-page).
 - **A second `Start` during a scan returns the running scan's task** instead of opening another scanner.
 
