@@ -26,11 +26,11 @@ public class MRZScanner
 
 | Method | Description |
 | ------ | ----------- |
-| [`Start`](#start) | Opens the MRZ scanner and returns the scan result once it closes. |
+| [`Start`](#start) | Opens the MRZ scanner and returns the scan result when the scan ends. |
 
 ### Start
 
-Opens the MRZ scanner full screen with the provided configuration and returns the result once the scanner closes.
+Opens the MRZ scanner full screen with the provided configuration and returns the result when the scan ends.
 
 ```csharp
 public static Task<MRZScanResult> Start(MRZScannerConfig config);

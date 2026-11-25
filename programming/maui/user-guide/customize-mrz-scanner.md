@@ -51,7 +51,7 @@ config.DocumentType = EnumDocumentType.Passport;
 
 ### Using a customized template file
 
-A template is a JSON file of algorithm settings for specialized scenarios. [Contact us](https://www.dynamsoft.com/contact/) to get a customized template.
+A template is a JSON file of algorithm settings for specialized scenarios. It replaces the built-in templates, so `DocumentType` has no effect, and on iOS the format selector is hidden. [Contact us](https://www.dynamsoft.com/contact/) to get a customized template.
 
 1. Add the template to your project's **Resources/Raw** folder, so it's bundled as a MAUI asset.
 2. Pass its file name:
@@ -171,10 +171,10 @@ If access is unavailable, the scanner explains the situation and offers what can
 
 | State | Scanner's prompt |
 | ----- | ---------------- |
-| The user denied camera access | **Open Settings** (on Android, also **Allow camera access**) |
+| The user denied camera access | iOS: **Open Settings**. Android: **Allow camera access** while it can still be requested, otherwise **Open Settings** |
 | Device policy restricts the camera | An explanation only; the user can't change it |
 
-Either way, the outcome is reported as `EnumResultStatus.Exception` with an `ErrorCode` of `CameraPermissionDenied` (1001) or `CameraPermissionRestricted` (1002).
+If the scan ends without access, the outcome is reported as `EnumResultStatus.Exception` with an `ErrorCode` of `CameraPermissionDenied` (1001) or `CameraPermissionRestricted` (1002). On Android, the scan continues if the user grants access from the prompt, and only **Cancel** reports the denial.
 
 > [!IMPORTANT]
 > On iOS, the system asks for camera access only **once per install**, and changing the permission in Settings **terminates the app**. A page that shows a denial should keep its own route into Settings. The [ScanMRZ Demo App](../samples/scanmrz-walkthrough.md#recovering-from-a-permission-denial) shows this.

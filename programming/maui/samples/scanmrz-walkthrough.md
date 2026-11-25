@@ -23,7 +23,7 @@ Everything on this page is presentation: `ScanMRZ` uses `MRZScannerConfig`, `MRZ
 | | ScanMRZBasic | ScanMRZ |
 | --- | --- | --- |
 | Pages | one page | `MainPage` plus a dedicated `ResultPage` |
-| Result data | key fields, plain text | full field set, in Personal Info and Document Info sections |
+| Result data | key fields, plain text | more fields, in Personal Info and Document Info sections |
 | Images | none | portrait and both document sides, with Processed/Original tabs when originals are returned |
 | Failed validation | field names listed | amber, underlined, with a warning icon and an explanation dialog |
 | Permission denial | error string | error string plus an **Open Settings** button |
@@ -139,7 +139,7 @@ private async void LoadImagesAsync(params (Image Target, ImageData? Data)[] imag
 }
 ```
 
-The layout is settled before this runs, from which images are `null`, so nothing shifts as the images arrive. A missing portrait shows a placeholder.
+The layout is settled first, based on which images are `null`, so nothing shifts as the images arrive. A missing portrait shows a placeholder.
 
 ### The Processed / Original tabs
 
@@ -176,7 +176,10 @@ private void ApplyField(Label label, string value, EnumValidationStatus status =
     SemanticProperties.SetDescription(label, $"{label.Text}, validation failed");
 
     var iconSize = Math.Round(label.FontSize * 1.2);
-    cell.Add(new Image { Source = "warning_circle.png", WidthRequest = iconSize, HeightRequest = iconSize });
+    var icon = new Image { Source = "warning_circle.png", WidthRequest = iconSize, HeightRequest = iconSize, VerticalOptions = LayoutOptions.Center };
+    cell.Add(icon);
+    // The stack measures its children without a width limit, so cap the text to leave room for the icon.
+    cell.SizeChanged += (_, _) => label.MaximumWidthRequest = Math.Max(0, cell.Width - iconSize - cell.Spacing);
     cell.GestureRecognizers.Add(new TapGestureRecognizer { Command = new Command(ShowValidationInfo) });
 }
 ```
@@ -213,7 +216,7 @@ private async void OnReturnHome(object? sender, EventArgs e) => await Navigation
 
 A long press (500 ms) on the portrait or a document image offers to save it. The page captures the image with `CaptureAsync` and writes it to Photos on iOS, or to the gallery through `MediaStore` on Android.
 
-- **iOS** needs `NSPhotoLibraryAddUsageDescription` and `NSPhotoLibraryUsageDescription` in `Info.plist`; without them, saving crashes the app.
+- **iOS** needs `NSPhotoLibraryAddUsageDescription` in `Info.plist`, since the sample only adds to the library; without it, saving crashes the app.
 - **Android** saving needs Android 10 (API 29) or later, where `MediaStore` needs no storage permission. The sample doesn't offer saving on older versions.
 
 ## Next steps

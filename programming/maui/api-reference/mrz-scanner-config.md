@@ -76,6 +76,8 @@ string? TemplateFile { get; set; }
 
 `Start` doesn't modify this property. If the template can't be loaded, `Start` returns an `Exception` result.
 
+A custom template replaces the built-in ones, so [`DocumentType`](#documenttype) has no effect, and on iOS the format selector is hidden.
+
 ### DocumentType
 
 Sets or returns the document type to scan, such as ID cards or passports. `EnumDocumentType.All` by default.
@@ -190,7 +192,7 @@ bool IsCameraPermissionPromptEnabled { get; set; }
 
 **Remarks**
 
-When enabled, the scanner offers **Open Settings** before reporting the denial (on Android, also **Allow camera access**). Set it to `false` to present your own UI instead. The denial is reported either way, as an `Exception` result with [`EnumErrorCode`](error-code.md) `CameraPermissionDenied` (1001) or `CameraPermissionRestricted` (1002).
+When enabled, the scanner explains the problem and offers a way to grant access: **Open Settings** on iOS; on Android, **Allow camera access** while the permission can still be requested, otherwise **Open Settings**. Set it to `false` to present your own UI instead. If the scan ends without access, the denial is reported either way, as an `Exception` result with [`EnumErrorCode`](error-code.md) `CameraPermissionDenied` (1001) or `CameraPermissionRestricted` (1002).
 
 > [!IMPORTANT]
 > The camera never starts without access, whatever this setting.

@@ -10,9 +10,7 @@ noTitleIndex: true
 
 # Release Notes for MAUI SDK - 3.x
 
-<!-- TODO before the docs go live: replace MM/DD/2026 below with the release date, and update the matching link text and anchor in release-notes/index.md. -->
-
-## 3.6.2000 (MM/DD/2026)
+## 3.6.2000 (11/25/2026)
 
 The version jumps from 3.4.1310 to 3.6.2000 to align with the native MRZ Scanner and Dynamsoft Capture Vision.
 
@@ -23,7 +21,7 @@ The version jumps from 3.4.1310 to 3.6.2000 to align with the native MRZ Scanner
 
 - **Per-field MRZ validation**: `MRZData.GetFieldValidationStatus(string)` returns `VS_NONE`, `VS_SUCCEEDED` or `VS_FAILED` for a field's check digit.
   - **Behavior change**: scans that fail check-digit validation are now returned with their status instead of discarded.
-- **Camera permission handling**: the scanner never opens the camera without access, and offers **Open Settings** when it's unavailable.
+- **Camera permission handling**: the scanner never opens the camera without access, and offers a way to grant it when it's unavailable.
   - New `EnumErrorCode`: `CameraPermissionDenied` (1001) and `CameraPermissionRestricted` (1002).
   - New `MRZScannerConfig.IsCameraPermissionPromptEnabled` (default: `true`) turns off the scanner's own prompt.
 - **Scanning progress indicator**: prompts the user to hold the device steady while frames are processed.

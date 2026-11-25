@@ -64,7 +64,7 @@ A valid license key is required to use the SDK. If you are just getting started,
    <PackageReference Include="Dynamsoft.MRZScannerBundle.Maui" Version="3.6.2000" />
    ```
 
-2. The package supports **Android and iOS** only. The MAUI project template also targets Mac Catalyst and Windows, so keep just these two in your `.csproj`:
+2. The package supports **Android and iOS** only. The MAUI template's `.csproj` has three `<TargetFrameworks>` lines that also add Mac Catalyst and Windows. Replace all three with this one:
 
    ```xml
    <TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
@@ -97,7 +97,7 @@ Create a **.NET MAUI App** named *ScanMRZBasic* on **.NET 10**:
 - **Command line**: `dotnet new maui -n ScanMRZBasic`
 
 > [!NOTE]
-> Apps built with Xcode 27 must adopt the iOS UIScene lifecycle, or iOS terminates them at launch. Projects created from the current MAUI template already include it (`Platforms/iOS/SceneDelegate.cs`).
+> Apps built with Xcode 27 must adopt the iOS UIScene lifecycle, or iOS terminates them at launch. Projects created from the current MAUI template already include it: `Platforms/iOS/SceneDelegate.cs` and the `UIApplicationSceneManifest` entry in `Platforms/iOS/Info.plist`. An older project can copy both from a new one.
 
 ### Step 2: Add the SDK
 
@@ -205,7 +205,7 @@ public partial class MainPage : ContentPage
 }
 ```
 
-You don't need any camera-permission code. The scanner never opens the camera without access; when access is unavailable it offers **Open Settings**, then returns `Exception` with a readable `ErrorString`.
+You don't need any camera-permission code. The scanner never opens the camera without access; when access is unavailable it explains how to grant it, and returns `Exception` with a readable `ErrorString` if the scan ends without access.
 
 > [!NOTE]
 > To present your own permission UI instead, set `IsCameraPermissionPromptEnabled = false`. See [Handling Camera Permission](customize-mrz-scanner.md#handling-camera-permission).
@@ -213,7 +213,7 @@ You don't need any camera-permission code. The scanner never opens the camera wi
 **Key APIs in use**
 
 - **[`MRZScannerConfig`](../api-reference/mrz-scanner-config.md)**: carries your license and any optional settings.
-- **[`MRZScanner.Start`](../api-reference/mrz-scanner.md#start)**: opens the scanner full screen and completes with the result when it closes.
+- **[`MRZScanner.Start`](../api-reference/mrz-scanner.md#start)**: opens the scanner full screen and completes with the result when the scan ends.
 - **[`ResultStatus`](../api-reference/mrz-scan-result.md#resultstatus)**: `Finished`, `Canceled`, or `Exception`. Cancellation and failure come back through the result rather than as exceptions, so handle all three.
 - **[`ErrorString`](../api-reference/mrz-scan-result.md#errorstring)**: a readable message for `Exception`. [`ErrorCode`](../api-reference/mrz-scan-result.md#errorcode) gives the code behind it.
 - **[`Data`](../api-reference/mrz-scan-result.md#data)**: the parsed [`MRZData`](../api-reference/mrz-data.md). It's `null` for the other statuses.
@@ -368,7 +368,7 @@ Most of the footprint is the Dynamsoft Capture Vision engine and its models. Mea
 | iOS | `DynamsoftCaptureVisionBundle.framework` | ~12 MB |
 | iOS | `DynamsoftMRZScannerBundle.framework` | ~6.7 MB |
 
-- **Android**: MAUI Release builds include only `arm64-v8a` and `x86_64` by default. To support 32-bit devices, add `android-arm` to `RuntimeIdentifiers`. Publish an Android App Bundle so Google Play delivers only the matching ABI.
+- **Android**: MAUI Release builds include only `arm64-v8a` and `x86_64` by default. To also support 32-bit devices, set `<RuntimeIdentifiers>android-arm;android-arm64;android-x64</RuntimeIdentifiers>`; the property replaces the default list. Publish an Android App Bundle so Google Play delivers only the matching ABI.
 - **iOS**: the frameworks' device slices are arm64 only, so there is nothing to filter.
 
 ### 16 KB page sizes

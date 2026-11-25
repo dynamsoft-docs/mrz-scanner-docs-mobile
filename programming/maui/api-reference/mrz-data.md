@@ -206,7 +206,7 @@ public EnumValidationStatus GetFieldValidationStatus(string fieldName);
 
 **Return Value**
 
-`VS_NONE` (0) if the field has no validation, `VS_SUCCEEDED` (1) or `VS_FAILED` (2).
+`VS_NONE` (0) if the field has no validation, `VS_SUCCEEDED` (1) or `VS_FAILED` (2). An unrecognized name, including one in the wrong case such as `"DateOfBirth"`, returns `VS_NONE`.
 
 **Remarks**
 
