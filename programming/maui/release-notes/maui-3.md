@@ -10,6 +10,37 @@ noTitleIndex: true
 
 # Release Notes for MAUI SDK - 3.x
 
+## 3.6.2000 (11/25/2026)
+
+The version jumps from 3.4.1310 to 3.6.2000 to align with the native MRZ Scanner and Dynamsoft Capture Vision.
+
+> [!IMPORTANT]
+> **The minimum iOS version is now 16.0** (was 13.0), as required by the scanner's Core ML models. See the [Upgrade Guide](../user-guide/upgrade.md).
+
+### New
+
+- **Per-field MRZ validation**: `MRZData.GetFieldValidationStatus(string)` returns `VS_NONE`, `VS_SUCCEEDED` or `VS_FAILED` for a field's check digit.
+  - **Behavior change**: scans that fail check-digit validation are now returned with their status instead of discarded.
+- **Camera permission handling**: the scanner never opens the camera without access, and offers a way to grant it when it's unavailable.
+  - New `EnumErrorCode`: `CameraPermissionDenied` (1001) and `CameraPermissionRestricted` (1002).
+  - New `MRZScannerConfig.IsCameraPermissionPromptEnabled` (default: `true`) turns off the scanner's own prompt.
+- **Scanning progress indicator**: prompts the user to hold the device steady while frames are processed.
+- **Flip document prompt**: asks the user to flip TD1 and TD2 IDs whose portrait is on the other side.
+- **`MRZScannerConfig()`**: a parameterless constructor, as in the native libraries.
+
+### Fixes & Improvements
+
+- Upgraded the native MRZ Scanner and Capture Vision to 3.6.2000, including a CVE fix and crash fixes.
+- The scan region is now the guide frame; with the frame hidden, the whole preview is scanned.
+- Fixed small documents going undetected.
+- `TemplateFile` is no longer overwritten by `Start`, and accepts inline JSON with leading whitespace.
+- `MRZScanner.Start` no longer opens a second scanner on a repeated call, and returns an `Exception` result instead of waiting forever when the scanner can't open.
+- Android: the result still arrives when the app's activity is recreated during a scan.
+- iOS: the scanner opens over modal pages and can't be swiped away; `PersonalNumber`, `OptionalData1` and `OptionalData2` return `""` instead of `null`; results arrive sooner and memory is released after each scan.
+
+> [!NOTE]
+> Apps built with Xcode 27 must adopt the iOS UIScene lifecycle, which the current MAUI template includes.
+
 ## 3.4.1310 (05/20/2026)
 
 ### Fixes & Improvements

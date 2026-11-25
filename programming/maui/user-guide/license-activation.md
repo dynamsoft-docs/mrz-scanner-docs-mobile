@@ -16,12 +16,14 @@ You can request a 30-day trial license via the [Trial License](https://www.dynam
 
 ## Get a Full License
 
-<a href="https://www.dynamsoft.com/company/contact" target="_blank">Contact us</a> to purchase a full license.
+<a href="https://www.dynamsoft.com/contact/" target="_blank">Contact us</a> to purchase a full license.
 
 ## Set the License in the Code
 
-Set the license key on `MRZScannerConfig` before launching the scanner.
+Set the license key on `MRZScannerConfig` before launching the scanner:
 
 ```csharp
 var config = new MRZScannerConfig("YOUR-LICENSE-KEY");
 ```
+
+With the parameterless constructor, set `config.License` before calling `MRZScanner.Start`.
